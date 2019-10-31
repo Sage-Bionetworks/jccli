@@ -1,0 +1,3 @@
+name: jccli
+dependencies:
+  - python=3.6
