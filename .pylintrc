@@ -45,6 +45,16 @@ unsafe-load-any-extension=no
 # all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED
 confidence=
 
+# Disable the following PyLint messages:
+# R0903 - Not enough public methods
+# W0105 - String statement has no effect # often used for after-line doc
+# W0622 - Redefining built-in
+# W0142 - Used * or ** magic
+# W0232 - Class has no __init__ method
+# W0212 - Access to a protected member ... of a client class
+# W0613 - Unused argument
+# E1101 - Has no member (countless false-positives)
+
 # Disable the message, report, category or checker with the given id(s). You
 # can either give multiple identifiers separated by comma (,) or put this
 # option multiple times (only on the command line, not in the configuration
@@ -54,7 +64,8 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=print-statement,
+disable=W0622,
+        print-statement,
         parameter-unpacking,
         unpacking-in-except,
         old-raise-syntax,
@@ -317,10 +328,10 @@ ignore-comments=yes
 ignore-docstrings=yes
 
 # Ignore imports when computing similarities.
-ignore-imports=no
+ignore-imports=yes
 
 # Minimum lines number of a similarity.
-min-similarity-lines=4
+min-similarity-lines=5
 
 
 [TYPECHECK]

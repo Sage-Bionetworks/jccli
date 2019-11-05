@@ -43,14 +43,14 @@ def test_verbose_output():
     ), "Verbose logging should be indicated in output."
 
 
-def test_hello_displays_expected_message():
-    """
-    Arrange/Act: Run the `version` subcommand.
-    Assert:  The output matches the library version.
-    """
-    runner: CliRunner = CliRunner()
-    result: Result = runner.invoke(cli.cli, ["hello"])
-    # fmt: off
-    assert 'jccli' in result.output.strip(), \
-        "'Hello' messages should contain the CLI name."
-    # fmt: on
+# def test_sync():
+#     """
+#     Arrange/Act: Run the `version` subcommand.
+#     Assert:  The output matches the library version.
+#     """
+#     runner: CliRunner = CliRunner()
+#     result: Result = runner.invoke(cli.cli, [""])
+#     # fmt: off
+#     assert 'jccli' in result.output.strip(), \
+#         "'Hello' messages should contain the CLI name."
+#     # fmt: on
