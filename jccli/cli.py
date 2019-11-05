@@ -35,7 +35,7 @@ LOGGING_LEVELS = {
 }  #: a mapping of `verbose` option counts to logging levels
 
 
-class ArgsInfo():
+class Info():
     """
     An information object to pass data between CLI functions.
     """
@@ -46,7 +46,7 @@ class ArgsInfo():
 
 # pass_info is a decorator for functions that pass 'info' objects.
 #: pylint: disable=invalid-name
-pass_info = click.make_pass_decorator(ArgsInfo, ensure=True)
+pass_info = click.make_pass_decorator(Info, ensure=True)
 
 
 # Change the options to below to suit the actual options for your task (or
@@ -55,7 +55,7 @@ pass_info = click.make_pass_decorator(ArgsInfo, ensure=True)
 @click.option('--key', "-k", required=False, type=str, help='Jumpcloud API key')
 @click.option("--verbose", "-v", count=True, help="Enable verbose output.")
 @pass_info
-def cli(info: ArgsInfo, key, verbose: int):
+def cli(info, key, verbose: int):
     """
     Run jccli.
     """
@@ -90,7 +90,7 @@ def version():
 @click.option('--file', "-f", required=False, type=str,
               help='SystemUser properties file')
 @pass_info
-def create_user(info: ArgsInfo, json, file):
+def create_user(info, json, file):
     """
     Create a new user in jumpcloud
     :param info: command line arguments
@@ -118,7 +118,7 @@ def create_user(info: ArgsInfo, json, file):
 @click.option('--type', "-t", required=True, type=click.Choice(['user', 'system']),
               help='The type of group')
 @pass_info
-def create_group(info: ArgsInfo, name, type):
+def create_group(info, name, type):
     """
     Command to create a Jumpcloud group
     :param info:
@@ -134,7 +134,7 @@ def create_group(info: ArgsInfo, name, type):
 @cli.command()
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
 @pass_info
-def delete_group(info: ArgsInfo, name):
+def delete_group(info, name):
     """
     Command to delete a Jumpcloud group
     :param info:
@@ -149,7 +149,7 @@ def delete_group(info: ArgsInfo, name):
 @cli.command()
 @click.option('--username', "-u", required=False, type=str, help='The user name')
 @pass_info
-def delete_user(info: ArgsInfo, username):
+def delete_user(info, username):
     """
     Delete a jumpcloud user
     :param info: command line arguments
@@ -172,7 +172,7 @@ def delete_user(info: ArgsInfo, username):
 @cli.command()
 @click.option('--config', "-c", required=True, type=str, help='The config file')
 @pass_info
-def sync(info: ArgsInfo, config):
+def sync(info, config):
     """
     Sync Jumpcloud users from a file
     """
