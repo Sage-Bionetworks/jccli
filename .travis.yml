@@ -1,0 +1,20 @@
+sudo: false
+language: python
+python: 3.6
+cache: pip
+fast_finish: true
+install:
+  - pip install pre-commit
+stages:
+  - name: validate
+jobs:
+  include:
+    - stage: validate
+      script:
+        - pre-commit autoupdate
+        - pre-commit run --all-files
+        - make install
+        - make licenses
+        - make build
+        - make package
+        - make test

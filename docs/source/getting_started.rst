@@ -15,6 +15,3 @@ You can use pip to install `jccli`.
 .. code-block:: sh
 
     pip install jccli
-
-
-

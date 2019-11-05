@@ -15,7 +15,7 @@ Get the Source
 ==============
 
 The source code for the `jccli` project lives at
-`github <https://github.com/zaro0508/jccli>`_.  
+`github <https://github.com/zaro0508/jccli>`_.
 You can use `git clone` to get it.
 
 .. code-block:: bash
