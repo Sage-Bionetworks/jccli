@@ -17,7 +17,6 @@ class UerGroupNotFoundError(Exception):
     """
     Jumpcloud user group is not found
     """
-    # pass
 
 class MissingRequiredArgumentError(Exception):
     """

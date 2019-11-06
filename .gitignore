@@ -107,3 +107,6 @@ ENV/
 
 # mac stuff
 .DS_Store
+
+# temp
+temp/

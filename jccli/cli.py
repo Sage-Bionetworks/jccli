@@ -21,7 +21,8 @@ import logging
 import click
 from jccli.errors import SystemUserNotFoundError, MissingRequiredArgumentError
 
-from jccli.helpers import get_users_from_config, get_user_from_file, get_user_from_term
+from jccli.helpers import get_users_from_file, get_user_from_file, get_user_from_term
+from jccli.helpers import get_groups_from_file
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.jc_api_v2 import JumpcloudApiV2
 from .__init__ import __version__
@@ -87,18 +88,12 @@ def version():
 @cli.command()
 @click.option('--json', "-j", required=False, type=str,
               help='SystemUser properties json')
-@click.option('--file', "-f", required=False, type=str,
+@click.option('--file', "-f", required=False, type=click.Path(exists=True),
               help='SystemUser properties file')
 @pass_info
 def create_user(info, json, file):
     """
-    Create a new user in jumpcloud
-    :param info: command line arguments
-    :param json: json of SystemUser properties
-            Example:
-              "{\"email\": \"jc.tester1@sagebase.org\", \"username\": \"jctester1\"}"
-    :param file: file to json of SystemUser properties
-    :return:
+    Create a new Jumpcloud user
     """
     api1 = JumpcloudApiV1(info.key)
     user = {}
@@ -120,31 +115,29 @@ def create_user(info, json, file):
 @pass_info
 def create_group(info, name, type):
     """
-    Command to create a Jumpcloud group
-    :param info:
-    :param name: The group name
-    :param type: The group type
-    :return:
+    Create a Jumpcloud group
     """
     api2 = JumpcloudApiV2(info.key)
-    click.echo("Create jumpcloud {} group {}".format(type, name))
+    # click.echo("Create jumpcloud {} group {}".format(type, name))
     response = api2.create_group(name, type)
-    click.echo(response)
+    click.echo(
+        click.style(
+            f"{response}",
+            fg="green",
+        )
+    )
 
 @cli.command()
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
 @pass_info
 def delete_group(info, name):
     """
-    Command to delete a Jumpcloud group
-    :param info:
-    :param name: The group name
-    :return:
+    Delete a Jumpcloud group
     """
     api2 = JumpcloudApiV2(info.key)
-    click.echo("Delete jumpcloud group {}".format(name))
     response = api2.delete_group(name)
-    click.echo(response)
+    if response is None:
+        click.echo("Jumpcloud group deleted")
 
 @cli.command()
 @click.option('--username', "-u", required=False, type=str, help='The user name')
@@ -152,9 +145,6 @@ def delete_group(info, name):
 def delete_user(info, username):
     """
     Delete a jumpcloud user
-    :param info: command line arguments
-    :param username: The username to delete
-    :return:
     """
     if username is None:
         raise MissingRequiredArgumentError("Deleting a user requires a username")
@@ -170,26 +160,27 @@ def delete_user(info, username):
 
 
 @cli.command()
-@click.option('--config', "-c", required=True, type=str, help='The config file')
+@click.option('--data', "-d", required=True, type=click.Path(exists=True),
+              help='The JC data file')
 @pass_info
-def sync(info, config):
+def sync(info, data):
     """
-    Sync Jumpcloud users from a file
+    Sync Jumpcloud with a data file
     """
-    click.echo("Sync users on jumpcloud with users in " + config)
-    click.echo("getting users from file: " + config)
-    config_users = get_users_from_config(config)
-    if config_users is None:
+    click.echo("Sync data on jumpcloud with data in " + data)
+    users = get_users_from_file(data)
+    groups = get_groups_from_file(data)
+    if users is None:
         raise MissingRequiredArgumentError("A sync requires a config file")
 
-    sync_users(info.key, config_users)
+    sync_users(info.key, users)
 
 
 def sync_users(key, users):
 # pylint: disable-msg=too-many-locals
 # pylint: disable-msg=too-many-branches
     """
-    sync users with jumpcloud
+    Sync data file with jumpcloud
     """
     api1 = JumpcloudApiV1(key)
     api2 = JumpcloudApiV2(key)
