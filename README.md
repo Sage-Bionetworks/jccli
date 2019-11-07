@@ -1,26 +1,54 @@
 # jccli
 
-A Jumpcloud command line client
-
-## Project Features
-
-* [jccli](http://jccli.readthedocs.io/)
-* a starter [Click](http://click.pocoo.org/5/) command-line application
-* automated unit tests you can run with [pytest](https://docs.pytest.org/en/latest/)
-* a [Sphinx](http://www.sphinx-doc.org/en/master/) documentation project
+A Jumpcloud command line client to manage [Jumpcloud](https://jumpcloud.com/) accounts.
 
 ## Getting Started
 
-The project's documentation contains a section to help you
-[get started](https://jccli.readthedocs.io/en/latest/getting_started.html) as a developer or
-user of the library.
+### Install
 
-## Development Prerequisites
+```bash
+pip install jccli
+```
 
-If you're going to be working in the code (rather than just using the library), you'll want a few utilities.
+### Usage
 
+```bash
+Usage: jccli [OPTIONS] COMMAND [ARGS]...
+
+  Run jccli.
+
+Options:
+  -k, --key TEXT  Jumpcloud API key
+  -v, --verbose   Enable verbose output.
+  --help          Show this message and exit.
+
+Commands:
+  create-group  Create a Jumpcloud group
+  create-user   Create a new Jumpcloud user
+  delete-group  Delete a Jumpcloud group
+  delete-user   Delete a jumpcloud user
+  sync          Sync Jumpcloud with a data file
+  version       Get the version.
+```
+
+## Contributions
+
+Contributions are welcome.
+
+Requirements:
+
+Install these utilities:
+* [pre-commit](https://pre-commit.com/#install)
 * [GNU Make](https://www.gnu.org/software/make/)
 * [Pandoc](https://pandoc.org/)
+
+As a pre-deployment step we syntatically validate our sceptre and cloudformation yaml
+files with pre-commit.
+
+Please install pre-commit, once installed the file validations will automatically
+run on every commit. Alternatively you can manually execute the validations by running
+`pre-commit run --all-files`.
+
 
 ## Resources
 
@@ -38,7 +66,3 @@ Below are some handy resource links.
 * **zaro0508** - *Initial work* - [github](https://github.com/zaro0508)
 
 See also the list of [contributors](https://github.com/zaro0508/jccli/contributors) who participated in this project.
-
-## LicenseCopyright (c) zaro0508
-
-All rights reserved.
