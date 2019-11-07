@@ -50,8 +50,6 @@ class Info():
 pass_info = click.make_pass_decorator(Info, ensure=True)
 
 
-# Change the options to below to suit the actual options for your task (or
-# tasks).
 @click.group()
 @click.option('--key', "-k", required=False, type=str, help='Jumpcloud API key')
 @click.option("--verbose", "-v", count=True, help="Enable verbose output.")

@@ -40,6 +40,13 @@ if os.getenv('buildnum') is not None:
         buildnum=os.getenv('buildnum')
     )
 
+install_requirements = [
+    "click>=7.0,<8",
+    "jcapiv1 @ https://github.com/TheJumpCloud/jcapi-python/archive/v3.3.0.zip#subdirectory=jcapiv1",
+    "jcapiv2 @ https://github.com/TheJumpCloud/jcapi-python/archive/v3.3.0.zip#subdirectory=jcapiv2",
+    "PyYaml>=5.1,<6.0"
+]
+
 setup(
     name='jccli',
     description="A Jumpcloud command line client",
@@ -47,26 +54,26 @@ setup(
     packages=find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     version=version,
-    install_requires=[
-        # Include dependencies here
-        'click>=7.0,<8'
-    ],
-    entry_points="""
-    [console_scripts]
-    jccli=jccli.cli:cli
-    """,
-    python_requires=">=0.0.1",
-    license='Apache Software License 2.0',  # noqa
+    python_requires=">=3",
+    install_requires=install_requirements,
+    entry_points={
+        "console_scripts": [
+            'jccli = jccli.cli:cli'
+        ]
+    },
+    license='Apache Software License',  # noqa
     author='zaro0508',
     author_email='zaro0508@gmail.com',
     # Use the URL to the github repo.
-    url= 'https://github.com/zaro0508/jccli',
+    url= 'https://github.com/Sage-Bionetworks/jccli',
     download_url=(
-        f'https://github.com/zaro0508/'
+        f'https://github.com/Sage-Bionetworks/'
         f'jccli/archive/{version}.tar.gz'
     ),
     keywords=[
-        # Add package keywords here.
+        "jccli",
+        "jumpcloud",
+        "cli"
     ],
     # See https://PyPI.python.org/PyPI?%3Aaction=list_classifiers
     classifiers=[
@@ -78,11 +85,12 @@ setup(
 
       # Indicate who your project is intended for.
       'Intended Audience :: Developers',
-      'Topic :: Software Development :: Libraries',
+      'Natural Language :: English',
+      'Environment :: Console',
 
-      # Pick your license.  (It should match "license" above.)
+        # Pick your license.  (It should match "license" above.)
         # noqa
-        '''License :: OSI Approved :: Apache Software License 2.0 License''',
+        'License :: OSI Approved :: Apache Software License',
         # noqa
 
       # Specify the Python versions you support here. In particular, ensure
