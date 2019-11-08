@@ -1,6 +1,6 @@
 click>=7.0,<8
-git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv1
-git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv2
+jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv1
+jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv2
 
 mock>=2.0.0,<2.1.0
 pip-check-reqs>=2.0.1,<3

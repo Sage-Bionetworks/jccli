@@ -18,7 +18,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 # Get the base version from the library.  (We'll find it in the `version.py`
@@ -42,8 +42,8 @@ if os.getenv('buildnum') is not None:
 
 install_requirements = [
     "click>=7.0,<8",
-    "jcapiv1 @ https://github.com/TheJumpCloud/jcapi-python/archive/v3.3.0.zip#subdirectory=jcapiv1",
-    "jcapiv2 @ https://github.com/TheJumpCloud/jcapi-python/archive/v3.3.0.zip#subdirectory=jcapiv2",
+    "jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv1",
+    "jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv2",
     "PyYaml>=5.1,<6.0"
 ]
 
@@ -51,6 +51,7 @@ setup(
     name='jccli',
     description="A Jumpcloud command line client",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     version=version,

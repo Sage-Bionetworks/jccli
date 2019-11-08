@@ -1,13 +1,14 @@
 # jccli
 
-A Jumpcloud command line client to manage [Jumpcloud](https://jumpcloud.com/) accounts.
+A command line client to manage [Jumpcloud](https://jumpcloud.com/)
+identify provider service.
 
 ## Getting Started
 
 ### Install
 
 ```bash
-pip install jccli
+git clone https://github.com/Sage-Bionetworks/jccli.git && cd jccli && make build
 ```
 
 ### Usage
@@ -38,12 +39,11 @@ Contributions are welcome.
 Requirements:
 
 Install these utilities:
-* [pre-commit](https://pre-commit.com/#install)
 * [GNU Make](https://www.gnu.org/software/make/)
+* [pre-commit](https://pre-commit.com/#install)
 * [Pandoc](https://pandoc.org/)
 
-As a pre-deployment step we syntatically validate our sceptre and cloudformation yaml
-files with pre-commit.
+As a pre-deployment step we syntatically validate our code and configurations with pre-commit.
 
 Please install pre-commit, once installed the file validations will automatically
 run on every commit. Alternatively you can manually execute the validations by running

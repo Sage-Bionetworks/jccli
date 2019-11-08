@@ -31,7 +31,7 @@ docs: coverage
 	mkdir -p docs/source/_static
 	mkdir -p docs/source/_templates
 	cd docs && $(MAKE) html
-    # pandoc --from=markdown --to=rst --output=README.rst README.md
+	pandoc --from=markdown --to=rst --output=README.rst README.md
 
 answers:
 	cd docs && $(MAKE) html
@@ -39,6 +39,9 @@ answers:
 
 package: clean docs
 	python setup.py sdist
+	# python setup.py bdist_wheel
+	twine check dist/*
+	ls -l dist
 
 publish: package
 	twine upload dist/*

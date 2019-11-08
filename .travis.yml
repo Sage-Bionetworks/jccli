@@ -17,7 +17,5 @@ jobs:
         - pre-commit autoupdate
         - pre-commit run --all-files
         - make install
-        - make licenses
         - make build
-        - make package
         - make test
