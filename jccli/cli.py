@@ -80,7 +80,13 @@ def version():
     """
     Get the version.
     """
-    click.echo(click.style(f"{__version__}", bold=True))
+    click.echo(
+        click.style(
+            f"{__version__}",
+            bold=True,
+            fg="green"
+        )
+    )
 
 
 @cli.command()
@@ -104,7 +110,12 @@ def create_user(info, json, file):
 
     click.echo("Create jumpcloud user " + user['username'])
     response = api1.create_user(user)
-    click.echo(response)
+    click.echo(
+        click.style(
+            f"{response}",
+            fg="green",
+        )
+    )
 
 @cli.command()
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
@@ -116,7 +127,6 @@ def create_group(info, name, type):
     Create a Jumpcloud group
     """
     api2 = JumpcloudApiV2(info.key)
-    # click.echo("Create jumpcloud {} group {}".format(type, name))
     response = api2.create_group(name, type)
     click.echo(
         click.style(
@@ -135,7 +145,12 @@ def delete_group(info, name):
     api2 = JumpcloudApiV2(info.key)
     response = api2.delete_group(name)
     if response is None:
-        click.echo("Jumpcloud group deleted")
+        click.echo(
+            click.style(
+                f"Group {name} deleted",
+                fg="green",
+            )
+        )
 
 @cli.command()
 @click.option('--username', "-u", required=False, type=str, help='The user name')
@@ -154,7 +169,12 @@ def delete_user(info, username):
         raise SystemUserNotFoundError("System user {} not found".format(username))
 
     response = api1.delete_user(id)
-    click.echo(response)
+    click.echo(
+        click.style(
+            f"{response}",
+            fg="green",
+        )
+    )
 
 
 @cli.command()

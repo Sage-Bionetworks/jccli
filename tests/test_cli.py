@@ -98,5 +98,5 @@ class TestCli:
         runner: CliRunner = CliRunner()
         result: Result = runner.invoke(cli.cli, ["delete-group", "-n", "foo"])
         assert (
-            result.output.strip() == "Jumpcloud group deleted"
+            result.output.strip() == "Group foo deleted",
         ), "Invalid response in output."

@@ -8,17 +8,22 @@ Exceptions
 
 """
 
-class SystemUserNotFoundError(Exception):
+class JcCliError(Exception):
+    """
+    Base class for all JC CLI errors
+    """
+
+class SystemUserNotFoundError(JcCliError):
     """
     Jumpcloud system user is not found
     """
 
-class UerGroupNotFoundError(Exception):
+class UerGroupNotFoundError(JcCliError):
     """
     Jumpcloud user group is not found
     """
 
-class MissingRequiredArgumentError(Exception):
+class MissingRequiredArgumentError(JcCliError):
     """
     Required arguments are missing
     """
