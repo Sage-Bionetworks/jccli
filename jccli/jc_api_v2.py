@@ -15,7 +15,7 @@ import jcapiv2
 from jcapiv2.rest import ApiException
 
 from jccli.helpers import class_to_dict
-from jccli.errors import UerGroupNotFoundError
+from jccli.errors import GroupNotFoundError
 
 class JumpcloudApiV2:
     """
@@ -77,7 +77,7 @@ class JumpcloudApiV2:
         group_id, group_type = self.get_group(group_name, limit=100)
 
         if group_id is None:
-            raise UerGroupNotFoundError("User group {} not found".format(name))
+            raise GroupNotFoundError("Group {} not found".format(name))
 
         if group_type == "system_group":
             try:

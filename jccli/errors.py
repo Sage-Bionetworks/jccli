@@ -18,9 +18,9 @@ class SystemUserNotFoundError(JcCliError):
     Jumpcloud system user is not found
     """
 
-class UerGroupNotFoundError(JcCliError):
+class GroupNotFoundError(JcCliError):
     """
-    Jumpcloud user group is not found
+    Jumpcloud group is not found
     """
 
 class MissingRequiredArgumentError(JcCliError):

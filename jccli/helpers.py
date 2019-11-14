@@ -58,9 +58,9 @@ def get_user_from_term(input):
     """
     try:
         print(input)
-        users = json.loads(input.replace("'", '"'))
+        user = json.loads(input.replace("'", '"'))
 
-        return users
+        return user
     except (ValueError, TypeError, IOError) as error:
         raise error
 
@@ -72,8 +72,8 @@ def get_user_from_file(user_file):
     """
     try:
         with open(user_file, 'r') as file:
-            users = json.load(file)
+            user = json.load(file)
 
-        return users
+        return user
     except (ValueError, TypeError, IOError) as error:
         raise error

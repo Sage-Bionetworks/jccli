@@ -53,6 +53,7 @@ confidence=
 # W0232 - Class has no __init__ method
 # W0212 - Access to a protected member ... of a client class
 # W0613 - Unused argument
+# W1202 - Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
 # E1101 - Has no member (countless false-positives)
 
 # Disable the message, report, category or checker with the given id(s). You
@@ -64,7 +65,7 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=W0622,
+disable=W0622, W1202,
         print-statement,
         parameter-unpacking,
         unpacking-in-except,
