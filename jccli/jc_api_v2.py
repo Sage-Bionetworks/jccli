@@ -17,6 +17,9 @@ from jcapiv2.rest import ApiException
 from jccli.helpers import class_to_dict
 from jccli.errors import GroupNotFoundError
 
+VALID_USER_GROUP_TYPES = ['user', jcapiv2.GroupType.USER_GROUP]
+VALID_SYSTEM_GROUP_TYPES = ['system', jcapiv2.GroupType.SYSTEM_GROUP]
+
 class JumpcloudApiV2:
     """
         Wrapper for Jumpcloud API v2
@@ -34,35 +37,36 @@ class JumpcloudApiV2:
         """
         Create a Jumpcloud group
         :param name: The group name
-        :param type: The group type
+        :param type: The group type, user or system
         :return: API response
         """
         group_name = name
         group_type = type
-        content_type = 'application/json'
-        accept = 'application/json'
-        x_org_id = ''
 
-        if group_type == "system":
+        if group_type in VALID_SYSTEM_GROUP_TYPES:
             try:
                 body = jcapiv2.SystemGroupData(name=group_name)
-                api_response = self.system_groups_api.groups_system_post(content_type,
-                                                                         accept,
-                                                                         body=body,
-                                                                         x_org_id=x_org_id)
+                api_response = \
+                    self.system_groups_api.groups_system_post(content_type='application/json',
+                                                              accept='application/json',
+                                                              body=body,
+                                                              x_org_id='')
                 return api_response
             except ApiException as error:
                 raise "Exception when calling SystemGroupsApi->groups_system_post: %s\n" % error
-        else:
+        elif group_type in VALID_USER_GROUP_TYPES:
             try:
                 body = jcapiv2.UserGroupPost(name=group_name)
-                api_response = self.user_groups_api.groups_user_post(content_type,
-                                                                     accept,
-                                                                     body=body,
-                                                                     x_org_id=x_org_id)
+                api_response = \
+                    self.user_groups_api.groups_user_post(content_type='application/json',
+                                                          accept='application/json',
+                                                          body=body,
+                                                          x_org_id='')
                 return api_response
             except ApiException as error:
                 raise "Exception when calling UserGroupsApi->groups_user_post: %s\n" % error
+        else:
+            raise ValueError("group type must be system or user")
 
     def delete_group(self, name):
         """
@@ -71,29 +75,28 @@ class JumpcloudApiV2:
         :return: API response
         """
         group_name = name
-        content_type = 'application/json'
-        accept = 'application/json'
-        x_org_id = ''
-        group_id, group_type = self.get_group(group_name, limit=100)
+        group_id, group_type = self.get_group(group_name)
 
         if group_id is None:
             raise GroupNotFoundError("Group {} not found".format(name))
 
         if group_type == "system_group":
             try:
-                api_response = self.system_groups_api.groups_system_delete(group_id,
-                                                                           content_type,
-                                                                           accept,
-                                                                           x_org_id=x_org_id)
+                api_response = \
+                    self.system_groups_api.groups_system_delete(group_id,
+                                                                content_type='application/json',
+                                                                accept='application/json',
+                                                                x_org_id='')
                 return api_response
             except ApiException as error:
                 raise "Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error
         else:
             try:
-                api_response = self.user_groups_api.groups_user_delete(group_id,
-                                                                       content_type,
-                                                                       accept,
-                                                                       x_org_id=x_org_id)
+                api_response = \
+                    self.user_groups_api.groups_user_delete(group_id,
+                                                            content_type='application/json',
+                                                            accept='application/json',
+                                                            x_org_id='')
                 return api_response
             except ApiException as error:
                 raise "Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error
@@ -105,19 +108,16 @@ class JumpcloudApiV2:
         :param group_id:
         :return:
         """
-        content_type = 'application/json'
-        accept = 'application/json'
         body = jcapiv2.UserGroupMembersReq(id=user_id,
                                            op="add",
                                            type="user")
-        x_org_id = ''
-
         try:
-            api_response = self.graph_api.graph_user_group_members_post(group_id,
-                                                                        content_type,
-                                                                        accept,
-                                                                        body=body,
-                                                                        x_org_id=x_org_id)
+            api_response = \
+                self.graph_api.graph_user_group_members_post(group_id,
+                                                             content_type='application/json',
+                                                             accept='application/json',
+                                                             body=body,
+                                                             x_org_id='')
             return api_response
         except ApiException as error:
             raise "Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error
@@ -129,49 +129,39 @@ class JumpcloudApiV2:
         :return:
         """
         ldapserver_id = ldap_id
-        content_type = 'application/json'
-        accept = 'application/json'
         body = jcapiv2.GraphManagementReq()
-        x_org_id = ''
-
         try:
-            api_response = self.graph_api.graph_ldap_server_associations_post(ldapserver_id,
-                                                                              content_type,
-                                                                              accept,
-                                                                              body=body,
-                                                                              x_org_id=x_org_id)
+            api_response = \
+                self.graph_api.graph_ldap_server_associations_post(ldapserver_id,
+                                                                   content_type='application/json',
+                                                                   accept='application/json',
+                                                                   body=body,
+                                                                   x_org_id='')
             return api_response
         except ApiException as error:
             raise "Exception when calling \
                    GraphApi->graph_ldap_server_associations_post: %s\n" % error
 
-    def get_group(self, group_name, limit=10):
+    def get_group(self, group_name, limit=100, skip=0, sort='', fields='', filter=''):
         # pylint: disable-msg=too-many-locals
+        # pylint: disable-msg=too-many-arguments
         """
         Get the jumpcloud group info from a Jumpcloud group name
-        :param group_name:
-        :param limit:
+        :param group_name: name of the JC group
         :return:  The jumpcloud group id and type, NONE group is not found
         """
-        content_type = 'application/json'
-        accept = 'application/json'
-        fields = ['[]']
-        filter = ['[]']
-        skip = 0
-        sort = ['[]']
-        x_org_id = ''
-
         group_id = None
         group_type = None
         try:
-            results = self.groups_api.groups_list(content_type,
-                                                  accept,
+            # response does not provide a total so set limit to max value
+            results = self.groups_api.groups_list(content_type='application/json',
+                                                  accept='application/json',
                                                   fields=fields,
                                                   filter=filter,
                                                   limit=limit,
                                                   skip=skip,
                                                   sort=sort,
-                                                  x_org_id=x_org_id)
+                                                  x_org_id='')
 
             groups = class_to_dict(results)
 
@@ -181,5 +171,30 @@ class JumpcloudApiV2:
                     group_type = group['_type']
 
             return group_id, group_type
+        except ApiException as error:
+            raise "Exception when calling GroupsApi->groups_list: %s\n" % error
+
+    def get_groups(self, limit=100, skip=0, sort='', fields='', filter=''):
+        # pylint: disable-msg=too-many-locals
+        # pylint: disable-msg=too-many-arguments
+        """
+        Get all jumpcloud groups
+        :param group_name: name of the JC group
+        :return: A list of jumpcloud groups
+        """
+        try:
+            # response does not provide a total so set limit to max value
+            results = self.groups_api.groups_list(content_type='application/json',
+                                                  accept='application/json',
+                                                  fields=fields,
+                                                  filter=filter,
+                                                  limit=limit,
+                                                  skip=skip,
+                                                  sort=sort,
+                                                  x_org_id='')
+
+            groups = class_to_dict(results)
+
+            return groups
         except ApiException as error:
             raise "Exception when calling GroupsApi->groups_list: %s\n" % error

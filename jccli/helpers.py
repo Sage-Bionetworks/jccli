@@ -12,7 +12,7 @@ import json
 
 def class_to_dict(class_object):
     """
-      Convert a jumpcloud class to a dictionary
+    Convert a jumpcloud class to a dictionary
     """
     result = []
     for item in class_object:
@@ -22,9 +22,9 @@ def class_to_dict(class_object):
 
 def get_users_from_file(data_file):
     """
-    Get users from a file
+    Get users from a data file
     :param data_file:
-    :return: a list of users
+    :return: a list of SystemUsers
     """
     try:
         with open(data_file, 'r') as file:
@@ -37,9 +37,9 @@ def get_users_from_file(data_file):
 
 def get_groups_from_file(data_file):
     """
-    Get groups from a file
-    :param file:
-    :return: a list of groups
+    Get groups from a data file
+    :param data_file: data file
+    :return: a list of jumpcloud groups
     """
     try:
         with open(data_file, 'r') as file:
@@ -52,9 +52,9 @@ def get_groups_from_file(data_file):
 
 def get_user_from_term(input):
     """
-    Get users from a file
+    Get user from an input string
     :param user_file:
-    :return: a list of users
+    :return: a SystemUser
     """
     try:
         print(input)
@@ -68,7 +68,7 @@ def get_user_from_file(user_file):
     """
     Get users from a file
     :param user_file:
-    :return: a list of users
+    :return: a list of SystemUsers
     """
     try:
         with open(user_file, 'r') as file:

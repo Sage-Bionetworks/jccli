@@ -135,7 +135,7 @@ class TestCli:
                                        ["create-user",
                                         "--json",
                                         json.dumps(payload)])
-        res_out = result.output.split('\n')[1].replace("\'", "\"")
+        res_out = result.output.split('\n')[0].replace("\'", "\"")
         assert (
             res_out == json.dumps(response)
         ), "Invalid response in output."

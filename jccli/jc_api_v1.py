@@ -15,6 +15,7 @@ from distutils.util import strtobool
 
 import jcapiv1
 from jcapiv1.rest import ApiException
+from jccli.errors import SystemUserNotFoundError
 
 from jccli.helpers import class_to_dict
 
@@ -28,7 +29,7 @@ class JumpcloudApiV1:
         configuration.api_key['x-api-key'] = api_key
         self.system_users_api = jcapiv1.SystemusersApi(jcapiv1.ApiClient(configuration))
 
-    def get_users(self, limit=10, search='', filter='', sort='', fields=''):
+    def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """
         Get users from jumpcloud
         :param limit:
@@ -39,19 +40,14 @@ class JumpcloudApiV1:
         :param fields:
         :return: a list of users with dict of settings
         """
-        content_type = 'application/json'
-        accept = 'application/json'
-        skip = 0
-        x_org_id = ''
-
         try:
-            api_response = self.system_users_api.systemusers_list(content_type,
-                                                                  accept,
+            api_response = self.system_users_api.systemusers_list(content_type='application/json',
+                                                                  accept='application/json',
                                                                   limit=limit,
                                                                   skip=skip,
                                                                   sort=sort,
                                                                   fields=fields,
-                                                                  x_org_id=x_org_id,
+                                                                  x_org_id='',
                                                                   search=search,
                                                                   filter=filter)
             users = class_to_dict(api_response.results)
@@ -66,9 +62,6 @@ class JumpcloudApiV1:
                https://github.com/TheJumpCloud/jcapi-java/blob/master/jcapiv1/docs/Systemuser.md
         :return: The api response
         """
-        content_type = 'application/json'
-        accept = 'application/json'
-        x_org_id = ''
         body = jcapiv1.Systemuserputpost(username=systemuser['username'],
                                          email=systemuser['email'],
                                          firstname=systemuser.get('firstname', ''),
@@ -85,29 +78,29 @@ class JumpcloudApiV1:
                                              systemuser.get('passwordless_sudo', 'False')),
                                          sudo=strtobool(systemuser.get('sudo', 'False')))
         try:
-            api_response = self.system_users_api.systemusers_post(content_type,
-                                                                  accept,
+            api_response = self.system_users_api.systemusers_post(content_type='application/json',
+                                                                  accept='application/json',
                                                                   body=body,
-                                                                  x_org_id=x_org_id)
+                                                                  x_org_id='')
             return api_response
         except ApiException as error:
             raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error
 
-
-    def delete_user(self, user_id):
+    def delete_user(self, username):
         """
         Delete a user from jumpcloud
         :param id: The jumpcloud id of the user
         :return:
         """
-        content_type = 'application/json'
-        accept = 'application/json'
-        x_org_id = ''
+        user_id = self.get_user_id(username)
+        if user_id is None:
+            raise SystemUserNotFoundError(f"System user {username} not found")
+
         try:
             api_response = self.system_users_api.systemusers_delete(user_id,
-                                                                    content_type,
-                                                                    accept,
-                                                                    x_org_id=x_org_id)
+                                                                    content_type='application/json',
+                                                                    accept='application/json',
+                                                                    x_org_id='')
             return api_response
         except ApiException as error:
             raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error

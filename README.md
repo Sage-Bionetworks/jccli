@@ -8,7 +8,7 @@ identify provider service.
 ### Install
 
 ```bash
-git clone https://github.com/Sage-Bionetworks/jccli.git && cd jccli && make build
+pip install git+https://github.com/Sage-Bionetworks/jccli
 ```
 
 ### Usage
@@ -19,9 +19,10 @@ Usage: jccli [OPTIONS] COMMAND [ARGS]...
   Run jccli.
 
 Options:
-  -k, --key TEXT  Jumpcloud API key
-  -v, --verbose   Enable verbose output.
-  --help          Show this message and exit.
+  -k, --key TEXT       Jumpcloud API key
+  -v, --verbosity LVL  Either CRITICAL, ERROR, WARNING, INFO or DEBUG
+  --version            Show the version and exit.
+  --help               Show this message and exit.
 
 Commands:
   create-group  Create a Jumpcloud group
@@ -29,7 +30,6 @@ Commands:
   delete-group  Delete a Jumpcloud group
   delete-user   Delete a jumpcloud user
   sync          Sync Jumpcloud with a data file
-  version       Get the version.
 ```
 
 ## Contributions

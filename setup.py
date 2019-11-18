@@ -42,7 +42,7 @@ if os.getenv('buildnum') is not None:
 
 install_requirements = [
     "click>=7.0,<8",
-    "click-log>=0.3.0,<0.4.0"
+    "click-log>=0.3.0,<0.4.0",
     "jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv1",
     "jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv2",
     "PyYaml>=5.1,<6.0"
@@ -75,7 +75,8 @@ setup(
     keywords=[
         "jccli",
         "jumpcloud",
-        "cli"
+        "cli",
+        "idp"
     ],
     # See https://PyPI.python.org/PyPI?%3Aaction=list_classifiers
     classifiers=[
@@ -83,7 +84,7 @@ setup(
       #   3 - Alpha
       #   4 - Beta
       #   5 - Production/Stable
-      'Development Status :: 3 - Alpha',
+      'Development Status :: 4 - Beta',
 
       # Indicate who your project is intended for.
       'Intended Audience :: Developers',
