@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "admins",
+      "type": "user_group"
+    },
+    {
+      "name": "guests",
+      "type": "user_group"
+    },
+    {
+      "name": "app1",
+      "type": "system_group"
+    },
+    {
+      "name": "app2",
+      "type": "system_group"
+    }
+  ]
+}

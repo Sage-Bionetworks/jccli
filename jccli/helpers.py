@@ -14,11 +14,11 @@ def class_to_dict(class_object):
     """
     Convert a jumpcloud class to a dictionary
     """
-    result = []
+    new_obj = []
     for item in class_object:
-        result.append(item.__dict__)
+        new_obj.append(item.__dict__)
 
-    return result
+    return new_obj
 
 def get_users_from_file(data_file):
     """
@@ -26,14 +26,18 @@ def get_users_from_file(data_file):
     :param data_file:
     :return: a list of SystemUsers
     """
+    users = []
     try:
         with open(data_file, 'r') as file:
             jc_config = json.load(file)
             users = jc_config['users']
 
-        return users
-    except (ValueError, TypeError, IOError) as error:
+    except (KeyError) as error:
+        pass
+    except Exception as error:
         raise error
+
+    return users
 
 def get_groups_from_file(data_file):
     """
@@ -41,28 +45,37 @@ def get_groups_from_file(data_file):
     :param data_file: data file
     :return: a list of jumpcloud groups
     """
+    groups = []
     try:
         with open(data_file, 'r') as file:
             jc_config = json.load(file)
             groups = jc_config['groups']
 
-        return groups
-    except (ValueError, TypeError, IOError) as error:
+    except (KeyError) as error:
+        pass
+    except Exception as error:
         raise error
+
+    return groups
 
 def get_user_from_term(input):
     """
     Get user from an input string
+    example:
+     jccli create-user \
+     --json "{\"email\": \"jc.tester1@sagebase.org\", \"username\": \"jctester1\"}"
     :param user_file:
     :return: a SystemUser
     """
-    try:
-        print(input)
-        user = json.loads(input.replace("'", '"'))
+    user = {}
+    if input != "":
+        try:
+            user = json.loads(input.replace("'", '"'))
 
-        return user
-    except (ValueError, TypeError, IOError) as error:
-        raise error
+        except Exception as error:
+            raise error
+
+    return user
 
 def get_user_from_file(user_file):
     """
@@ -70,10 +83,12 @@ def get_user_from_file(user_file):
     :param user_file:
     :return: a list of SystemUsers
     """
+    user = {}
     try:
         with open(user_file, 'r') as file:
             user = json.load(file)
 
-        return user
-    except (ValueError, TypeError, IOError) as error:
+    except Exception as error:
         raise error
+
+    return user
