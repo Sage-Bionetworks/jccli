@@ -12,11 +12,11 @@ import json
 
 def class_to_dict(class_object):
     """
-    Convert a jumpcloud class to a dictionary
+    Convert a list of jumpcloud users to a list of dicts
     """
     new_obj = []
     for item in class_object:
-        new_obj.append(item.__dict__)
+        new_obj.append(item)
 
     return new_obj
 
