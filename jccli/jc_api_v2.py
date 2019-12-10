@@ -152,27 +152,13 @@ class JumpcloudApiV2:
         """
         group_id = None
         group_type = None
-        try:
-            # response does not provide a total so set limit to max value
-            results = self.groups_api.groups_list(content_type='application/json',
-                                                  accept='application/json',
-                                                  fields=fields,
-                                                  filter=filter,
-                                                  limit=limit,
-                                                  skip=skip,
-                                                  sort=sort,
-                                                  x_org_id='')
+        groups = self.get_groups(limit, skip, sort, fields, filter)
+        for group in groups:
+            if group['name'] == group_name:
+                group_id = group['id']
+                group_type = group['type']
 
-            groups = class_to_dict(results)
-
-            for group in groups:
-                if group['_name'] == group_name:
-                    group_id = group['_id']
-                    group_type = group['_type']
-
-            return group_id, group_type
-        except ApiException as error:
-            raise "Exception when calling GroupsApi->groups_list: %s\n" % error
+        return group_id, group_type
 
     def get_groups(self, limit=100, skip=0, sort='', fields='', filter=''):
         # pylint: disable-msg=too-many-locals
