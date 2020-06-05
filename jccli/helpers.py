@@ -9,6 +9,7 @@ This is a set of helper methods
 """
 
 import json
+import yaml
 
 def class_to_dict(class_object):
     """
@@ -29,7 +30,7 @@ def get_users_from_file(data_file):
     users = []
     try:
         with open(data_file, 'r') as file:
-            jc_config = json.load(file)
+            jc_config = yaml.safe_load(file)
             users = jc_config['users']
 
     except (KeyError) as error:
@@ -48,7 +49,7 @@ def get_groups_from_file(data_file):
     groups = []
     try:
         with open(data_file, 'r') as file:
-            jc_config = json.load(file)
+            jc_config = yaml.safe_load(file)
             groups = jc_config['groups']
 
     except (KeyError) as error:

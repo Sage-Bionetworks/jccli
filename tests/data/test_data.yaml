@@ -1,0 +1,20 @@
+---
+groups:
+- name: admins
+  type: user_group
+- name: guests
+  type: user_group
+- name: app1
+  type: system_group
+- name: app2
+  type: system_group
+users:
+- email: jc.tester1@sagebase.org
+  firstname: JC
+  lastname: Tester1
+  username: jctester1
+- email: jc.tester2@sagebase.com
+  firstname: JC
+  lastname: Tester2
+  username: jctester2
+
