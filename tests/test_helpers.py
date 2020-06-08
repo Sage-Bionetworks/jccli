@@ -28,11 +28,7 @@ class TestHelpers:
         with pytest.raises(FileNotFoundError):
             users = jccli_helpers.get_users_from_file(TEST_DATA_PATH+"invalid.json")
 
-    def test_get_users_from_json_file_users_in_data(self):
-        users = jccli_helpers.get_users_from_file(TEST_DATA_PATH+"test_data.json")
-        assert (len(users) == 2), "Invalid number of users"
-
-    def test_get_users_from_yaml_file_users_in_data(self):
+    def test_get_users_from_file_users_in_data(self):
         users = jccli_helpers.get_users_from_file(TEST_DATA_PATH+"test_data.yaml")
         assert (len(users) == 2), "Invalid number of users"
 
