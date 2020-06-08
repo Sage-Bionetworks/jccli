@@ -29,7 +29,7 @@ class TestHelpers:
             users = jccli_helpers.get_users_from_file(TEST_DATA_PATH+"invalid.json")
 
     def test_get_users_from_file_users_in_data(self):
-        users = jccli_helpers.get_users_from_file(TEST_DATA_PATH+"test_data.json")
+        users = jccli_helpers.get_users_from_file(TEST_DATA_PATH+"test_data.yaml")
         assert (len(users) == 2), "Invalid number of users"
 
     def test_get_users_from_file_no_users_in_data(self):
@@ -40,8 +40,12 @@ class TestHelpers:
         with pytest.raises(FileNotFoundError):
             users = jccli_helpers.get_groups_from_file(TEST_DATA_PATH+"invalid.json")
 
-    def test_get_groups_from_file_groups_in_data(self):
+    def test_get_groups_from_json_file_groups_in_data(self):
         users = jccli_helpers.get_groups_from_file(TEST_DATA_PATH+"test_data.json")
+        assert (len(users) == 4), "Invalid number of groups"
+
+    def test_get_groups_from_yaml_file_groups_in_data(self):
+        users = jccli_helpers.get_groups_from_file(TEST_DATA_PATH+"test_data.yaml")
         assert (len(users) == 4), "Invalid number of groups"
 
     def test_get_groups_from_file_no_groups_in_data(self):

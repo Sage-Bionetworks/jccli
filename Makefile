@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := build
-.PHONY: build publish package coverage test lint docs venv
+.PHONY: build publish package coverage test docs venv
 PROJ_SLUG = jccli
 CLI_NAME = jccli
 PY_VERSION = 3.6
@@ -15,16 +15,13 @@ run:
 freeze:
 	pip freeze > requirements.txt
 
-lint:
-	pylint $(PROJ_SLUG)
-
-test: lint
+test:
 	py.test --cov-report term --cov=$(PROJ_SLUG) tests/
 
 quicktest:
 	py.test --cov-report term --cov=$(PROJ_SLUG) tests/
 
-coverage: lint
+coverage:
 	py.test --cov-report html --cov=$(PROJ_SLUG) tests/
 
 docs: coverage
