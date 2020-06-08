@@ -1,5 +1,5 @@
-click-log>=0.3.0,<0.4.0
 click>=7.0,<8
+click-log>=0.3.0,<0.4.0
 jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv1
 jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv2
 
@@ -8,9 +8,9 @@ pip-check-reqs>=2.0.1,<3
 pip-licenses>=1.7.1,<2
 pre-commit>=2.4.0,<3
 pylint>=2.4.3,<3
+pytest>=3.4.0,<4
 pytest-cov>=2.5.1,<3
 pytest-pythonpath>=0.7.2,<1
-pytest>=3.4.0,<4
 PyYaml>=5.1,<6.0
 
 setuptools>=38.4.0
