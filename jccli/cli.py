@@ -45,28 +45,22 @@ def cli(ctx, key):
 @click.option('--email', '-e', required=True, type=str)
 @click.option('--first-name', '-f', type=str, default='')
 @click.option('--last-name', '-l', type=str, default='')
-@click.option('--account-locked', is_flag=True)
-@click.option('--activated', is_flag=True)
 @click.option('--allow-public-key/--disallow-public-key', default=True)
 @click.option('--ldap-binding-user', is_flag=True)
 @click.option('--passwordless-sudo', is_flag=True)
 @click.option('--sudo', is_flag=True)
 @click.pass_context
-def create_user(ctx, username, email, first_name, last_name, account_locked, activated, allow_public_key,
-                ldap_binding_user, passwordless_sudo, sudo):
+def create_user(ctx, username, email, first_name, last_name, allow_public_key, ldap_binding_user, passwordless_sudo,
+                sudo):
     """
     Create a new Jumpcloud user
     """
-    # TODO: Test whether the flags are working. So far, --disallow-public-key does work, but --activated doesn't seem to
-    #  be doing anything!
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     systemuser = {
         'username': username,
         'email': email,
         'first_name': first_name,
         'last_name': last_name,
-        'account_locked': str(account_locked),
-        'activated': str(activated),
         'allow_public_key': str(allow_public_key),
         'ldap_binding_user': str(ldap_binding_user),
         'passwordless_sudo': str(passwordless_sudo),

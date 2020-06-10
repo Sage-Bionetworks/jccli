@@ -66,10 +66,6 @@ class JumpcloudApiV1:
                                          email=systemuser['email'],
                                          firstname=systemuser.get('firstname', ''),
                                          lastname=systemuser.get('lastname', ''),
-                                         account_locked=strtobool(
-                                             systemuser.get('account_locked', 'False')),
-                                         activated=strtobool(
-                                             systemuser.get('activated', 'False')),
                                          allow_public_key=strtobool(
                                              systemuser.get('allow_public_key', 'True')),
                                          ldap_binding_user=strtobool(
