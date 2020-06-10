@@ -69,21 +69,6 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
     response = api1.create_user(systemuser)
     LOGGER.info(f"{response}")
 
-# @cli.command()
-# @click.option('--username', "-u", required=True, type=str, help='The user name')
-# @click.pass_context
-# def delete_user(ctx, username):
-#     """
-#     Delete a jumpcloud user
-#     """
-#     api1 = JumpcloudApiV1(ctx.obj.get('key'))
-#     user_id = api1.get_user_id(username)
-#     if user_id is None:
-#         raise SystemUserNotFoundError(f"System user {username} not found")
-#
-#     response = api1.delete_user(user_id)
-#     LOGGER.info(f"{response}")
-
 @cli.command()
 @click.option('--username', "-u", required=True, type=str, help='The user name')
 @click.pass_context
