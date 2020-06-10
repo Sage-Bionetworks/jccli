@@ -84,7 +84,8 @@ class JumpcloudApiV1:
                                                                   x_org_id='')
             return api_response
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error
+            # FIXME: What should this behavior actually be?
+            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
 
     def delete_user(self, username):
         """
