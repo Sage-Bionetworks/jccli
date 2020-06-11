@@ -98,7 +98,8 @@ class TestCli:
         #  to JumpcloudApiV1.create_user, *not* whether it is the right call or even a well-formed one.
         result: Result = runner.invoke(cli.cli,
             [
-                "create-user",
+                "user",
+                "create",
                 "--email",
                 "jc.tester1@sagebase.org",
                 "--username",
