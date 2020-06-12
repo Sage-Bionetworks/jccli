@@ -41,41 +41,33 @@ def cli(ctx, key):
     }
 
 @cli.command()
-@click.option('--json', "-j", required=False, type=str,
-              help='SystemUser properties json')
-@click.option('--file', "-f", required=False, type=click.Path(exists=True),
-              help='SystemUser properties file')
+@click.option('--username', '-u', required=True, type=str)
+@click.option('--email', '-e', required=True, type=str)
+@click.option('--first-name', '-f', type=str, default='')
+@click.option('--last-name', '-l', type=str, default='')
+@click.option('--allow-public-key/--disallow-public-key', default=True)
+@click.option('--ldap-binding-user', is_flag=True)
+@click.option('--passwordless-sudo', is_flag=True)
+@click.option('--sudo', is_flag=True)
 @click.pass_context
-def create_user(ctx, json, file):
+def create_user(ctx, username, email, first_name, last_name, allow_public_key, ldap_binding_user, passwordless_sudo,
+                sudo):
     """
     Create a new Jumpcloud user
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
-    user = {}
-    if json is not None:
-        user = jccli_helpers.get_user_from_term(json)
-    elif file is not None:
-        user = jccli_helpers.get_user_from_file(file)
-    else:
-        raise MissingRequiredArgumentError("SystemUser properties not provided")
-
-    response = api1.create_user(user)
+    systemuser = {
+        'username': username,
+        'email': email,
+        'first_name': first_name,
+        'last_name': last_name,
+        'allow_public_key': str(allow_public_key),
+        'ldap_binding_user': str(ldap_binding_user),
+        'passwordless_sudo': str(passwordless_sudo),
+        'sudo': str(sudo)
+    }
+    response = api1.create_user(systemuser)
     LOGGER.info(f"{response}")
-
-# @cli.command()
-# @click.option('--username', "-u", required=True, type=str, help='The user name')
-# @click.pass_context
-# def delete_user(ctx, username):
-#     """
-#     Delete a jumpcloud user
-#     """
-#     api1 = JumpcloudApiV1(ctx.obj.get('key'))
-#     user_id = api1.get_user_id(username)
-#     if user_id is None:
-#         raise SystemUserNotFoundError(f"System user {username} not found")
-#
-#     response = api1.delete_user(user_id)
-#     LOGGER.info(f"{response}")
 
 @cli.command()
 @click.option('--username', "-u", required=True, type=str, help='The user name')

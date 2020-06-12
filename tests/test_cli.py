@@ -81,15 +81,9 @@ class TestCli:
             result.output.strip() == "Group foo deleted",
         ), "Invalid response in output."
 
-    def test_create_user_no_arguments(self):
-        runner: CliRunner = CliRunner()
-        with pytest.raises(jccli_errors.MissingRequiredArgumentError):
-            runner.invoke(cli.cli, ["create-user"], catch_exceptions=False)
 
-    @patch.object(jccli_helpers,'get_user_from_term')
     @patch.object(JumpcloudApiV1,'create_user')
-    def test_create_user_json(self, mock_create_user, mock_get_user_from_term):
-        mock_get_user_from_term.return_value = "jctester1"
+    def test_create_user(self, mock_create_user):
         response = {
          "account_locked": "False",
          "email": "jc.tester1@sagebase.org",
@@ -98,71 +92,23 @@ class TestCli:
          "username": "jctester1"}
         mock_create_user.return_value = response
 
-        payload = {
-         "email": "jc.tester1@sagebase.org",
-         "username": "jctester1"}
-
-
         runner: CliRunner = CliRunner()
+        # FIXME: This doesn't test much that is meaningful; it's going to get the same mock answer regardless of the
+        #  arguments sent to the CLI invoker. I.e.: all it tests is whether the below command successfully makes a call
+        #  to JumpcloudApiV1.create_user, *not* whether it is the right call or even a well-formed one.
         result: Result = runner.invoke(cli.cli,
-                                       ["create-user",
-                                        "--json",
-                                        json.dumps(payload)])
-        res_out = result.output.split('\n')[1].replace("\'", "\"")
-        assert (
-            res_out == json.dumps(response)
-        ), "Invalid response in output."
-
-    @patch.object(jccli_helpers,'get_user_from_term')
-    @patch.object(JumpcloudApiV1,'create_user')
-    def test_create_user_json(self, mock_create_user, mock_get_user_from_term):
-        mock_get_user_from_term.return_value = "jctester1"
-        response = {
-         "account_locked": "False",
-         "email": "jc.tester1@sagebase.org",
-         "id": "5dc0d38c1e2e5f51f2312948",
-         "organization": "5a9d7329feb7f81004ecbee4",
-         "username": "jctester1"}
-        mock_create_user.return_value = response
-
-        payload = {
-         "email": "jc.tester1@sagebase.org",
-         "username": "jctester1"}
-
-
-        runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli,
-                                       ["create-user",
-                                        "--json",
-                                        json.dumps(payload)])
+            [
+                "create-user",
+                "--email",
+                "jc.tester1@sagebase.org",
+                "--username",
+                "jctester1"
+            ]
+        )
         res_out = result.output.split('\n')[0].replace("\'", "\"")
         assert (
             res_out == json.dumps(response)
         ), "Invalid response in output."
-
-
-    @patch.object(jccli_helpers,'get_user_from_file')
-    @patch.object(JumpcloudApiV1,'create_user')
-    def test_create_user_file(self, mock_create_user, mock_get_user_from_file):
-        mock_get_user_from_file.return_value = "jctester"
-        response = {
-         "account_locked": "False",
-         "email": "jc.tester@sagebase.org",
-         "id": "5dc0d38c1e2e5f51f2312948",
-         "organization": "5a9d7329feb7f81004ecbee4",
-         "username": "jctester"}
-        mock_create_user.return_value = response
-
-        runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli,
-                                       ["create-user",
-                                        "--file",
-                                        "tests/jc_test_user.json"])
-        res_out = result.output.split('\n')[0].replace("\'", "\"")
-        assert (
-            res_out == json.dumps(response)
-        ), "Invalid response in output."
-
 
     @patch.object(JumpcloudApiV1,'delete_user')
     @patch.object(JumpcloudApiV1,'get_user_id')
