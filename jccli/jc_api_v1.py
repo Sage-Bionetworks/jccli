@@ -110,9 +110,6 @@ class JumpcloudApiV1:
         """
         users = self.get_users(limit='', fields="username")
 
-        user_id = None
         for user in users:
-            if user['_username'] == username:
-                user_id = user['_id']
-
-        return user_id
+            if user.username == username:
+                return user.id
