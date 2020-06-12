@@ -124,22 +124,16 @@ class TestCli:
         mock_delete_user.return_value = response
 
         runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli,
-                                       ["delete-user",
-                                        "--username",
-                                        "jctester"])
+        result: Result = runner.invoke(
+            cli.cli,
+            [
+                "user",
+                "delete",
+                "--username",
+                "jctester"
+            ]
+        )
         res_out = result.output.split('\n')[0].replace("\'", "\"")
         assert (
             res_out == json.dumps(response)
         ), "Invalid response in output."
-
-    @patch.object(JumpcloudApiV1,'get_user_id')
-    def test_delete_user(self, mock_get_user_id):
-        mock_get_user_id.return_value = None
-        runner: CliRunner = CliRunner()
-        with pytest.raises(jccli_errors.SystemUserNotFoundError):
-            result: Result = runner.invoke(cli.cli,
-                                           ["delete-user",
-                                            "--username",
-                                            "jctester"],
-                                           catch_exceptions=False)

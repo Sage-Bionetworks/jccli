@@ -82,8 +82,8 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
     response = api1.create_user(systemuser)
     LOGGER.info(f"{response}")
 
-@cli.command()
-@click.option('--username', "-u", required=True, type=str, help='The user name')
+@user.command("delete")
+@click.option('--username', "-u", required=True, type=str)
 @click.pass_context
 def delete_user(ctx, username):
     """
