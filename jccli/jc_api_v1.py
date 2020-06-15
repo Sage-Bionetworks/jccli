@@ -112,4 +112,4 @@ class JumpcloudApiV1:
 
         for user in users:
             if user.username == username:
-                return user.user_id
+                return user.id
