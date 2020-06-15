@@ -50,6 +50,7 @@ class TestJcApiV1:
                 'external_source_type': None,
                 'externally_managed': False,
                 'firstname': 'JC',
+                'id': '5dc0d38c1e2e5f51f2312948',
                 'job_title': None,
                 'lastname': 'Tester1',
                 'ldap_binding_user': False,
@@ -72,7 +73,6 @@ class TestJcApiV1:
                 'unix_guid': 5109,
                 'unix_uid': 5109,
                 'username': 'jctester1',
-                'user_id': '5dc0d38c1e2e5f51f2312948'
             })
         ]
         api1 = JumpcloudApiV1("1234")
@@ -106,6 +106,7 @@ class TestJcApiV1:
                 'external_source_type': None,
                 'externally_managed': False,
                 'firstname': 'JC',
+                'id': '5dc0d38c1e2e5f51f2312948',
                 'job_title': None,
                 'lastname': 'Tester1',
                 'ldap_binding_user': False,
@@ -128,7 +129,6 @@ class TestJcApiV1:
                 'unix_guid': 5109,
                 'unix_uid': 5109,
                 'username': 'jctester1',
-                'user_id': '5dc0d38c1e2e5f51f2312948'
             })
         ]
         api1 = JumpcloudApiV1("1234")
