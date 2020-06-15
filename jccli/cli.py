@@ -19,6 +19,7 @@ from .__init__ import __version__
 LOGGER = logging.getLogger(__name__)
 click_log.basic_config(LOGGER)
 
+
 def abort_if_false(ctx, param, value):
     # pylint: disable=unused-argument
     """
@@ -26,6 +27,7 @@ def abort_if_false(ctx, param, value):
     """
     if not value:
         ctx.abort()
+
 
 @click.group()
 @click.option('--key', "-k", required=False, type=str, help='Jumpcloud API key')
@@ -40,7 +42,18 @@ def cli(ctx, key):
         'key': key
     }
 
-@cli.command()
+
+@cli.group()
+@click.pass_context
+def user(ctx):
+    """
+    User group of functions
+    :param ctx: context object
+    :return:
+    """
+    pass
+
+@user.command('create')
 @click.option('--username', '-u', required=True, type=str)
 @click.option('--email', '-e', required=True, type=str)
 @click.option('--first-name', '-f', type=str, default='')
@@ -69,8 +82,8 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
     response = api1.create_user(systemuser)
     LOGGER.info(f"{response}")
 
-@cli.command()
-@click.option('--username', "-u", required=True, type=str, help='The user name')
+@user.command("delete")
+@click.option('--username', "-u", required=True, type=str)
 @click.pass_context
 def delete_user(ctx, username):
     """
@@ -79,6 +92,7 @@ def delete_user(ctx, username):
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.delete_user(username=username)
     LOGGER.info(f"{response}")
+
 
 @cli.command()
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
@@ -93,6 +107,7 @@ def create_group(ctx, name, type):
     response = api2.create_group(name, type)
     LOGGER.info(f"{response}")
 
+
 @cli.command()
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
 @click.pass_context
@@ -103,6 +118,7 @@ def delete_group(ctx, name):
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     api2.delete_group(name)
     LOGGER.info(f"Group {name} deleted")
+
 
 @cli.command()
 @click.option('--data', "-d", required=True, type=click.Path(exists=True),
@@ -129,6 +145,7 @@ def sync(ctx, dry_run, data):
     LOGGER.debug("--- sync users ----")
     users = jccli_helpers.get_users_from_file(data)
     sync_users(ctx, users)
+
 
 def sync_groups(ctx, groups):
     # pylint: disable-msg=too-many-locals
@@ -194,6 +211,7 @@ def sync_groups(ctx, groups):
             LOGGER.info(f"remove {' '.join(jc_group_type.split('_'))}: {jc_group_name}")
             if not dry_run:
                 response = api2.delete_group(jc_group_name)
+
 
 def sync_users(ctx, users):
     # pylint: disable-msg=too-many-locals
