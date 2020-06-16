@@ -13,6 +13,8 @@ import pytest
 # fmt: on
 from mock import MagicMock, patch, sentinel
 from jccli.jc_api_v2 import JumpcloudApiV2
+from tests.utils import ObjectView
+
 
 class TestJcApiV2:
 
@@ -26,10 +28,10 @@ class TestJcApiV2:
     @patch.object(JumpcloudApiV2,'get_groups')
     def test_get_groups(self, mock_get_groups):
         response = [
-            {'id': '5aa80b9f232e110d4215e3b7', 'name': 'admin', 'type': 'user_group'},
-            {'id': '5b28760145886d16cbfd736a', 'name': 'guests', 'type': 'user_group'},
-            {'id': '5aa81659232e110d42161565', 'name': 'dev', 'type': 'system_group'},
-            {'id': '5c5357e0232e1164e94b2a11', 'name': 'prod', 'type': 'system_group'}
+            ObjectView({'id': '5aa80b9f232e110d4215e3b7', 'name': 'admin', 'type': 'user_group'}),
+            ObjectView({'id': '5b28760145886d16cbfd736a', 'name': 'guests', 'type': 'user_group'}),
+            ObjectView({'id': '5aa81659232e110d42161565', 'name': 'dev', 'type': 'system_group'}),
+            ObjectView({'id': '5c5357e0232e1164e94b2a11', 'name': 'prod', 'type': 'system_group'})
         ]
         api2 = JumpcloudApiV2("1234")
         mock_get_groups.return_value = response
@@ -41,7 +43,7 @@ class TestJcApiV2:
     @patch.object(JumpcloudApiV2,'get_groups')
     def test_get_groups_not_found(self, mock_get_groups):
         response = [
-            {'id': '5c5357e0232e1164e94b2a11', 'name': 'prod', 'type': 'system_group'}
+            ObjectView({'id': '5c5357e0232e1164e94b2a11', 'name': 'prod', 'type': 'system_group'}),
         ]
         api2 = JumpcloudApiV2("1234")
         mock_get_groups.return_value = response
