@@ -34,7 +34,7 @@ class TestCli:
 
     def test_create_group_with_invalid_type(self):
         runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli, ["create-group", "-n", "foo", "-t", "bar"])
+        result: Result = runner.invoke(cli.cli, ["group", "create", "-n", "foo", "-t", "bar"])
         assert (
             "invalid choice" in result.output.strip()
         ), "Invalid choice should be indicated in output."
@@ -50,7 +50,7 @@ class TestCli:
         ]
         mock_create_group.return_value = response
         runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli, ["create-group", "-n", "foo", "-t", "user"])
+        result: Result = runner.invoke(cli.cli, ["group", "create", "-n", "foo", "-t", "user"])
         assert (
             yaml.safe_load(result.output) == response
         ), "Invalid response in output."
@@ -66,7 +66,7 @@ class TestCli:
         ]
         mock_create_group.return_value = response
         runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli, ["create-group", "--name", "foo", "--type", "system"])
+        result: Result = runner.invoke(cli.cli, ["group", "create", "--name", "foo", "--type", "system"])
         assert (
             yaml.safe_load(result.output) == response
         ), "Invalid response in output."
@@ -76,7 +76,7 @@ class TestCli:
         response = None
         mock_delete_group.return_value = response
         runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli, ["delete-group", "--name", "foo"])
+        result: Result = runner.invoke(cli.cli, ["group", "delete", "--name", "foo"])
         assert (
             result.output.strip() == "Group foo deleted",
         ), "Invalid response in output."
