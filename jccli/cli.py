@@ -94,7 +94,19 @@ def delete_user(ctx, username):
     LOGGER.info(f"{response}")
 
 
-@cli.command()
+@cli.group()
+@click.pass_context
+def group(ctx):
+    """
+    Group of commands for Jumpcloud groups
+    :param ctx:
+    :param key:
+    :return None:
+    """
+    pass
+
+
+@group.command('create')
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
 @click.option('--type', "-t", required=True, type=click.Choice(['user', 'system']),
               help='The type of group')
@@ -108,13 +120,15 @@ def create_group(ctx, name, type):
     LOGGER.info(f"{response}")
 
 
-@cli.command()
+@group.command('delete')
 @click.option('--name', "-n", required=True, type=str, help='Name of the group')
 @click.pass_context
 def delete_group(ctx, name):
     """
     Delete a Jumpcloud group
     """
+    # FIXME: Ideally, this would output JSON info of the deleted group (similar to delete-user), but at the moment it's
+    #  unclear exactly how to do that, given the API wrappers that we have.
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     api2.delete_group(name)
     LOGGER.info(f"Group {name} deleted")
