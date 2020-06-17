@@ -113,3 +113,19 @@ class JumpcloudApiV1:
         for user in users:
             if user.username == username:
                 return user.id
+
+    def get_user(self, username):
+        """
+        Get detail view of a user object.
+        :param user_id:
+        :return: a list of users with dict of settings
+        """
+        # TODO: Does it make sense to make two API calls (one to get the ID using the username, then another to get the
+        #  full user object)?
+        user_id = self.get_user_id(username)
+        api_response = self.system_users_api.systemusers_get(
+            id=user_id,
+            content_type='application/json',
+            accept='application/json'
+        )
+        return api_response

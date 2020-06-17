@@ -138,6 +138,23 @@ class TestJcApiV1:
              user_id == None
         ), "User ID should be none"
 
+    @patch.object(jcapiv1.SystemusersApi, 'systemusers_get')
+    @patch.object(JumpcloudApiV1, 'get_user_id')
+    def test_get_user(self, mock_get_user_id, mock_systemusers_get):
+        user = ObjectView({
+            'username': 'fake_user',
+            'id': '1234',
+            'firstname': 'Steve'
+        })
+        mock_systemusers_get.return_value = user
+        mock_get_user_id.return_value = '1234'
+        api1 = JumpcloudApiV1("fake_key")
+        firstname = api1.get_user(username='fake_user').firstname
+        assert (
+            firstname == user.firstname
+        ), "Failed to retrieve correct user object"
+
+
     @patch.object(jcapiv1.SystemusersApi,'systemusers_delete')
     @patch.object(JumpcloudApiV1,'get_user_id')
     def test_delete_user(self, mock_get_user_id, mock_systemusers_delete):
