@@ -118,7 +118,7 @@ class JumpcloudApiV1:
         """
         Get detail view of a user object.
         :param user_id:
-        :return: a list of users with dict of settings
+        :return: user properties dict
         """
         # TODO: Does it make sense to make two API calls (one to get the ID using the username, then another to get the
         #  full user object)?
@@ -128,4 +128,4 @@ class JumpcloudApiV1:
             content_type='application/json',
             accept='application/json'
         )
-        return api_response
+        return api_response.to_dict()

@@ -12,6 +12,7 @@ import pytest
 import jcapiv1
 
 # fmt: on
+from jcapiv1 import Systemuserreturn
 from mock import MagicMock, patch, sentinel
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.errors import SystemUserNotFoundError
@@ -141,17 +142,17 @@ class TestJcApiV1:
     @patch.object(jcapiv1.SystemusersApi, 'systemusers_get')
     @patch.object(JumpcloudApiV1, 'get_user_id')
     def test_get_user(self, mock_get_user_id, mock_systemusers_get):
-        user = ObjectView({
+        user = {
             'username': 'fake_user',
             'id': '1234',
             'firstname': 'Steve'
-        })
-        mock_systemusers_get.return_value = user
+        }
+        mock_systemusers_get.return_value = Systemuserreturn(**user)
         mock_get_user_id.return_value = '1234'
         api1 = JumpcloudApiV1("fake_key")
-        firstname = api1.get_user(username='fake_user').firstname
+        firstname = api1.get_user(username='fake_user')['firstname']
         assert (
-            firstname == user.firstname
+            firstname == user['firstname']
         ), "Failed to retrieve correct user object"
 
 
