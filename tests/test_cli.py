@@ -111,6 +111,27 @@ class TestCli:
             res_out == json.dumps(response)
         ), "Invalid response in output."
 
+    @patch.object(JumpcloudApiV1, 'get_user')
+    def test_get_user(self, mock_get_user):
+        user = {
+            'firstname': 'Mary',
+            'username': 'fake_user',
+            'email': 'fake@fake.fake'
+        }
+        mock_get_user.return_value = user
+
+        runner: CliRunner = CliRunner()
+        result: Result = runner.invoke(cli.cli, [
+            "user",
+            "get",
+            "--username",
+            "fake_user"
+        ])
+        retrieved_email = json.loads(result.output)['email']
+        assert (
+            retrieved_email == user['email']
+        ), "Failed to retrieve correct user"
+
     @patch.object(JumpcloudApiV1,'delete_user')
     @patch.object(JumpcloudApiV1,'get_user_id')
     def test_delete_user(self, mock_get_user_id, mock_delete_user):

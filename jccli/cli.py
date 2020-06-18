@@ -5,6 +5,7 @@
 .. currentmodule:: jccli.cli
 .. moduleauthor:: zaro0508 <zaro0508@gmail.com>
 """
+import json
 import logging
 import click
 import click_log
@@ -53,6 +54,7 @@ def user(ctx):
     """
     pass
 
+
 @user.command('create')
 @click.option('--username', '-u', required=True, type=str)
 @click.option('--email', '-e', required=True, type=str)
@@ -81,6 +83,20 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
     }
     response = api1.create_user(systemuser)
     LOGGER.info(f"{response}")
+
+
+@user.command("get")
+@click.option('--username', '-u', required=True, type=str)
+@click.pass_context
+def get_user(ctx, username):
+    """
+    Get detail view of jumpcloud user, outputted in JSON.
+    """
+    api1 = JumpcloudApiV1(ctx.obj.get('key'))
+    response = api1.get_user(username=username)
+    serialized_response = json.dumps(response, indent=2)
+    LOGGER.info(f"{serialized_response}")
+
 
 @user.command("delete")
 @click.option('--username', "-u", required=True, type=str)
