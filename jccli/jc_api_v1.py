@@ -14,6 +14,7 @@ This is a utility library for the jumpcloud version 1 api
 from distutils.util import strtobool
 
 import jcapiv1
+from jcapiv1 import Systemuserput
 from jcapiv1.rest import ApiException
 from jccli.errors import SystemUserNotFoundError
 
@@ -129,3 +130,16 @@ class JumpcloudApiV1:
             accept='application/json'
         )
         return api_response.to_dict()
+
+    def set_user(self, username, attributes):
+        user_id = self.get_user_id(username)
+        if user_id is None:
+            raise SystemUserNotFoundError(
+                "Cannot update user, because no user was found with username: %s" % (username,))
+        api_response = self.system_users_api.systemusers_put(
+            accept='application/json',
+            content_type='application/json',
+            id=user_id,
+            body=Systemuserput(**attributes)
+        )
+        return api_response
