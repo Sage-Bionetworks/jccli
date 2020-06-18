@@ -98,6 +98,27 @@ def get_user(ctx, username):
     LOGGER.info(f"{serialized_response}")
 
 
+@user.command('set')
+@click.option('--username', '-u', required=True, type=str)
+@click.option('--email', '-e', default=None, type=str)
+@click.option('--firstname', '-f', default=None, type=str)
+@click.option('--lastname', '-l', default=None, type=str)
+@click.pass_context
+def set_user(ctx, username, email, firstname, lastname):
+    api1 = JumpcloudApiV1(ctx.obj.get('key'))
+
+    attributes = {}
+    if email is not None:
+        attributes['email'] = email
+    if firstname is not None:
+        attributes['firstname'] = firstname
+    if lastname is not None:
+        attributes['lastname'] = lastname
+
+    response = json.dumps(api1.set_user(username, attributes=attributes), indent=2)
+    LOGGER.info(f'{response}')
+
+
 @user.command("delete")
 @click.option('--username', "-u", required=True, type=str)
 @click.pass_context
