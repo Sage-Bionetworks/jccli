@@ -118,6 +118,25 @@ class TestJcApiV1:
             firstname == 'Steve'
         ), "Failed to retrieve correct user object"
 
+    @patch.object(jcapiv1.SystemusersApi, 'systemusers_list')
+    def test_get_user_no_id(self, mock_systemusers_list):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                email='david@david.net'
+            ),
+            Systemuserreturn(
+                username='zekun',
+                firstname='Zekun',
+                email='zekun.wang@david.net'
+            )
+        ]
+        mock_systemusers_list.return_value = users
+        api1 = JumpcloudApiV1("fake_key_123")
+        with pytest.raises(SystemUserNotFoundError):
+            api1.get_user('angela')
+
     @patch.object(jcapiv1.SystemusersApi, 'systemusers_put')
     @patch.object(JumpcloudApiV1, 'get_user_id')
     def test_set_user(self, mock_get_user_id, mock_systemusers_put):
@@ -175,9 +194,15 @@ class TestJcApiV1:
             api_response == desired_response
         ), "set_user did not correctly call the systemusers_put API method"
 
-    @patch.object(JumpcloudApiV1, 'get_user_id')
-    def test_set_user_no_id(self, mock_get_user_id):
-        mock_get_user_id.return_value = None
+    @patch.object(JumpcloudApiV1, 'get_users')
+    def test_set_user_no_id(self, mock_systemusers_list):
+        mock_systemusers_list.return_value = [
+            Systemuserreturn(
+                firstname='Mary',
+                username='mary',
+                email='mary@google.microsoft'
+            )
+        ]
         api1 = JumpcloudApiV1("1234")
         with pytest.raises(SystemUserNotFoundError):
             api1.set_user(username='foo', attributes={'email': 'new_email@site.com'})

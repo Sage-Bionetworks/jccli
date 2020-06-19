@@ -138,9 +138,6 @@ class JumpcloudApiV1:
 
     def set_user(self, username, attributes):
         user_id = self.get_user_id(username)
-        if user_id is None:
-            raise SystemUserNotFoundError(
-                "Cannot update user, because no user was found with username: %s" % (username,))
         api_response = self.system_users_api.systemusers_put(
             accept='application/json',
             content_type='application/json',
