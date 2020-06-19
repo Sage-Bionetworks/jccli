@@ -106,9 +106,8 @@ class TestCli:
                 "jctester1"
             ]
         )
-        res_out = result.output.split('\n')[0].replace("\'", "\"")
         assert (
-            res_out == json.dumps(response)
+            json.loads(result.output) == response
         ), "Invalid response in output."
 
     @patch.object(JumpcloudApiV1, 'get_user')

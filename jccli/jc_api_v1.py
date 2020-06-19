@@ -79,7 +79,7 @@ class JumpcloudApiV1:
                                                                   accept='application/json',
                                                                   body=body,
                                                                   x_org_id='')
-            return api_response
+            return api_response.to_dict()
         except ApiException as error:
             # FIXME: What should this behavior actually be?
             raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
@@ -142,4 +142,4 @@ class JumpcloudApiV1:
             id=user_id,
             body=Systemuserput(**attributes)
         )
-        return api_response
+        return api_response.to_dict()
