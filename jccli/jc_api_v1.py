@@ -115,27 +115,29 @@ class JumpcloudApiV1:
             if user.username == username:
                 return user.id
 
+        raise SystemUserNotFoundError('No user found for username: %s' % (username,))
+
     def get_user(self, username):
         """
         Get detail view of a user object.
         :param user_id:
         :return: user properties dict
         """
-        # TODO: Does it make sense to make two API calls (one to get the ID using the username, then another to get the
-        #  full user object)?
-        user_id = self.get_user_id(username)
-        api_response = self.system_users_api.systemusers_get(
-            id=user_id,
-            content_type='application/json',
-            accept='application/json'
+        # FIXME: As soon as we figure out how the `filter` parameter works on systemusers_list(), we should start
+        #  filtering based on username
+        users = self.system_users_api.systemusers_list(
+            accept='application/json',
+            content_type='application/json'
         )
-        return api_response.to_dict()
+
+        for user in users:
+            if user.username == username:
+                return user.to_dict()
+
+        raise SystemUserNotFoundError('No user found for username: %s' % (username,))
 
     def set_user(self, username, attributes):
         user_id = self.get_user_id(username)
-        if user_id is None:
-            raise SystemUserNotFoundError(
-                "Cannot update user, because no user was found with username: %s" % (username,))
         api_response = self.system_users_api.systemusers_put(
             accept='application/json',
             content_type='application/json',
