@@ -14,6 +14,7 @@ This is a utility library for the jumpcloud version 1 api
 from distutils.util import strtobool
 
 import jcapiv1
+from jcapiv1 import Systemuserput
 from jcapiv1.rest import ApiException
 from jccli.errors import SystemUserNotFoundError
 
@@ -113,3 +114,34 @@ class JumpcloudApiV1:
         for user in users:
             if user.username == username:
                 return user.id
+
+        raise SystemUserNotFoundError('No user found for username: %s' % (username,))
+
+    def get_user(self, username):
+        """
+        Get detail view of a user object.
+        :param user_id:
+        :return: user properties dict
+        """
+        # FIXME: As soon as we figure out how the `filter` parameter works on systemusers_list(), we should start
+        #  filtering based on username
+        users = self.system_users_api.systemusers_list(
+            accept='application/json',
+            content_type='application/json'
+        )
+
+        for user in users:
+            if user.username == username:
+                return user.to_dict()
+
+        raise SystemUserNotFoundError('No user found for username: %s' % (username,))
+
+    def set_user(self, username, attributes):
+        user_id = self.get_user_id(username)
+        api_response = self.system_users_api.systemusers_put(
+            accept='application/json',
+            content_type='application/json',
+            id=user_id,
+            body=Systemuserput(**attributes)
+        )
+        return api_response
