@@ -128,7 +128,7 @@ class JumpcloudApiV1:
         users = self.system_users_api.systemusers_list(
             accept='application/json',
             content_type='application/json'
-        )
+        ).results
 
         for user in users:
             if user.username == username:
