@@ -81,7 +81,7 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
         'passwordless_sudo': str(passwordless_sudo),
         'sudo': str(sudo)
     }
-    response = api1.create_user(systemuser)
+    response = json.dumps(api1.create_user(systemuser))
     LOGGER.info(f"{response}")
 
 
