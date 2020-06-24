@@ -8,7 +8,7 @@ identify provider service.
 ### Install
 
 ```bash
-pip install jccli@git+https://github.com/Sage-Bionetworks/jccli
+pip install git+https://github.com/Sage-Bionetworks/jccli
 ```
 
 ### Usage
