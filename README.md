@@ -25,11 +25,9 @@ Options:
   --help               Show this message and exit.
 
 Commands:
-  create-group  Create a Jumpcloud group
-  create-user   Create a new Jumpcloud user
-  delete-group  Delete a Jumpcloud group
-  delete-user   Delete a jumpcloud user
-  sync          Sync Jumpcloud with a data file
+  group  Group of commands for Jumpcloud groups :param ctx: :param key:...
+  sync   Sync Jumpcloud with a data file
+  user   User group of functions :param ctx: context object :return:
 ```
 
 ## Contributions
