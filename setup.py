@@ -3,7 +3,7 @@
 
 """
 .. currentmodule:: setup.py
-.. moduleauthor:: zaro0508 <zaro0508@gmail.com>
+.. moduleauthor:: sageit <it@sagebase.org>
 
 This file is used to create the package we'll publish to PyPI.
 """
@@ -64,8 +64,8 @@ setup(
         ]
     },
     license='Apache Software License',  # noqa
-    author='zaro0508',
-    author_email='zaro0508@gmail.com',
+    author='sageit',
+    author_email='it@sagebase.org',
     # Use the URL to the github repo.
     url= 'https://github.com/Sage-Bionetworks/jccli',
     download_url=(
