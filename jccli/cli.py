@@ -128,7 +128,6 @@ def delete_user(ctx, username):
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.delete_user(username=username)
-    LOGGER.info(f"{response}")
 
 
 @cli.group()

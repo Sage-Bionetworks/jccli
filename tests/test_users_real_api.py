@@ -24,12 +24,14 @@ class TestUsersRealApi:
         )
         assert current_users.total_count == 0
 
-    def test_create_user(self):
-        USERNAME = 'fakeuser567'
-        EMAIL = 'fakeemail3@fakesite.org'
+    def test_single_user(self):
+        USERNAME = 'fakeuser987'
+        FIRST_EMAIL = 'fakeemail@fakesite.edu'
+        SECOND_EMAIL = 'fakeemail2@fakesite.edu'
 
         runner = CliRunner()
 
+        # Create a user
         result = runner.invoke(cli.cli, [
             '--key',
             self.api_key,
@@ -38,69 +40,23 @@ class TestUsersRealApi:
             '--username',
             USERNAME,
             '--email',
-            EMAIL
+            FIRST_EMAIL
         ])
         if result.exit_code:
             raise ValueError(
                 "create-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
             )
+        # FIXME: if we're saying delete-user should produce no output, should create-user produce no output either?
+        try:
+            parsed_output = json.loads(result.output)
+            username = parsed_output['username']
+            email = parsed_output['email']
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        assert username == USERNAME, result.output
+        assert email == FIRST_EMAIL, result.output
 
-        generated_id = json.loads(result.output)['id']
-
-        # Use API to delete created user
-        self.systemusers_api.systemusers_delete(
-            accept='application/json',
-            content_type='application/json',
-            id=generated_id
-        )
-
-    def test_delete_user(self):
-        USERNAME = 'fakeuser789'
-        EMAIL = 'fakeemail4@fakesite.org'
-
-        # Create user to be deleted:
-        self.systemusers_api.systemusers_post(
-            content_type='application/json',
-            accept='application/json',
-            body=Systemuserputpost(
-                username=USERNAME,
-                email=EMAIL
-            )
-        )
-
-        runner = CliRunner()
-
-        result = runner.invoke(cli.cli, [
-            '--key',
-            self.api_key,
-            'user',
-            'delete',
-            '--username',
-            USERNAME
-        ])
-        if result.exit_code:
-            raise ValueError(
-                "get-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception))
-        # TODO: what output should we expect from delete-user
-
-    def test_set_user(self):
-        USERNAME = 'fakeuser987'
-        FIRST_EMAIL = 'fakeemail@fakesite.edu'
-        SECOND_EMAIL = 'fakeemail2@fakesite.edu'
-
-        # Create user to be changed
-        self.systemusers_api.systemusers_post(
-            content_type='application/json',
-            accept='application/json',
-            body=Systemuserputpost(
-                username=USERNAME,
-                email=FIRST_EMAIL
-            )
-        )
-
-        runner = CliRunner()
-
-        # Set (update) a user using CLI
+        # Set (update) the user
         result = runner.invoke(cli.cli, [
             '--key',
             self.api_key,
@@ -113,27 +69,43 @@ class TestUsersRealApi:
         ])
         if result.exit_code:
             raise ValueError(
+                "set-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        # FIXME: Similar to FIXME for create-user: should we expect no output from set-user on success?
+        try:
+            parsed_output = json.loads(result.output)
+            username = parsed_output['username']
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        assert username == USERNAME, result.output
+
+        # Get the user
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'get',
+            '--username',
+            USERNAME
+        ])
+        if result.exit_code:
+            raise ValueError(
                 "get-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
             )
         try:
             parsed_output = json.loads(result.output)
             username = parsed_output['username']
-            user_id = parsed_output['id']
         except json.decoder.JSONDecodeError:
             raise ValueError(result.output)
         assert username == USERNAME, result.output
 
-        # Check that the email was actually changed
-        user = self.systemusers_api.systemusers_get(
-            content_type='application/json',
-            accept='application/json',
-            id=user_id
-        )
-        assert user.email == SECOND_EMAIL
-
         # Delete the user
-        self.systemusers_api.systemusers_delete(
-            accept='application/json',
-            content_type='application/json',
-            id=user_id
-        )
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'delete',
+            '--username',
+            USERNAME
+        ])
+        assert result.output == ''
