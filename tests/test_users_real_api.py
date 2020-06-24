@@ -46,7 +46,6 @@ class TestUsersRealApi:
             raise ValueError(
                 "create-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
             )
-        # FIXME: if we're saying delete-user should produce no output, should create-user produce no output either?
         try:
             parsed_output = json.loads(result.output)
             username = parsed_output['username']
@@ -71,7 +70,6 @@ class TestUsersRealApi:
             raise ValueError(
                 "set-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
             )
-        # FIXME: Similar to FIXME for create-user: should we expect no output from set-user on success?
         try:
             parsed_output = json.loads(result.output)
             username = parsed_output['username']
