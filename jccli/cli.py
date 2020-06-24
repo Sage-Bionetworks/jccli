@@ -81,7 +81,7 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
         'passwordless_sudo': str(passwordless_sudo),
         'sudo': str(sudo)
     }
-    response = json.dumps(api1.create_user(systemuser))
+    response = json.dumps(api1.create_user(systemuser), indent=2)
     LOGGER.info(f"{response}")
 
 
@@ -128,7 +128,6 @@ def delete_user(ctx, username):
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.delete_user(username=username)
-    LOGGER.info(f"{response}")
 
 
 @cli.group()
