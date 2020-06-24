@@ -48,9 +48,7 @@ def cli(ctx, key):
 @click.pass_context
 def user(ctx):
     """
-    User group of functions
-    :param ctx: context object
-    :return:
+    Command set for users
     """
     pass
 
@@ -68,7 +66,7 @@ def user(ctx):
 def create_user(ctx, username, email, first_name, last_name, allow_public_key, ldap_binding_user, passwordless_sudo,
                 sudo):
     """
-    Create a new Jumpcloud user
+    Create a new user
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     systemuser = {
@@ -90,7 +88,7 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
 @click.pass_context
 def get_user(ctx, username):
     """
-    Get detail view of jumpcloud user, outputted in JSON.
+    Detail view of user, outputted in JSON.
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.get_user(username=username)
@@ -124,7 +122,7 @@ def set_user(ctx, username, email, firstname, lastname):
 @click.pass_context
 def delete_user(ctx, username):
     """
-    Delete a jumpcloud user
+    Delete a user
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.delete_user(username=username)
@@ -134,10 +132,7 @@ def delete_user(ctx, username):
 @click.pass_context
 def group(ctx):
     """
-    Group of commands for Jumpcloud groups
-    :param ctx:
-    :param key:
-    :return None:
+    Command set for groups
     """
     pass
 
@@ -149,7 +144,7 @@ def group(ctx):
 @click.pass_context
 def create_group(ctx, name, type):
     """
-    Create a Jumpcloud group
+    Create a group
     """
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     response = api2.create_group(name, type)
@@ -161,7 +156,7 @@ def create_group(ctx, name, type):
 @click.pass_context
 def delete_group(ctx, name):
     """
-    Delete a Jumpcloud group
+    Delete a group
     """
     # FIXME: Ideally, this would output JSON info of the deleted group (similar to delete-user), but at the moment it's
     #  unclear exactly how to do that, given the API wrappers that we have.
