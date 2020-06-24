@@ -30,6 +30,22 @@ Commands:
   user   User group of functions :param ctx: context object :return:
 ```
 
+
+```bash
+> jccli --key XXXXXXXXXX61d2 user get --username jsmith
+{
+  "id": "9ba6cc40d82ee45d5f73da2e",
+  "account_locked": false,
+  "activated": true,
+  "firstname": "Joe",
+  "job_title": "",
+  "lastname": "Smith",
+  ..
+  ..
+}
+```
+
+
 ## Contributions
 
 Contributions are welcome.

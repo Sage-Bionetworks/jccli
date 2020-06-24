@@ -31,7 +31,7 @@ def abort_if_false(ctx, param, value):
 
 
 @click.group()
-@click.option('--key', "-k", required=False, type=str, help='Jumpcloud API key')
+@click.option('--key', "-k", required=True, type=str, help='Jumpcloud API key')
 @click_log.simple_verbosity_option(LOGGER)
 @click.version_option(version=__version__)
 @click.pass_context
