@@ -50,19 +50,35 @@ Commands:
 
 Contributions are welcome.
 
-Requirements:
+### Requirements
 
 Install these utilities:
 * [GNU Make](https://www.gnu.org/software/make/)
 * [pre-commit](https://pre-commit.com/#install)
 * [Pandoc](https://pandoc.org/)
 
-As a pre-deployment step we syntatically validate our code and configurations with pre-commit.
+### Process
 
-Please install pre-commit, once installed the file validations will automatically
-run on every commit. Alternatively you can manually execute the validations by running
-`pre-commit run --all-files`.
+Before making a commit, you should syntactically validate your code and configurations with pre-commit.
 
+You can set up pre-commit hooks to automatically be run before every commit by running: `pre-commit install`.
+Alternatively, you can manually execute the validations by running `pre-commit run --all-files`.
+
+#### Tests
+
+JCCLI's test suite consists of unit tests and integration tests. The integration tests depend on the environment
+variable `JC_API_KEY`, which should be a Jumpcloud API key corresponding to a blank Jumpcloud instance which can be used
+for testing purposes.
+
+We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
+the unit test suite (in `unit_tests/`) on every push and pull request, and to run the integration test suite (in
+`integration_tests/`) whenever a push or pull request is made to the `master` branch (regardless of the repo and its
+owner).
+
+### GitHub
+
+Contributors are requested to first make a Pull Request to a non-master branch in the `Sage-Bionetworks/jccli` repo, and
+then have the changes merged into `master` from there.
 
 ## Resources
 
