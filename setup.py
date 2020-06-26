@@ -54,7 +54,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(
-        exclude=["*.unit_tests", "*.unit_tests.*", "unit_tests.*", "unit_tests"]),
+        exclude=["*.unit_tests", "*.unit_tests.*", "unit_tests.*", "unit_tests", "*.integration_tests",
+                 "*.integration_tests.*", "integration_tests.*", "integration_tests", ]),
     version=version,
     python_requires=">=3",
     install_requires=install_requirements,
