@@ -54,7 +54,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(
-        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+        exclude=["*.unit_tests", "*.unit_tests.*", "unit_tests.*", "unit_tests"]),
     version=version,
     python_requires=">=3",
     install_requires=install_requirements,

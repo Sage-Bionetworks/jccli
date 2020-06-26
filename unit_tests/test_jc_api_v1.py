@@ -16,7 +16,7 @@ from jcapiv1 import Systemuserreturn, Systemuserslist
 from mock import MagicMock, patch, sentinel
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.errors import SystemUserNotFoundError
-from tests.utils import ObjectView
+from unit_tests.utils import ObjectView
 
 class TestJcApiV1:
 
