@@ -16,13 +16,13 @@ freeze:
 	pip freeze > requirements.txt
 
 test:
-	py.test --cov-report term --cov=$(PROJ_SLUG) tests/
+	py.test --cov-report term --cov=$(PROJ_SLUG) unit_tests/
 
 quicktest:
-	py.test --cov-report term --cov=$(PROJ_SLUG) tests/
+	py.test --cov-report term --cov=$(PROJ_SLUG) unit_tests/
 
 coverage:
-	py.test --cov-report html --cov=$(PROJ_SLUG) tests/
+	py.test --cov-report html --cov=$(PROJ_SLUG) unit_tests/
 
 docs: coverage
 	mkdir -p docs/source/_static
