@@ -43,8 +43,8 @@ if os.getenv('buildnum') is not None:
 install_requirements = [
     "click>=7.0,<8",
     "click-log>=0.3.0,<0.4.0",
-    "jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv1",
-    "jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v3.3.0#subdirectory=jcapiv2",
+    "jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v4.0.0#subdirectory=jcapiv1",
+    "jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v4.0.0#subdirectory=jcapiv2",
     "PyYaml>=5.1,<6.0"
 ]
 
