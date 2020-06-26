@@ -2,7 +2,7 @@
 .PHONY: build publish package coverage unit_test integration_test docs venv
 PROJ_SLUG = jccli
 CLI_NAME = jccli
-PY_VERSION = 3.6
+PY_VERSION = 3.7
 
 
 
