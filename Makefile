@@ -25,7 +25,7 @@ quicktest:
 	py.test --cov-report term --cov=$(PROJ_SLUG) unit_tests/
 
 coverage:
-	py.test --cov-report html --cov=$(PROJ_SLUG) unit_tests/
+	py.test --cov-report term --cov=$(PROJ_SLUG) integration_tests/ unit_tests/
 
 docs: coverage
 	mkdir -p docs/source/_static
