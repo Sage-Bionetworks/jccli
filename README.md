@@ -96,9 +96,10 @@ Maintainers should use the following process for reviewing and approving outside
 `JC_API_KEY`) and make sure nothing in the changes could expose them or use them for unintended purposes. *If in doubt,
 DO NOT proceed to the next step*.
 2. Incorporate the changes into a new branch in our repo, e.g. create a branch `Sage-Bionetworks:jccli/fix-typo-in-docs`
-and manually pull in the changes from `john-smith:jccli/fix-typo-in-docs`. Push them to remote to trigger a Travis CI
-build. Make sure that the `integration-test` job ran and passed successfully.
-3. Approve the pull request and drop the feature branch made for testing purposes
+and manually pull in the changes from `john-smith:jccli/fix-typo-in-docs`. Make a new tracking remote branch (i.e. `git
+push --set-upstream origin fix-typo-in-docs`, or whatever the name of your remote is, instead of `origin`) and push to
+it in order to trigger a Travis CI build. Make sure that the `integration-test` job ran and passed successfully.
+3. Approve/merge the pull request and delete the feature branch made for testing purposes
 (`Sage-Bionetworks:jccli/fix-types-in-docs`, in the example).
 
 ## Resources
