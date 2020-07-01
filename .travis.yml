@@ -14,6 +14,7 @@ stages:
   - name: unit_test
   - name: integration_test
   - name: package
+  - name: publish
 jobs:
   include:
     - stage: validate
@@ -34,3 +35,8 @@ jobs:
       script:
         - make install
         - make package
+    - stage: publish
+      if: tag =~ ^v
+      script:
+        - make install
+        - make publish
