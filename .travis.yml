@@ -36,7 +36,7 @@ jobs:
         - make install
         - make package
     - stage: publish
-      if: (tag =~ ^v)
+      if: tag =~ ^v
       script:
         - make install
         - make publish
