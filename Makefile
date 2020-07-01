@@ -37,9 +37,9 @@ answers:
 	cd docs && $(MAKE) html
 	xdg-open docs/build/html/index.html
 
+# -q flag is a workaround for jcapi-python lib not being in pypi (issue #9)
 package: clean docs
-	python setup.py sdist
-	# python setup.py bdist_wheel
+	python setup.py -q sdist bdist_wheel
 	twine check dist/*
 	ls -l dist
 
