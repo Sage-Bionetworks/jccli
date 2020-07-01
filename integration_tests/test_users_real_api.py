@@ -8,12 +8,13 @@ from click.testing import CliRunner, Result
 from jcapiv1.api.systemusers_api import SystemusersApi
 
 
-
 class TestUsersRealApi:
     @classmethod
     def setup_class(cls):
         configuration = Configuration()
         api_key = os.getenv('JC_API_KEY')
+        assert (api_key is not None),\
+            "The environmental variable `JC_API_KEY` must contain a valid Jumpcloud API key"
         configuration.api_key['x-api-key'] = api_key
         cls.systemusers_api = SystemusersApi(ApiClient(configuration=configuration))
         cls.api_key = api_key

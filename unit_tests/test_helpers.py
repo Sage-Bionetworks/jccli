@@ -13,7 +13,7 @@ import pytest
 # fmt: on
 import jccli.helpers as jccli_helpers
 
-TEST_DATA_PATH = "tests/data/"
+TEST_DATA_PATH = "unit_tests/data/"
 
 class TestHelpers:
 

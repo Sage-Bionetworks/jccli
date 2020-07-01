@@ -13,7 +13,7 @@ import pytest
 # fmt: on
 from mock import MagicMock, patch, sentinel
 from jccli.jc_api_v2 import JumpcloudApiV2
-from tests.utils import ObjectView
+from unit_tests.utils import ObjectView
 
 
 class TestJcApiV2:
