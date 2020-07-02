@@ -102,6 +102,12 @@ it in order to trigger a Travis CI build. Make sure that the `integration-test` 
 3. Approve/merge the pull request and delete the feature branch made for testing purposes
 (`Sage-Bionetworks:jccli/fix-types-in-docs`, in the example).
 
+## Versioning
+We try to follow [semantic versioning](https://semver.org/) as much as possble.
+We use [bump2version](https://pypi.org/project/bump2version/) to help automate
+versioning of this project.  Versions are usually bumped after a release.
+
+
 ## Resources
 
 Below are some handy resource links.
