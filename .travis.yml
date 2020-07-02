@@ -40,3 +40,6 @@ jobs:
       script:
         - make install
         - make publish
+        - git checkout master
+        - bumpversion patch --config-file setup.cfg
+        - git add --all && git commit -m "bump version" && git push origin master
