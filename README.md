@@ -107,6 +107,11 @@ We try to follow [semantic versioning](https://semver.org/) as much as possble.
 We use [bump2version](https://pypi.org/project/bump2version/) to help automate
 versioning of this project.  Versions are usually bumped after a release.
 
+To bump the version:
+```
+bumpversion patch --config-file setup.cfg
+```
+
 
 ## Resources
 
