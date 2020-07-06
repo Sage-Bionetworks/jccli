@@ -40,3 +40,5 @@ jobs:
       script:
         - make install
         - make publish
+        - bumpversion patch --config-file setup.cfg
+        - git add -u && git commit -m "[ci skip] bump version" && git push
