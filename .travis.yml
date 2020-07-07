@@ -1,8 +1,6 @@
-sudo: false
 language: python
 python: 3.7
 cache: pip
-fast_finish: true
 addons:
   apt_packages:
     - pandoc
@@ -16,6 +14,7 @@ stages:
   - name: package
   - name: publish
 jobs:
+  fast_finish: true
   include:
     - stage: validate
       script:
