@@ -105,13 +105,19 @@ it in order to trigger a Travis CI build. Make sure that the `integration-test` 
 ## Versioning
 We try to follow [semantic versioning](https://semver.org/) as much as possble.
 We use [bump2version](https://pypi.org/project/bump2version/) to help automate
-versioning of this project.  Versions are usually bumped after a release.
+versioning of this project.
 
-To bump the version:
+To manually bump the version:
 ```
 bumpversion patch --config-file setup.cfg
 ```
 
+## Releasing
+
+We have setup our CI to automate a release of this app.  To kick off the process just create
+a tag (i.e v1.0.0) and push to the repo.  It is important to have the `v` in the tag and
+the tag must be the same number as the current version.  Our CI will do the work of publishing
+the app to pypi and then bumping to the next version for development.
 
 ## Resources
 
