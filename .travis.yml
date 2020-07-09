@@ -4,9 +4,6 @@ cache: pip
 addons:
   apt_packages:
     - pandoc
-#env:
-#  global:
-#    - buildnum=$TRAVIS_BUILD_NUMBER
 stages:
   - name: validate
   - name: unit_test
