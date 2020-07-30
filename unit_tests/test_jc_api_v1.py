@@ -29,7 +29,7 @@ class TestJcApiV1:
     @patch.object(JumpcloudApiV1, 'get_users')
     def test_get_user_id(self, mock_get_users):
         mock_get_users.return_value = [
-            ObjectView({
+            {
                 'account_locked': False,
                 'activated': False,
                 'addresses': [],
@@ -74,7 +74,7 @@ class TestJcApiV1:
                 'unix_guid': 5109,
                 'unix_uid': 5109,
                 'username': 'jctester1',
-            })
+            }
         ]
         api1 = JumpcloudApiV1("1234")
         user_id = api1.get_user_id("jctester1")
@@ -85,12 +85,12 @@ class TestJcApiV1:
     @patch.object(JumpcloudApiV1,'get_users')
     def test_get_user_id_not_found(self, mock_get_users):
         response = [
-            Systemuserreturn({
+            {
                 'email': 'jc.tester1@sagebase.org',
                 'firstname': 'JC',
                 'lastname': 'Tester1',
                 'username': 'jctester1'
-            })
+            }
         ]
         api1 = JumpcloudApiV1("1234")
         mock_get_users.return_value = response
@@ -159,11 +159,11 @@ class TestJcApiV1:
     @patch.object(JumpcloudApiV1, 'get_users')
     def test_set_user_no_id(self, mock_systemusers_list):
         mock_systemusers_list.return_value = [
-            Systemuserreturn(
-                firstname='Mary',
-                username='mary',
-                email='mary@google.microsoft'
-            )
+            {
+                'firstname':'Mary',
+                'username':'mary',
+                'email':'mary@google.microsoft'
+            }
         ]
         api1 = JumpcloudApiV1("1234")
         with pytest.raises(SystemUserNotFoundError):

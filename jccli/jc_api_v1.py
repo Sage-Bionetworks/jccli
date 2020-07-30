@@ -51,7 +51,7 @@ class JumpcloudApiV1:
                                                                   x_org_id='',
                                                                   search=search,
                                                                   filter=filter)
-            users = class_to_dict(api_response.results)
+            users = [user.to_dict() for user in class_to_dict(api_response.results)]
             return users
         except ApiException as error:
             raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
@@ -112,8 +112,8 @@ class JumpcloudApiV1:
         users = self.get_users(limit='', fields="username")
 
         for user in users:
-            if user.username == username:
-                return user.id
+            if user['username'] == username:
+                return user['id']
 
         raise SystemUserNotFoundError('No user found for username: %s' % (username,))
 
