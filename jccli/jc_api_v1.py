@@ -29,6 +29,31 @@ class JumpcloudApiV1:
         configuration = jcapiv1.Configuration()
         configuration.api_key['x-api-key'] = api_key
         self.system_users_api = jcapiv1.SystemusersApi(jcapiv1.ApiClient(configuration))
+        self.search_api = jcapiv1.SearchApi(jcapiv1.ApiClient(configuration))
+
+    def search_users(self, filter={}):
+        """
+        Search for users on jumpcloud.
+
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
+        :return:
+        """
+        query_filter = {'and': []}
+        for field, value in filter.items():
+            query_filter['and'].append({field: value})
+
+        try:
+            api_response = self.search_api.search_systemusers_post(
+                content_type='application/json',
+                accept='application/json',
+                body={
+                    'filter': query_filter
+                }
+            )
+            users = [user.to_dict() for user in api_response.results]
+            return users
+        except ApiException as error:
+            raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
 
     def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """

@@ -138,6 +138,28 @@ class TestJcApiV1:
         with pytest.raises(SystemUserNotFoundError):
             api1.get_user('angela')
 
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users(self, mock_search_systemusers_post):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                email='david@david.net'
+            ),
+        ]
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users({'firstname': 'David'})
+        assert (
+            user_search == [user.to_dict() for user in users]
+        )
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (
+            call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}}
+        )
+
     @patch.object(jcapiv1.SystemusersApi, 'systemusers_put')
     @patch.object(JumpcloudApiV1, 'get_user_id')
     def test_set_user(self, mock_get_user_id, mock_systemusers_put):
