@@ -41,6 +41,8 @@ class JumpcloudApiV1:
         query_filter = {'and': []}
         for field, value in filter.items():
             query_filter['and'].append({field: value})
+        if not filter:
+            query_filter = None
 
         try:
             api_response = self.search_api.search_systemusers_post(

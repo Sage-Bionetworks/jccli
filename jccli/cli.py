@@ -56,14 +56,14 @@ def user(ctx):
 @user.command('create')
 @click.option('--username', '-u', required=True, type=str)
 @click.option('--email', '-e', required=True, type=str)
-@click.option('--first-name', '-f', type=str, default='')
-@click.option('--last-name', '-l', type=str, default='')
+@click.option('--firstname', '-f', type=str, default='')
+@click.option('--lastname', '-l', type=str, default='')
 @click.option('--allow-public-key/--disallow-public-key', default=True)
 @click.option('--ldap-binding-user', is_flag=True)
 @click.option('--passwordless-sudo', is_flag=True)
 @click.option('--sudo', is_flag=True)
 @click.pass_context
-def create_user(ctx, username, email, first_name, last_name, allow_public_key, ldap_binding_user, passwordless_sudo,
+def create_user(ctx, username, email, firstname, lastname, allow_public_key, ldap_binding_user, passwordless_sudo,
                 sudo):
     """
     Create a new user
@@ -72,8 +72,8 @@ def create_user(ctx, username, email, first_name, last_name, allow_public_key, l
     systemuser = {
         'username': username,
         'email': email,
-        'first_name': first_name,
-        'last_name': last_name,
+        'firstname': firstname,
+        'lastname': lastname,
         'allow_public_key': str(allow_public_key),
         'ldap_binding_user': str(ldap_binding_user),
         'passwordless_sudo': str(passwordless_sudo),
@@ -92,6 +92,25 @@ def get_user(ctx, username):
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.get_user(username=username)
+    serialized_response = json.dumps(response, indent=2)
+    LOGGER.info(f"{serialized_response}")
+
+
+@user.command('list')
+@click.option('--firstname', '-f', default=None, type=str)
+@click.option('--lastname', '-l', default=None, type=str)
+@click.pass_context
+def list_users(ctx, **kwargs):
+    """
+    List view of users, outputted in JSON
+    """
+    filter = {}
+    for field_name, value in kwargs.items():
+        if value:
+            filter[field_name] = value
+
+    api1 = JumpcloudApiV1(ctx.obj.get('key'))
+    response = api1.search_users(filter)
     serialized_response = json.dumps(response, indent=2)
     LOGGER.info(f"{serialized_response}")
 
@@ -279,9 +298,9 @@ def sync_users(ctx, users):
     jc_users_request = api1.get_users()
     if jc_users_request:
         for jc_user in jc_users_request:
-            jc_usernames.append(jc_user['_username'])
-            jc_emails.append(jc_user['_email'])
-            jc_users.append({'username': jc_user['_username'], 'email': jc_user['_email']})
+            jc_usernames.append(jc_user['username'])
+            jc_emails.append(jc_user['email'])
+            jc_users.append({'username': jc_user['username'], 'email': jc_user['email']})
 
     LOGGER.debug(f"jumpcloud users: {jc_usernames}")
 
