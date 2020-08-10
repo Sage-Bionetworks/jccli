@@ -133,6 +133,23 @@ class TestUsersRealApi:
 
         runner = CliRunner()
 
+        # List (zero) users
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'list'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        assert parsed_output == [], 'Invalid output from list-user (should be blank list)'
+
         # Create some users
         for user in USERS:
             result = runner.invoke(cli.cli, [
