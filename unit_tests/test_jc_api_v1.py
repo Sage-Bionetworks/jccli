@@ -139,7 +139,41 @@ class TestJcApiV1:
             api1.get_user('angela')
 
     @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
-    def test_search_users(self, mock_search_systemusers_post):
+    def test_search_users_no_results(self, mock_search_systemusers_post):
+        users = []
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users({'firstname': 'David'})
+        assert (user_search == [])
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}})
+
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_no_field(self, mock_search_systemusers_post):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                email='david@david.net'
+            ),
+        ]
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users()
+        assert (
+                user_search == [user.to_dict() for user in users]
+        )
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (
+                call_kwargs['body'] == {'filter': None}
+        )
+
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_single_field(self, mock_search_systemusers_post):
         users = [
             Systemuserreturn(
                 username='dave',
@@ -158,6 +192,29 @@ class TestJcApiV1:
         call_args, call_kwargs = mock_search_systemusers_post.call_args
         assert (
             call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}}
+        )
+
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_multi_field(self, mock_search_systemusers_post):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                lastname='Smith',
+                email='david@david.net'
+            ),
+        ]
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users({'firstname': 'David', 'lastname': 'Smith'})
+        assert (
+                user_search == [user.to_dict() for user in users]
+        )
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (
+                call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}, {'lastname': 'Smith'}]}}
         )
 
     @patch.object(jcapiv1.SystemusersApi, 'systemusers_put')
