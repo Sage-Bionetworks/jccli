@@ -175,11 +175,6 @@ class TestUsersRealApi:
             raise ValueError(result.output)
         firstnames = [user['firstname'] for user in parsed_output]
         lastnames = [user['lastname'] for user in parsed_output]
-        print("First & Last Names:")
-        print(firstnames)
-        print(lastnames)
-        print("Parsed Output:")
-        print(parsed_output)
         assert all(firstname in firstnames for firstname in ('David', 'Ahamed'))
         assert all(lastname in lastnames for lastname in ('Smith', 'Weinberg'))
         assert len(parsed_output) == 3
