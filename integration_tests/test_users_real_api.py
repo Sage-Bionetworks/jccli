@@ -108,3 +108,151 @@ class TestUsersRealApi:
             USERNAME
         ])
         assert result.output == ''
+
+    def test_multi_user(self):
+        USERS = [
+            {
+                'firstname': 'David',
+                'lastname': 'Smith',
+                'email': 'david.smith@fakesite.org',
+                'username': 'david_smith_123'
+            },
+            {
+                'firstname': 'David',
+                'lastname': 'Weinberg',
+                'email': 'david.weinberg@fakesite.org',
+                'username': 'david_weinberg_456'
+            },
+            {
+                'firstname': 'Ahamed',
+                'lastname': 'Weinberg',
+                'email': 'ahamed.weinberg@fakesite.org',
+                'username': 'ahamed_weinberg_789'
+            }
+        ]
+
+        runner = CliRunner()
+
+        # List (zero) users
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'list'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        assert parsed_output == [], 'Invalid output from list-user (should be blank list)'
+
+        # Create some users
+        for user in USERS:
+            result = runner.invoke(cli.cli, [
+                '--key',
+                self.api_key,
+                'user',
+                'create',
+                '--username',
+                user['username'],
+                '--email',
+                user['email'],
+                '--firstname',
+                user['firstname'],
+                '--lastname',
+                user['lastname']
+            ])
+            if result.exit_code:
+                raise ValueError(
+                    "create-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+                )
+            try:
+                parsed_output = json.loads(result.output)
+            except json.decoder.JSONDecodeError:
+                raise ValueError(result.output)
+
+        # Get a list of all users
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'list'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        firstnames = [user['firstname'] for user in parsed_output]
+        lastnames = [user['lastname'] for user in parsed_output]
+        assert all(firstname in firstnames for firstname in ('David', 'Ahamed'))
+        assert all(lastname in lastnames for lastname in ('Smith', 'Weinberg'))
+        assert len(parsed_output) == 3
+
+        # Search for users with a particular last name
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'list',
+            '--lastname',
+            'Weinberg'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        firstnames = [user['firstname'] for user in parsed_output]
+        lastnames = [user['lastname'] for user in parsed_output]
+        assert all(firstname in firstnames for firstname in ('David', 'Ahamed'))
+        assert all(lastname == 'Weinberg' for lastname in lastnames)
+        assert len(parsed_output) == 2
+
+        # Search for users with a particular last & first name
+        result = runner.invoke(cli.cli, [
+            '--key',
+            self.api_key,
+            'user',
+            'list',
+            '--firstname',
+            'Ahamed',
+            '--lastname',
+            'Weinberg'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        assert parsed_output[0]['firstname'] == 'Ahamed'
+        assert parsed_output[0]['lastname'] == 'Weinberg'
+        assert len(parsed_output) == 1
+
+        # Clean up. Delete the users
+        for user in USERS:
+            result = runner.invoke(cli.cli, [
+                '--key',
+                self.api_key,
+                'user',
+                'delete',
+                '--username',
+                user['username']
+            ])
+            if result.exit_code:
+                raise ValueError(
+                    "delete-user exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+                )

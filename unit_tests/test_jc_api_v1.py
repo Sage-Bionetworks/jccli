@@ -29,7 +29,7 @@ class TestJcApiV1:
     @patch.object(JumpcloudApiV1, 'get_users')
     def test_get_user_id(self, mock_get_users):
         mock_get_users.return_value = [
-            ObjectView({
+            {
                 'account_locked': False,
                 'activated': False,
                 'addresses': [],
@@ -74,7 +74,7 @@ class TestJcApiV1:
                 'unix_guid': 5109,
                 'unix_uid': 5109,
                 'username': 'jctester1',
-            })
+            }
         ]
         api1 = JumpcloudApiV1("1234")
         user_id = api1.get_user_id("jctester1")
@@ -85,12 +85,12 @@ class TestJcApiV1:
     @patch.object(JumpcloudApiV1,'get_users')
     def test_get_user_id_not_found(self, mock_get_users):
         response = [
-            Systemuserreturn({
+            {
                 'email': 'jc.tester1@sagebase.org',
                 'firstname': 'JC',
                 'lastname': 'Tester1',
                 'username': 'jctester1'
-            })
+            }
         ]
         api1 = JumpcloudApiV1("1234")
         mock_get_users.return_value = response
@@ -138,6 +138,85 @@ class TestJcApiV1:
         with pytest.raises(SystemUserNotFoundError):
             api1.get_user('angela')
 
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_no_results(self, mock_search_systemusers_post):
+        users = []
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users({'firstname': 'David'})
+        assert (user_search == [])
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}})
+
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_no_field(self, mock_search_systemusers_post):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                email='david@david.net'
+            ),
+        ]
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users()
+        assert (
+                user_search == [user.to_dict() for user in users]
+        )
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (
+                call_kwargs['body'] == {'filter': None}
+        )
+
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_single_field(self, mock_search_systemusers_post):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                email='david@david.net'
+            ),
+        ]
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users({'firstname': 'David'})
+        assert (
+            user_search == [user.to_dict() for user in users]
+        )
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (
+            call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}}
+        )
+
+    @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
+    def test_search_users_multi_field(self, mock_search_systemusers_post):
+        users = [
+            Systemuserreturn(
+                username='dave',
+                firstname='David',
+                lastname='Smith',
+                email='david@david.net'
+            ),
+        ]
+        mock_search_systemusers_post.return_value = Systemuserslist(results=users, total_count=len(users))
+
+        api1 = JumpcloudApiV1("fake_key_123")
+        user_search = api1.search_users({'firstname': 'David', 'lastname': 'Smith'})
+        assert (
+                user_search == [user.to_dict() for user in users]
+        )
+
+        call_args, call_kwargs = mock_search_systemusers_post.call_args
+        assert (
+                call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}, {'lastname': 'Smith'}]}}
+        )
+
     @patch.object(jcapiv1.SystemusersApi, 'systemusers_put')
     @patch.object(JumpcloudApiV1, 'get_user_id')
     def test_set_user(self, mock_get_user_id, mock_systemusers_put):
@@ -159,11 +238,11 @@ class TestJcApiV1:
     @patch.object(JumpcloudApiV1, 'get_users')
     def test_set_user_no_id(self, mock_systemusers_list):
         mock_systemusers_list.return_value = [
-            Systemuserreturn(
-                firstname='Mary',
-                username='mary',
-                email='mary@google.microsoft'
-            )
+            {
+                'firstname':'Mary',
+                'username':'mary',
+                'email':'mary@google.microsoft'
+            }
         ]
         api1 = JumpcloudApiV1("1234")
         with pytest.raises(SystemUserNotFoundError):

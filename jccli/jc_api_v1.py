@@ -29,6 +29,33 @@ class JumpcloudApiV1:
         configuration = jcapiv1.Configuration()
         configuration.api_key['x-api-key'] = api_key
         self.system_users_api = jcapiv1.SystemusersApi(jcapiv1.ApiClient(configuration))
+        self.search_api = jcapiv1.SearchApi(jcapiv1.ApiClient(configuration))
+
+    def search_users(self, filter={}):
+        """
+        Search for users on jumpcloud.
+
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
+        :return:
+        """
+        query_filter = {'and': []}
+        for field, value in filter.items():
+            query_filter['and'].append({field: value})
+        if not filter:
+            query_filter = None
+
+        try:
+            api_response = self.search_api.search_systemusers_post(
+                content_type='application/json',
+                accept='application/json',
+                body={
+                    'filter': query_filter
+                }
+            )
+            users = [user.to_dict() for user in api_response.results]
+            return users
+        except ApiException as error:
+            raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
 
     def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """
@@ -51,7 +78,7 @@ class JumpcloudApiV1:
                                                                   x_org_id='',
                                                                   search=search,
                                                                   filter=filter)
-            users = class_to_dict(api_response.results)
+            users = [user.to_dict() for user in class_to_dict(api_response.results)]
             return users
         except ApiException as error:
             raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
@@ -112,8 +139,8 @@ class JumpcloudApiV1:
         users = self.get_users(limit='', fields="username")
 
         for user in users:
-            if user.username == username:
-                return user.id
+            if user['username'] == username:
+                return user['id']
 
         raise SystemUserNotFoundError('No user found for username: %s' % (username,))
 
