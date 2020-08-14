@@ -33,7 +33,7 @@ def abort_if_false(ctx, param, value):
 
 
 @click.group()
-@click.option('--key', "-k", type=str, help='Jumpcloud API key', envvar='JCCLI_API_KEY')
+@click.option('--key', "-k", type=str, help='Jumpcloud API key (can also use environmental variable: JCCLI_API_KEY)', envvar='JCCLI_API_KEY')
 @click.option('--key-file', '-K', type=str, help='Path to text file containing Jumpcloud API key')
 @click_log.simple_verbosity_option(LOGGER)
 @click.version_option(version=__version__)
