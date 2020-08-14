@@ -7,6 +7,8 @@
 """
 import json
 import logging
+import sys
+
 import click
 import click_log
 import jccli.helpers as jccli_helpers
@@ -31,14 +33,19 @@ def abort_if_false(ctx, param, value):
 
 
 @click.group()
-@click.option('--key', "-k", required=True, type=str, help='Jumpcloud API key')
+@click.option('--key', "-k", type=str, help='Jumpcloud API key', envvar='JCCLI_API_KEY')
+@click.option('--key-file', '-K', type=str, help='Path to text file containing Jumpcloud API key')
 @click_log.simple_verbosity_option(LOGGER)
 @click.version_option(version=__version__)
 @click.pass_context
-def cli(ctx, key):
+def cli(ctx, key, key_file):
     """
     Run jccli.
     """
+    if key and key_file:
+        sys.exit("Please provide a key *or* a key file, not both")
+    if key_file and not key:
+        key = open(key_file).read()
     ctx.obj = {
         'key': key
     }
