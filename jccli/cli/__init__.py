@@ -16,7 +16,7 @@ import jccli.helpers as jccli_helpers
 from jccli.errors import MissingRequiredArgumentError
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.jc_api_v2 import JumpcloudApiV2
-from .__init__ import __version__
+from ..__init__ import __version__
 
 # setup click-log
 LOGGER = logging.getLogger(__name__)
