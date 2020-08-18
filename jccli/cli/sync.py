@@ -1,6 +1,5 @@
 import logging
 import click
-import click_log
 
 from jccli import helpers as jccli_helpers
 from jccli.jc_api_v1 import JumpcloudApiV1
@@ -14,9 +13,6 @@ def abort_if_false(ctx, param, value):
     """
     if not value:
         ctx.abort()
-
-
-LOGGER = logging.getLogger(__name__)
 
 
 @click.command()
@@ -35,13 +31,15 @@ def sync(ctx, dry_run, data):
     """
     Sync Jumpcloud with a data file
     """
-    if dry_run:
-        LOGGER.setLevel(logging.DEBUG)
+    logger = ctx.obj.get('logger')
 
-    LOGGER.debug("--- sync groups ----")
+    if dry_run:
+        logger.setLevel(logging.DEBUG)
+
+    logger.debug("--- sync groups ----")
     groups = jccli_helpers.get_groups_from_file(data)
     sync_groups(ctx, groups)
-    LOGGER.debug("--- sync users ----")
+    logger.debug("--- sync users ----")
     users = jccli_helpers.get_users_from_file(data)
     sync_users(ctx, users)
 
@@ -56,6 +54,7 @@ def sync_groups(ctx, groups):
     :return:
     """
     key = ctx.obj.get('key')
+    logger = ctx.obj.get('logger')
     dry_run = ctx.params.get('dry_run')
 
     local_groups = groups
@@ -67,7 +66,7 @@ def sync_groups(ctx, groups):
         for jc_group in jc_groups_request:
             jc_group_names.append(jc_group['_name'])
 
-    LOGGER.debug(f"jumpcloud groups: {jc_group_names}")
+    logger.debug(f"jumpcloud groups: {jc_group_names}")
 
     # create new groups
     added_groups = []
@@ -79,7 +78,7 @@ def sync_groups(ctx, groups):
             if group_name not in jc_group_names:
                 do_create_group = True
             else:
-                LOGGER.debug(f"{group_name} group already exists")
+                logger.debug(f"{group_name} group already exists")
         except KeyError as error:
             raise error
 
@@ -124,6 +123,7 @@ def sync_users(ctx, users):
     """
     local_users = users
     key = ctx.obj.get('key')
+    logger = ctx.obj.get('logger')
     dry_run = ctx.params.get('dry_run')
 
     api1 = JumpcloudApiV1(key)
@@ -137,7 +137,7 @@ def sync_users(ctx, users):
             jc_emails.append(jc_user['email'])
             jc_users.append({'username': jc_user['username'], 'email': jc_user['email']})
 
-    LOGGER.debug(f"jumpcloud users: {jc_usernames}")
+    logger.debug(f"jumpcloud users: {jc_usernames}")
 
     # create new users
     api2 = JumpcloudApiV2(key)
@@ -150,7 +150,7 @@ def sync_users(ctx, users):
             if (user_name not in jc_usernames) and (user_email not in jc_emails):
                 do_create_user = True
             else:
-                LOGGER.debug(f"{user_name} user already exists")
+                logger.debug(f"{user_name} user already exists")
         except KeyError as error:
             raise error
 

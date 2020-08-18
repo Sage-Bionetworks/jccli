@@ -1,5 +1,4 @@
 import json
-
 import click
 
 from jccli.jc_api_v1 import JumpcloudApiV1
@@ -30,6 +29,7 @@ def create_user(ctx, username, email, firstname, lastname, allow_public_key, lda
     Create a new user
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
+    logger = ctx.obj.get('logger')
     systemuser = {
         'username': username,
         'email': email,
@@ -41,7 +41,7 @@ def create_user(ctx, username, email, firstname, lastname, allow_public_key, lda
         'sudo': str(sudo)
     }
     response = json.dumps(api1.create_user(systemuser), indent=2)
-    click.echo(f"{response}")
+    logger.info(f"{response}")
 
 
 @user.command("get")
@@ -52,9 +52,10 @@ def get_user(ctx, username):
     Detail view of user, outputted in JSON.
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
+    logger = ctx.obj.get('logger')
     response = api1.get_user(username=username)
     serialized_response = json.dumps(response, indent=2)
-    click.echo(f"{serialized_response}")
+    logger.info(f"{serialized_response}")
 
 
 @user.command('list')
@@ -71,9 +72,10 @@ def list_users(ctx, **kwargs):
             filter[field_name] = value
 
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
+    logger = ctx.obj.get('logger')
     response = api1.search_users(filter)
     serialized_response = json.dumps(response, indent=2)
-    click.echo(f"{serialized_response}")
+    logger.info(f"{serialized_response}")
 
 
 @user.command('set')
@@ -94,7 +96,8 @@ def set_user(ctx, username, email, firstname, lastname):
         attributes['lastname'] = lastname
 
     response = json.dumps(api1.set_user(username, attributes=attributes), indent=2)
-    click.echo(f'{response}')
+    logger = ctx.obj.get('logger')
+    logger.info(f'{response}')
 
 
 @user.command("delete")

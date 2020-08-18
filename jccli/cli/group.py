@@ -22,8 +22,9 @@ def create_group(ctx, name, type):
     Create a group
     """
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
+    logger = ctx.obj.get('logger')
     response = api2.create_group(name, type)
-    click.echo(f"{response}")
+    logger.info(f"{response}")
 
 
 @group.command('delete')
@@ -36,5 +37,6 @@ def delete_group(ctx, name):
     # FIXME: Ideally, this would output JSON info of the deleted group (similar to delete-user), but at the moment it's
     #  unclear exactly how to do that, given the API wrappers that we have.
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
+    logger = ctx.obj.get('logger')
     api2.delete_group(name)
-    click.echo(f"Group {name} deleted")
+    logger.info(f"Group {name} deleted")
