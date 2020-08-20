@@ -156,7 +156,7 @@ class JumpcloudApiV2:
             if group['name'] == group_name and group['type'] == group_type:
                 return group
 
-    def get_groups(self, limit=100, skip=0, sort='', fields='', filter='') -> List[Group]:
+    def get_groups(self, type=None, limit=100, skip=0, sort='', fields='') -> List[Group]:
         # pylint: disable-msg=too-many-locals
         # pylint: disable-msg=too-many-arguments
         """
@@ -164,6 +164,13 @@ class JumpcloudApiV2:
         :param group_name: name of the JC group
         :return: A list of jumpcloud groups
         """
+        if type:
+            # `filter` is poorly-documented (see https://github.com/TheJumpCloud/jcapi-python/issues/46) and possibly
+            # not generalizable, but as long as the only thing we are filtering on is type, I suppose this will work
+            # okay.
+            filter = ['type:eq:%s' % (type,)]
+        else:
+            filter = ''
         try:
             # response does not provide a total so set limit to max value
             results: List[Group] = self.groups_api.groups_list(content_type='application/json',
