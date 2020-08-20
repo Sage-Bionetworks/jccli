@@ -1,4 +1,5 @@
 import json
+import sys
 from logging import Logger
 
 import click
@@ -25,7 +26,10 @@ def create_group(ctx, name, type):
     Create a group
     """
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
-    logger = ctx.obj.get('logger')
+    logger: Logger = ctx.obj.get('logger')
+    if type is None:
+        logger.error('groups must have a type (either "user" or "system")')
+        sys.exit(1)
     response = api2.create_group(name, type)
     logger.info(f"{response}")
 
