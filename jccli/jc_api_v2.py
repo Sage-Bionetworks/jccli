@@ -11,14 +11,15 @@ This is a utility library for the jumpcloud version 2 api
     To learn more about the jumpcloud api 2
     `project website <https://github.com/TheJumpCloud/jcapi-python/tree/master/jcapiv2>`_.
 """
+from typing import List
+
 import jcapiv2
+from jcapiv2 import Group
 from jcapiv2.rest import ApiException
 
 from jccli.helpers import class_to_dict
 from jccli.errors import GroupNotFoundError
 
-VALID_USER_GROUP_TYPES = ['user', jcapiv2.GroupType.USER_GROUP]
-VALID_SYSTEM_GROUP_TYPES = ['system', jcapiv2.GroupType.SYSTEM_GROUP]
 
 class JumpcloudApiV2:
     """
@@ -43,7 +44,7 @@ class JumpcloudApiV2:
         group_name = name
         group_type = type
 
-        if group_type in VALID_SYSTEM_GROUP_TYPES:
+        if group_type == jcapiv2.GroupType.SYSTEM_GROUP:
             try:
                 body = jcapiv2.SystemGroupData(name=group_name)
                 api_response = \
@@ -54,7 +55,7 @@ class JumpcloudApiV2:
                 return api_response
             except ApiException as error:
                 raise "Exception when calling SystemGroupsApi->groups_system_post: %s\n" % error
-        elif group_type in VALID_USER_GROUP_TYPES:
+        elif group_type == jcapiv2.GroupType.USER_GROUP:
             try:
                 body = jcapiv2.UserGroupPost(name=group_name)
                 api_response = \
@@ -68,19 +69,19 @@ class JumpcloudApiV2:
         else:
             raise ValueError("group type must be system or user")
 
-    def delete_group(self, name):
+    def delete_group(self, name, type):
         """
         Delete a Jumpcloud group
         :param name: The group name
         :return: API response
         """
-        group_name = name
-        group_id, group_type = self.get_group(group_name)
+        group = self.get_group(name, type)
+        group_id = group['id']
 
-        if group_id is None:
+        if group is None:
             raise GroupNotFoundError("Group {} not found".format(name))
 
-        if group_type == "system_group":
+        if group['type'] == "system_group":
             try:
                 api_response = \
                     self.system_groups_api.groups_system_delete(group_id,
@@ -142,7 +143,7 @@ class JumpcloudApiV2:
             raise "Exception when calling \
                    GraphApi->graph_ldap_server_associations_post: %s\n" % error
 
-    def get_group(self, group_name, limit=100, skip=0, sort='', fields='', filter=''):
+    def get_group(self, group_name, group_type, limit=100, skip=0, sort='', fields='', filter='') -> dict:
         # pylint: disable-msg=too-many-locals
         # pylint: disable-msg=too-many-arguments
         """
@@ -152,11 +153,10 @@ class JumpcloudApiV2:
         """
         groups = self.get_groups(limit, skip, sort, fields, filter)
         for group in groups:
-            if group.name == group_name:
-                return group.id, group.type
-        return None, None
+            if group['name'] == group_name and group['type'] == group_type:
+                return group
 
-    def get_groups(self, limit=100, skip=0, sort='', fields='', filter=''):
+    def get_groups(self, limit=100, skip=0, sort='', fields='', filter='') -> List[Group]:
         # pylint: disable-msg=too-many-locals
         # pylint: disable-msg=too-many-arguments
         """
@@ -166,7 +166,7 @@ class JumpcloudApiV2:
         """
         try:
             # response does not provide a total so set limit to max value
-            results = self.groups_api.groups_list(content_type='application/json',
+            results: List[Group] = self.groups_api.groups_list(content_type='application/json',
                                                   accept='application/json',
                                                   fields=fields,
                                                   filter=filter,
@@ -175,8 +175,6 @@ class JumpcloudApiV2:
                                                   sort=sort,
                                                   x_org_id='')
 
-            groups = class_to_dict(results)
-
-            return groups
+            return [group.to_dict() for group in results]
         except ApiException as error:
             raise "Exception when calling GroupsApi->groups_list: %s\n" % error
