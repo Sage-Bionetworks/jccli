@@ -109,6 +109,7 @@ def list_users(ctx, name):
     """
     List users in a group (group type is assumed to be 'user_group')
     """
+    api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger = ctx.obj.get('logger')
     group = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)
@@ -117,8 +118,9 @@ def list_users(ctx, name):
     else:
         logger.error(f"no user group found with name {name}")
         sys.exit(1)
-    response = api2.list_group_users(group_id=group_id)
-    serialized_response = json.dumps(response)
+    user_ids = api2.list_group_users(group_id=group_id)
+    users = api1.retrieve_users(user_ids=user_ids)
+    serialized_response = json.dumps(users, indent=2)
     logger.info(f"{serialized_response}")
 
 

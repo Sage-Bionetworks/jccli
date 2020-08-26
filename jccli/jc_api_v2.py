@@ -202,9 +202,16 @@ class JumpcloudApiV2:
             raise "Exception when calling GroupsApi->groups_list: %s\n" % error
 
     def list_group_users(self, group_id):
+        """Return a list of user IDs associated with the group ID
+        """
         results: List[GraphConnection] = self.user_groups_api.graph_user_group_members_list(
             group_id=group_id,
             content_type='application/json',
             accept='application/json'
         )
-        return [result.to_dict()['to'] for result in results]
+        user_ids = []
+        for result in results:
+            user = result.to_dict()['to']
+            user_ids.append(user['id'])
+
+        return user_ids
