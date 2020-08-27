@@ -11,16 +11,13 @@ This is the test module for the project's JC API V2 module.
 import pytest
 
 # fmt: on
-from mock import MagicMock, patch, sentinel
+from mock import patch
 from jccli.jc_api_v2 import JumpcloudApiV2
-from unit_tests.utils import ObjectView
 
 
 class TestJcApiV2:
-
     def setup_method(self, test_method):
         pass
-
 
     def teardown_method(self, test_method):
         pass
