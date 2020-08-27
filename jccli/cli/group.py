@@ -82,7 +82,7 @@ def delete_group(ctx, name, type):
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger = ctx.obj.get('logger')
     api2.delete_group(name, type)
-    logger.info(f"Group {name} deleted")
+    logger.info(f"successfully deleted group {name}")
 
 
 @group.command('add-user')
