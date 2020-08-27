@@ -122,6 +122,8 @@ class TestGroupsRealApi:
             self.api_key,
             'group',
             'remove-user',
+            '--name',
+            GROUP_NAME,
             '--username',
             USERS[1]['username']
         ])
