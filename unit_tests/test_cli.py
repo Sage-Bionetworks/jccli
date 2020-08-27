@@ -11,42 +11,21 @@ module.
 # fmt: off
 import json
 import pytest
-import yaml
 import jccli.cli as cli
 
 # fmt: on
 from click.testing import CliRunner, Result
-from mock import MagicMock, patch, sentinel
+from mock import patch
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.jc_api_v2 import JumpcloudApiV2
-import jccli.helpers as jccli_helpers
-import jccli.errors as jccli_errors
+
 
 class TestCli:
-
     def setup_method(self, test_method):
         pass
 
-
     def teardown_method(self, test_method):
         pass
-
-
-    def test_create_group_with_invalid_type(self):
-        runner: CliRunner = CliRunner()
-        result: Result = runner.invoke(cli.cli, [
-            "--key",
-            "ASDFfakekey1234",
-            "group",
-            "create",
-            "-n",
-            "foo",
-            "-t",
-            "bar"
-        ])
-        assert (
-            "invalid choice" in result.output.strip()
-        ), "Invalid choice should be indicated in output."
 
     @patch.object(JumpcloudApiV2,'create_group')
     def test_create_group_type_user(self, mock_create_group):
@@ -66,11 +45,10 @@ class TestCli:
             "create",
             "-n",
             "foo",
-            "-t",
-            "user"
+            "--user"
         ])
         assert (
-            yaml.safe_load(result.output) == response
+            result.output.rstrip() == 'successfully created group: foo'
         ), "Invalid response in output."
 
     @patch.object(JumpcloudApiV2,'create_group')
@@ -91,11 +69,10 @@ class TestCli:
             "create",
             "--name",
             "foo",
-            "--type",
-            "system"
+            "--system"
         ])
         assert (
-            yaml.safe_load(result.output) == response
+            result.output.rstrip() == 'successfully created group: foo'
         ), "Invalid response in output."
 
     @patch.object(JumpcloudApiV2,'delete_group')
@@ -112,7 +89,7 @@ class TestCli:
             "foo"
         ])
         assert (
-            result.output.strip() == "Group foo deleted",
+            result.output.strip() == "successfully deleted group foo",
         ), "Invalid response in output."
 
 
