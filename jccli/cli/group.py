@@ -79,8 +79,6 @@ def delete_group(ctx, name, type):
     """
     Delete a group
     """
-    # FIXME: Ideally, this would output JSON info of the deleted group (similar to delete-user), but at the moment it's
-    #  unclear exactly how to do that, given the API wrappers that we have.
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger = ctx.obj.get('logger')
     api2.delete_group(name, type)
