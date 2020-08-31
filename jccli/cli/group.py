@@ -99,7 +99,7 @@ def add_user(ctx, name, username):
     user_id = api1.get_user(username)['id']
     group_id = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)['id']
     result = api2.bind_user_to_group(user_id, group_id)
-    logger.info(f"{result}")
+    logger.info(f"Successfully added user 'f{username}' to group 'f{name}'")
 
 
 @group.command('list-users')
@@ -138,4 +138,4 @@ def remove_user(ctx, name, username):
     user_id = api1.get_user(username)['id']
     group_id = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)['id']
     result = api2.unbind_user_from_group(user_id, group_id)
-    logger.info(f"{result}")
+    logger.info(f"Successfully removed user 'f{username}' from group 'f{name}'")
