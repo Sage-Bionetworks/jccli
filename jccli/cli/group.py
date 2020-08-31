@@ -43,7 +43,7 @@ def create_group(ctx, name, type):
 @click.pass_context
 def get_group(ctx, name, type):
     """
-    Detail view of a group
+    Get detail view of a group
     """
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger = ctx.obj.get('logger')
@@ -60,6 +60,9 @@ def get_group(ctx, name, type):
 @click.option('--system', 'type', flag_value='system_group', help='Restrict to system groups only')
 @click.pass_context
 def list_groups(ctx, type):
+    """
+    List groups
+    """
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger: Logger = ctx.obj.get('logger')
     response = api2.get_groups(type=type)
