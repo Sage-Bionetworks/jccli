@@ -45,7 +45,6 @@ def get_group(ctx, name, type):
     """
     Detail view of a group
     """
-    # FIXME: Make the `type` variable required
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger = ctx.obj.get('logger')
     if type is None:
