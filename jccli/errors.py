@@ -23,6 +23,11 @@ class GroupNotFoundError(JcCliError):
     Jumpcloud group is not found
     """
 
+class NotAMemberError(JcCliError):
+    """
+    A user or system is not a member of a group
+    """
+
 class MissingRequiredArgumentError(JcCliError):
     """
     Required arguments are missing

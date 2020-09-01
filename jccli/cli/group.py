@@ -4,7 +4,9 @@ from logging import Logger
 
 import click
 from jcapiv2 import GroupType
+from jcapiv2.rest import ApiException
 
+from jccli.errors import SystemUserNotFoundError
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.jc_api_v2 import JumpcloudApiV2
 
@@ -102,7 +104,7 @@ def add_user(ctx, name, username):
     user_id = api1.get_user(username)['id']
     group_id = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)['id']
     result = api2.bind_user_to_group(user_id, group_id)
-    logger.info(f"Successfully added user 'f{username}' to group 'f{name}'")
+    logger.info(f"Successfully added user '{username}' to group '{name}'")
 
 
 @group.command('list-users')
@@ -138,7 +140,18 @@ def remove_user(ctx, name, username):
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     logger = ctx.obj.get('logger')
-    user_id = api1.get_user(username)['id']
+    try:
+        user_id = api1.get_user_id(username)
+    except SystemUserNotFoundError:
+        logger.error(f"user '{username}' not found")
+        sys.exit(1)
     group_id = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)['id']
-    result = api2.unbind_user_from_group(user_id, group_id)
-    logger.info(f"Successfully removed user 'f{username}' from group 'f{name}'")
+    if group_id is None:
+        logger.error(f"group '{name}' not found")
+        sys.exit(1)
+    try:
+        api2.unbind_user_from_group(user_id, group_id)
+    except ApiException as e:
+        logger.error(f"API exception (please confirm that '{username}' is a member of group '{name}')")
+        sys.exit(1)
+    logger.info(f"Successfully removed user '{username}' from group '{name}'")

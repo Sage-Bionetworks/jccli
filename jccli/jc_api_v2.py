@@ -136,7 +136,7 @@ class JumpcloudApiV2:
                                                              x_org_id='')
             return api_response
         except ApiException as error:
-            raise "Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error
+            raise ApiException("Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error)
 
     def bind_ldap_to_user(self, ldap_id):
         """
