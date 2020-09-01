@@ -34,7 +34,11 @@ def create_group(ctx, name, type):
     if type is None:
         logger.error('groups must have a type (either "user" or "system")')
         sys.exit(1)
-    response = api2.create_group(name, type)
+    try:
+        api2.create_group(name, type)
+    except ApiException:
+        logger.error(f"API error (confirm that no group of type '{type}' and name '{name}' already exists)")
+        sys.exit(1)
     logger.info(f"successfully created group: {name}")
 
 
@@ -102,12 +106,27 @@ def add_user(ctx, name, username):
     """
     Add user to group (group type is assumed to be 'user_group')
     """
+    logger = ctx.obj.get('logger')
+    if type is None:
+        logger.error('groups must have a type (either "user" or "system")')
+        sys.exit(1)
+
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
-    logger = ctx.obj.get('logger')
-    user_id = api1.get_user(username)['id']
-    group_id = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)['id']
-    result = api2.bind_user_to_group(user_id, group_id)
+    try:
+        user = api1.get_user(username)
+    except ApiException:
+        logger.info(f"no user found named {username}")
+        sys.exit(1)
+    group = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)
+    if group is None:
+        logger.error(f"no group of type '{type}' and name '{name}' found")
+        sys.exit(1)
+    try:
+        api2.bind_user_to_group(user['id'], group['id'])
+    except ApiException:
+        logger.error(f"API error (confirm that user {username} has not already been added to group {name}")
+        sys.exit(1)
     logger.info(f"Successfully added user '{username}' to group '{name}'")
 
 
@@ -155,7 +174,7 @@ def remove_user(ctx, name, username):
         sys.exit(1)
     try:
         api2.unbind_user_from_group(user_id, group_id)
-    except ApiException as e:
-        logger.error(f"API exception (please confirm that '{username}' is a member of group '{name}')")
+    except ApiException:
+        logger.error(f"API exception (confirm that '{username}' is a member of group '{name}')")
         sys.exit(1)
     logger.info(f"Successfully removed user '{username}' from group '{name}'")

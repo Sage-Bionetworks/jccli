@@ -54,7 +54,7 @@ class JumpcloudApiV2:
                                                               x_org_id='')
                 return api_response
             except ApiException as error:
-                raise "Exception when calling SystemGroupsApi->groups_system_post: %s\n" % error
+                raise ApiException("Exception when calling SystemGroupsApi->groups_system_post: %s\n" % error)
         elif group_type == jcapiv2.GroupType.USER_GROUP:
             try:
                 body = jcapiv2.UserGroupPost(name=group_name)
@@ -65,7 +65,7 @@ class JumpcloudApiV2:
                                                           x_org_id='')
                 return api_response
             except ApiException as error:
-                raise "Exception when calling UserGroupsApi->groups_user_post: %s\n" % error
+                raise ApiException("Exception when calling UserGroupsApi->groups_user_post: %s\n" % error)
         else:
             raise ValueError("group type must be system or user")
 
