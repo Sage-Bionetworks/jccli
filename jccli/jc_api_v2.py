@@ -69,19 +69,13 @@ class JumpcloudApiV2:
         else:
             raise ValueError("group type must be system or user")
 
-    def delete_group(self, name, type):
+    def delete_group(self, group_id, group_type):
         """
         Delete a Jumpcloud group
         :param name: The group name
         :return: API response
         """
-        group = self.get_group(name, type)
-        group_id = group['id']
-
-        if group is None:
-            raise GroupNotFoundError("Group {} not found".format(name))
-
-        if group['type'] == "system_group":
+        if group_type == 'system_group':
             try:
                 api_response = \
                     self.system_groups_api.groups_system_delete(group_id,
@@ -90,8 +84,8 @@ class JumpcloudApiV2:
                                                                 x_org_id='')
                 return api_response
             except ApiException as error:
-                raise "Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error
-        else:
+                raise ApiException("Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error)
+        elif group_type == 'user_group':
             try:
                 api_response = \
                     self.user_groups_api.groups_user_delete(group_id,
@@ -100,7 +94,7 @@ class JumpcloudApiV2:
                                                             x_org_id='')
                 return api_response
             except ApiException as error:
-                raise "Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error
+                raise ApiException("Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error)
 
     def bind_user_to_group(self, user_id, group_id):
         """

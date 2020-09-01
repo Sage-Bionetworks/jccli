@@ -86,7 +86,11 @@ def delete_group(ctx, name, type):
         logger.error('groups must have a type (either "user" or "system")')
         sys.exit(1)
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
-    api2.delete_group(name, type)
+    group = api2.get_group(group_name=name, group_type=type)
+    if group is None:
+        logger.error(f"no group found of type '{type}', {name}")
+        sys.exit(1)
+    api2.delete_group(group['id'], type)
     logger.info(f"successfully deleted group {name}")
 
 
