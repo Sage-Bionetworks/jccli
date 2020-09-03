@@ -1,7 +1,7 @@
 # jccli
 
-A command line client to manage [Jumpcloud](https://jumpcloud.com/)
-identify provider service.
+A command line client used to administrate the hosted
+[Jumpcloud](https://jumpcloud.com/) identity provider service.
 
 ## Getting Started
 
