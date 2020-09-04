@@ -132,7 +132,7 @@ def add_user(ctx, name, username):
 @click.pass_context
 def list_users(ctx, name):
     """
-    List users in a group (group type is assumed to be 'user_group')
+    List users in a 'user' group
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
