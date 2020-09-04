@@ -155,7 +155,7 @@ def list_users(ctx, name):
 @click.pass_context
 def remove_user(ctx, name, username):
     """
-    Remove user from group (group type is assumed to be 'user_group')
+    Remove user from 'user' group
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
