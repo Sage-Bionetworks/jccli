@@ -107,9 +107,6 @@ def add_user(ctx, name, username):
     Add user to group (group type is assumed to be 'user_group')
     """
     logger = ctx.obj.get('logger')
-    if type is None:
-        logger.error('groups must have a type (either "user" or "system")')
-        sys.exit(1)
 
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
@@ -120,7 +117,7 @@ def add_user(ctx, name, username):
         sys.exit(1)
     group = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)
     if group is None:
-        logger.error(f"no group of type '{type}' and name '{name}' found")
+        logger.error(f"no user group named '{name}' could be found")
         sys.exit(1)
     try:
         api2.bind_user_to_group(user['id'], group['id'])
