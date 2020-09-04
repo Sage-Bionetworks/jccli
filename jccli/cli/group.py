@@ -165,12 +165,12 @@ def remove_user(ctx, name, username):
     except SystemUserNotFoundError:
         logger.error(f"user '{username}' not found")
         sys.exit(1)
-    group_id = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)['id']
-    if group_id is None:
+    group = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)
+    if group is None:
         logger.error(f"group '{name}' not found")
         sys.exit(1)
     try:
-        api2.unbind_user_from_group(user_id, group_id)
+        api2.unbind_user_from_group(user_id, group['id'])
     except ApiException:
         logger.error(f"API exception (confirm that '{username}' is a member of group '{name}')")
         sys.exit(1)
