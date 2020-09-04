@@ -111,16 +111,16 @@ def add_user(ctx, name, username):
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     try:
-        user = api1.get_user(username)
-    except ApiException:
-        logger.info(f"no user found named {username}")
+        user_id = api1.get_user_id(username)
+    except SystemUserNotFoundError:
+        logger.error(f"user '{username}' not found")
         sys.exit(1)
     group = api2.get_group(group_name=name, group_type=GroupType.USER_GROUP)
     if group is None:
         logger.error(f"no user group named '{name}' could be found")
         sys.exit(1)
     try:
-        api2.bind_user_to_group(user['id'], group['id'])
+        api2.bind_user_to_group(user_id, group['id'])
     except ApiException:
         logger.error(f"API error (confirm that user {username} has not already been added to group {name}")
         sys.exit(1)
