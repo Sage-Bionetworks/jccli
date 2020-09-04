@@ -104,7 +104,7 @@ def delete_group(ctx, name, type):
 @click.pass_context
 def add_user(ctx, name, username):
     """
-    Add user to group (group type is assumed to be 'user_group')
+    Add user to a 'user' group
     """
     logger = ctx.obj.get('logger')
 
