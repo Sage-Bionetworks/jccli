@@ -115,7 +115,7 @@ class JumpcloudApiV2:
                                                              x_org_id='')
             return api_response
         except ApiException as error:
-            raise "Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error
+            raise ApiException("Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error)
 
     def unbind_user_from_group(self, user_id, group_id):
         body = jcapiv2.UserGroupMembersReq(id=user_id,
