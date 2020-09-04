@@ -39,7 +39,7 @@ def create_group(ctx, name, type):
     except ApiException:
         logger.error(f"API error (confirm that no group of type '{type}' and name '{name}' already exists)")
         sys.exit(1)
-    logger.info(f"successfully created group: {name}")
+    click.echo(f"successfully created group: {name}")
 
 
 @group.command('get')
@@ -58,7 +58,7 @@ def get_group(ctx, name, type):
         sys.exit(1)
     response = api2.get_group(group_name=name, group_type=type)
     serialized_response = json.dumps(response)
-    logger.info(f"{serialized_response}")
+    click.echo(f"{serialized_response}")
 
 
 @group.command('list')
@@ -73,7 +73,7 @@ def list_groups(ctx, type):
     logger: Logger = ctx.obj.get('logger')
     response = api2.get_groups(type=type)
     serialized_response = json.dumps(response, indent=2)
-    logger.info(f"{serialized_response}")
+    click.echo(f"{serialized_response}")
 
 
 @group.command('delete')
@@ -95,7 +95,7 @@ def delete_group(ctx, name, type):
         logger.error(f"no group found of type '{type}', {name}")
         sys.exit(1)
     api2.delete_group(group['id'], type)
-    logger.info(f"successfully deleted group {name}")
+    click.echo(f"successfully deleted group {name}")
 
 
 @group.command('add-user')
@@ -124,7 +124,7 @@ def add_user(ctx, name, username):
     except ApiException:
         logger.error(f"API error (confirm that user {username} has not already been added to group {name}")
         sys.exit(1)
-    logger.info(f"Successfully added user '{username}' to group '{name}'")
+    click.echo(f"Successfully added user '{username}' to group '{name}'")
 
 
 @group.command('list-users')
@@ -146,7 +146,7 @@ def list_users(ctx, name):
     user_ids = api2.list_group_users(group_id=group_id)
     users = api1.retrieve_users(user_ids=user_ids)
     serialized_response = json.dumps(users, indent=2)
-    logger.info(f"{serialized_response}")
+    click.echo(f"{serialized_response}")
 
 
 @group.command('remove-user')
@@ -174,4 +174,4 @@ def remove_user(ctx, name, username):
     except ApiException:
         logger.error(f"API exception (confirm that '{username}' is a member of group '{name}')")
         sys.exit(1)
-    logger.info(f"Successfully removed user '{username}' from group '{name}'")
+    click.echo(f"Successfully removed user '{username}' from group '{name}'")
