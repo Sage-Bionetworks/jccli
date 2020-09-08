@@ -107,7 +107,7 @@ def delete_group(ctx, name, type):
 @click.pass_context
 def add_user(ctx, name, username):
     """
-    Add user to a 'user' group
+    Add a user to a JumpCloud 'user' group
     """
     logger = ctx.obj.get('logger')
 
@@ -135,7 +135,7 @@ def add_user(ctx, name, username):
 @click.pass_context
 def list_users(ctx, name):
     """
-    List users in a 'user' group
+    List users in a JumpCloud 'user' group
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
@@ -158,7 +158,7 @@ def list_users(ctx, name):
 @click.pass_context
 def remove_user(ctx, name, username):
     """
-    Remove user from 'user' group
+    Remove a user from a JumpCloud 'user' group
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
