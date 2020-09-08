@@ -56,8 +56,11 @@ def get_group(ctx, name, type):
     if type is None:
         logger.error('groups must have a type (either "user" or "system")')
         sys.exit(1)
-    response = api2.get_group(group_name=name, group_type=type)
-    serialized_response = json.dumps(response)
+    group = api2.get_group(group_name=name, group_type=type)
+    if group is None:
+        logger.error(f"no group found of type '{type}', {name}")
+        sys.exit(1)
+    serialized_response = json.dumps(group)
     click.echo(f"{serialized_response}")
 
 
