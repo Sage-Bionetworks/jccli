@@ -58,7 +58,7 @@ def get_group(ctx, name, type):
         sys.exit(1)
     group = api2.get_group(group_name=name, group_type=type)
     if group is None:
-        logger.error(f"no group found of type '{type}', {name}")
+        logger.error(f"no group found of type '{type}', name '{name}'")
         sys.exit(1)
     serialized_response = json.dumps(group)
     click.echo(f"{serialized_response}")
@@ -95,7 +95,7 @@ def delete_group(ctx, name, type):
     api2 = JumpcloudApiV2(ctx.obj.get('key'))
     group = api2.get_group(group_name=name, group_type=type)
     if group is None:
-        logger.error(f"no group found of type '{type}', {name}")
+        logger.error(f"no group found of type '{type}', name '{name}'")
         sys.exit(1)
     api2.delete_group(group['id'], type)
     click.echo(f"successfully deleted group {name}")
