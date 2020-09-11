@@ -31,6 +31,14 @@ class JumpcloudApiV1:
         self.system_users_api = jcapiv1.SystemusersApi(jcapiv1.ApiClient(configuration))
         self.search_api = jcapiv1.SearchApi(jcapiv1.ApiClient(configuration))
 
+    def retrieve_users(self, user_ids=[]):
+        """
+        Retrieve a list of users corresponding to ids
+        """
+        # FIXME: This is not an ideal way to do this, but search_systemusers_post doesn't seem to allow filtering on ID
+        all_users = self.get_users()
+        return [user for user in all_users if user['id'] in user_ids]
+
     def search_users(self, filter={}):
         """
         Search for users on jumpcloud.
