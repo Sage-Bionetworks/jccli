@@ -13,6 +13,7 @@ from .group import group
 from .sync import sync
 from .user import user
 from ..__init__ import __version__
+from ..config import load_config
 
 
 LOGGER = logging.getLogger(__name__)
@@ -22,18 +23,27 @@ click_log.basic_config(LOGGER)
 @click.group()
 @click.option('--key', "-k", type=str, help='Jumpcloud API key (can also use environmental variable: JC_API_KEY)',
               envvar='JC_API_KEY')
-@click.option('--key-file', '-K', type=str, help='Path to text file containing Jumpcloud API key')
+@click.option('--profile', '-p', type=str, help='A user profile, as specified in the config file')
 @click_log.simple_verbosity_option(LOGGER)
 @click.version_option(version=__version__)
 @click.pass_context
-def cli(ctx, key, key_file):
+def cli(ctx, key, profile):
     """
     Run jccli.
     """
-    if key and key_file:
-        sys.exit("Please provide a key *or* a key file, not both")
-    if key_file and not key:
-        key = open(key_file).read()
+    try:
+        config = load_config(profile)
+    except KeyError:
+        sys.exit("no profile found named: %s" % (profile,))
+
+    # Try to get key from CLI, then from config
+    if key:
+        key = key
+    elif config.get('key', None):
+        key = config['key']
+    else:
+        sys.exit("please provide API key in config file or as optional argument")
+
     ctx.obj = {
         'key': key,
         'logger': LOGGER
