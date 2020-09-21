@@ -5,7 +5,7 @@ from pathlib import Path
 
 DEFAULT_SECTION = 'DEFAULT'
 CONFIG_FILE_PATH = str(Path.home().joinpath('.jccli.ini'))
-CONFIG_DEFAULTS = {}
+CONFIG_DEFAULTS = {'key': ''}
 
 
 def make_default_config():
