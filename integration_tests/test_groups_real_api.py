@@ -1,19 +1,10 @@
 import json
-import os
 
 from click.testing import CliRunner
-
 from jccli import cli
 
 
 class TestGroupsRealApi:
-    @classmethod
-    def setup_class(cls):
-        api_key = os.getenv('JC_API_KEY')
-        assert (api_key is not None),\
-            "The environmental variable `JC_API_KEY` must contain a valid Jumpcloud API key"
-        cls.api_key = api_key
-
     def test_user_group(self):
         GROUP_NAME = 'fake-group-123'
         USERS = [
@@ -42,8 +33,6 @@ class TestGroupsRealApi:
         # Create some users
         for user in USERS:
             result = runner.invoke(cli.cli, [
-                '--key',
-                self.api_key,
                 'user',
                 'create',
                 '--username',
@@ -66,8 +55,6 @@ class TestGroupsRealApi:
 
         # Create group
         result = runner.invoke(cli.cli, [
-            '--key',
-            self.api_key,
             'group',
             'create',
             '--user',
@@ -82,8 +69,6 @@ class TestGroupsRealApi:
         # Assign two users to group
         for user in USERS[:2]:
             result = runner.invoke(cli.cli, [
-                '--key',
-                self.api_key,
                 'group',
                 'add-user',
                 '--username',
@@ -98,8 +83,6 @@ class TestGroupsRealApi:
 
         # Check group membership
         result = runner.invoke(cli.cli, [
-            '--key',
-            self.api_key,
             'group',
             'list-users',
             '--name',
@@ -118,8 +101,6 @@ class TestGroupsRealApi:
 
         # Unbind a user
         result = runner.invoke(cli.cli, [
-            '--key',
-            self.api_key,
             'group',
             'remove-user',
             '--name',
@@ -134,8 +115,6 @@ class TestGroupsRealApi:
 
         # Check user has been removed
         result = runner.invoke(cli.cli, [
-            '--key',
-            self.api_key,
             'group',
             'list-users',
             '--name',
@@ -156,8 +135,6 @@ class TestGroupsRealApi:
         # Delete the users
         for user in USERS:
             result = runner.invoke(cli.cli, [
-                '--key',
-                self.api_key,
                 'user',
                 'delete',
                 '--username',
@@ -170,8 +147,6 @@ class TestGroupsRealApi:
 
         # Delete the group
         result = runner.invoke(cli.cli, [
-            '--key',
-            self.api_key,
             'group',
             'delete',
             '--user',

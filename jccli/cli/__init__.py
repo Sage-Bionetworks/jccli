@@ -39,7 +39,7 @@ def cli(ctx, key, profile):
     # Try to get key from CLI, then from config
     if key:
         key = key
-    elif config.get('key', None):
+    elif 'key' in config:
         key = config['key']
     else:
         sys.exit("please provide API key in config file or as optional argument")
