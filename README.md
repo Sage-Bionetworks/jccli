@@ -45,6 +45,13 @@ Commands:
 }
 ```
 
+#### Configuration
+
+Running JCCLI will automatically create a configuration file named `.jccli.ini` in the user's home directory. See
+[Python's configparser](https://docs.python.org/3/library/configparser.html) for formatting specification. In short,
+`field = "value"` pairs go under `[PROFILE]` headers, which can be switched between using the `--profile` option.
+Currently, the only field that can be set is the `key` field, which can be set to a JCCLI API key.
+
 
 ## Contributions
 
