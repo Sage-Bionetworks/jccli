@@ -4,9 +4,7 @@ from pathlib import Path
 
 
 DEFAULT_SECTION = 'DEFAULT'
-CONFIG_DIR = str(Path.home().joinpath('.jccli'))  # Configuration directory is at "~/.jccli"
-CONFIG_FILE_NAME = 'config.ini'
-CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, CONFIG_FILE_NAME)  # Configuration file is at "~/.jccli/config.ini"
+CONFIG_FILE_PATH = str(Path.home().joinpath('.jccli.ini'))
 CONFIG_DEFAULTS = {}
 
 
@@ -26,8 +24,6 @@ def load_config(profile=None):
     If profile is falsy, will load DEFAULT profile
     """
     # Create the configuration directory or the configuration file if either doesn't exist
-    if not os.path.exists(CONFIG_DIR):
-        os.makedirs(CONFIG_DIR)
     if not os.path.exists(CONFIG_FILE_PATH):
         make_default_config()
 

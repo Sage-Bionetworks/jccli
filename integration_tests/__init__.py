@@ -11,13 +11,11 @@ def setup_module(module):
     # file for testing purposes doesn't overwrite the dev's actual config file
     assert os.path.normpath(os.getenv('HOME')) == os.path.normpath(os.getcwd()) or os.getenv("TRAVIS"), \
         "The environmental variable `HOME` must be set to the project directory, unless this test is running on Travis"
-    os.makedirs('.jccli')
-    with open('.jccli/config.ini', 'w') as config_file:
+    with open('.jccli.ini', 'w') as config_file:
         config = configparser.ConfigParser()
         config['DEFAULT'] = {'key': api_key}
         config.write(config_file)
 
 
 def teardown_module(module):
-    os.remove('.jccli/config.ini')
-    os.removedirs('.jccli')
+    os.remove('.jccli.ini')
