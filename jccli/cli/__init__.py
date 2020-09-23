@@ -23,7 +23,8 @@ click_log.basic_config(LOGGER)
 @click.group()
 @click.option('--key', "-k", type=str, help='Jumpcloud API key (can also use environmental variable: JC_API_KEY)',
               envvar='JC_API_KEY')
-@click.option('--profile', '-p', type=str, help='A user profile, as specified in the config file')
+@click.option('--profile', '-p', help='A user profile, as specified in the config file', default='DEFAULT',
+              show_default=True)
 @click_log.simple_verbosity_option(LOGGER)
 @click.version_option(version=__version__)
 @click.pass_context
@@ -42,7 +43,7 @@ def cli(ctx, key, profile):
     elif 'key' in config:
         key = config['key']
     else:
-        sys.exit("please provide API key in config file or as optional argument")
+        sys.exit("please provide API key in config file, as optional argument, or as environmental variable")
 
     ctx.obj = {
         'key': key,
