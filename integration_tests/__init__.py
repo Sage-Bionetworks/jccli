@@ -7,9 +7,9 @@ def setup_module(module):
     assert (api_key is not None), \
         "The environmental variable `JC_API_KEY` must contain a valid Jumpcloud API key"
 
-    # Change home dir to the integration_tests or project directory (doesn't really matter which) so that the config
-    # file for testing purposes doesn't overwrite the dev's actual config file
-    assert os.path.normpath(os.getenv('HOME')) == os.path.normpath(os.getcwd()) or os.getenv("TRAVIS"), \
+    # Check that HOME is set to the project directory, ensuring that running the tests won't accidentally overwrite
+    # their own ~/.jccli.ini file.
+    assert os.path.basename(os.path.normpath(os.getenv('HOME'))) == 'jccli' or os.getenv("TRAVIS"), \
         "The environmental variable `HOME` must be set to the project directory, unless this test is running on Travis"
     with open('.jccli.ini', 'w') as config_file:
         config = configparser.ConfigParser()
