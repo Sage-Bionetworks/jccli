@@ -52,6 +52,13 @@ Running JCCLI will automatically create a configuration file named `.jccli.ini` 
 `field = "value"` pairs go under `[PROFILE]` headers, which can be switched between using the `--profile` option.
 Currently, the only field that can be set is the `key` field, which can be set to a JCCLI API key.
 
+#### Settings precedence
+
+JCCLI will look for settings (including API key, etc.) in the following order of precedence:
+1. Optional arguments
+2. Environmental variables
+3. Selected profile in config file
+4. `DEFAULT` profile in config file
 
 ## Contributions
 
