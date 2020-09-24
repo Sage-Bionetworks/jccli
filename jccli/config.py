@@ -9,8 +9,7 @@ CONFIG_DEFAULTS = {'key': ''}
 
 
 def make_default_config():
-    """Create a config file filled with default values. Only call this if no config file exists, or to overwrite it if
-    it does.
+    """Create a config file filled with default values. Only call this if no config file exists.
     """
     with open(CONFIG_FILE_PATH, 'w') as config_file:
         config = configparser.ConfigParser()
