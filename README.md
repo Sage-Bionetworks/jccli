@@ -49,8 +49,9 @@ Commands:
 
 Running JCCLI will automatically create a configuration file named `.jccli.ini` in the user's home directory. See
 [Python's configparser](https://docs.python.org/3/library/configparser.html) for formatting specification. In short,
-`field = "value"` pairs go under `[PROFILE]` headers, which can be switched between using the `--profile` option.
-Currently, the only field that can be set is the `key` field, which can be set to a JCCLI API key.
+`field = "value"` pairs go under `[profile]` headers (replaceing `profile` with the desired name of the profile), which
+can be switched between using the `--profile` option. Currently, the only field that can be set is the `key` field,
+which can be set to a JCCLI API key.
 
 #### Settings precedence
 
@@ -88,6 +89,9 @@ JCCLI doesn't unintentionally overwrite the user's existing config file (unless 
 We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
 `integration_tests/`) only on a push.
+
+Currently, the test suite expects the user running the tests to have a config file `.jccli.ini` in their home directory,
+with a section named `[jccli-dev-testing]`. This section currently does not need to have any content.
 
 ### GitHub
 

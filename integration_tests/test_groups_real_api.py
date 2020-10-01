@@ -1,6 +1,7 @@
 import json
 
 from click.testing import CliRunner
+from integration_tests import TESTING_PROFILE
 from jccli import cli
 
 
@@ -33,6 +34,8 @@ class TestGroupsRealApi:
         # Create some users
         for user in USERS:
             result = runner.invoke(cli.cli, [
+                '--profile',
+                TESTING_PROFILE,
                 'user',
                 'create',
                 '--username',
@@ -55,6 +58,8 @@ class TestGroupsRealApi:
 
         # Create group
         result = runner.invoke(cli.cli, [
+            '--profile',
+            TESTING_PROFILE,
             'group',
             'create',
             '--user',
@@ -69,6 +74,8 @@ class TestGroupsRealApi:
         # Assign two users to group
         for user in USERS[:2]:
             result = runner.invoke(cli.cli, [
+                '--profile',
+                TESTING_PROFILE,
                 'group',
                 'add-user',
                 '--username',
@@ -83,6 +90,8 @@ class TestGroupsRealApi:
 
         # Check group membership
         result = runner.invoke(cli.cli, [
+            '--profile',
+            TESTING_PROFILE,
             'group',
             'list-users',
             '--name',
@@ -101,6 +110,8 @@ class TestGroupsRealApi:
 
         # Unbind a user
         result = runner.invoke(cli.cli, [
+            '--profile',
+            TESTING_PROFILE,
             'group',
             'remove-user',
             '--name',
@@ -115,6 +126,8 @@ class TestGroupsRealApi:
 
         # Check user has been removed
         result = runner.invoke(cli.cli, [
+            '--profile',
+            TESTING_PROFILE,
             'group',
             'list-users',
             '--name',
@@ -135,6 +148,8 @@ class TestGroupsRealApi:
         # Delete the users
         for user in USERS:
             result = runner.invoke(cli.cli, [
+                '--profile',
+                TESTING_PROFILE,
                 'user',
                 'delete',
                 '--username',
@@ -147,6 +162,8 @@ class TestGroupsRealApi:
 
         # Delete the group
         result = runner.invoke(cli.cli, [
+            '--profile',
+            TESTING_PROFILE,
             'group',
             'delete',
             '--user',
