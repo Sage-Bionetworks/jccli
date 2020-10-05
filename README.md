@@ -47,11 +47,11 @@ Commands:
 
 #### Configuration
 
-Running JCCLI will automatically create a configuration file named `.jccli.ini` in the user's home directory. See
-[Python's configparser](https://docs.python.org/3/library/configparser.html) for formatting specification. In short,
-`field = "value"` pairs go under `[profile]` headers (replaceing `profile` with the desired name of the profile), which
-can be switched between using the `--profile` option. Currently, the only field that can be set is the `key` field,
-which can be set to a JCCLI API key.
+Running JCCLI will automatically create a configuration file (if it does not already exist) named `.jccli.ini` in the
+user's home directory. See [Python's configparser](https://docs.python.org/3/library/configparser.html) for formatting
+specification. In short, `field = "value"` pairs go under `[profile]` headers (replaceing `profile` with the desired
+name of the profile), which can be switched between using the `--profile` option. Currently, the only field that can be
+set is the `key` field, which can be set to a JCCLI API key.
 
 #### Settings precedence
 
