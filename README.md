@@ -55,7 +55,7 @@ set is the `key` field, which can be set to a JCCLI API key.
 
 #### Settings precedence
 
-JCCLI will look for settings (including API key, etc.) in the following order of precedence:
+JCCLI will look for settings (including API key, etc.) with the following order of precedence:
 1. Optional arguments
 2. Environmental variables
 3. Selected profile in config file
@@ -82,9 +82,8 @@ Alternatively, you can manually execute the validations by running `pre-commit r
 #### Tests
 
 JCCLI's test suite consists of unit tests and integration tests. The integration tests depend on the environment
-variable `JC_API_KEY`, which should be a Jumpcloud API key corresponding to a blank Jumpcloud instance which can be used
-for testing purposes. The test suite also requires the `HOME` var to be set to the working directory, so that running
-JCCLI doesn't unintentionally overwrite the user's existing config file (unless tests are running on Travis CI).
+variable `JC_API_KEY`, which should be a JumpCloud API key corresponding to a blank JumpCloud instance which can be used
+for testing purposes.
 
 We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
