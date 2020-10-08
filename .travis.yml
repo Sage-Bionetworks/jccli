@@ -10,8 +10,6 @@ stages:
   - name: integration_test
   - name: package
   - name: publish
-install:
-  - cp integration_tests/test_config.ini ~/.jccli.ini
 jobs:
   fast_finish: true
   include:
