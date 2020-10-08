@@ -21,7 +21,8 @@ click_log.basic_config(LOGGER)
 
 
 @click.group()
-@click.option('--key', "-k", type=str, help='Jumpcloud API key (can also use environmental variable: JC_API_KEY)',
+@click.option('--key', "-k", type=str,
+              help='JumpCloud API key (can also be set in config file or use environmental variable: JC_API_KEY)',
               envvar='JC_API_KEY')
 @click.option('--profile', '-p', help='A user profile, as specified in the config file', default='DEFAULT',
               show_default=True)
