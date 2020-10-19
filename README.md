@@ -81,9 +81,11 @@ Alternatively, you can manually execute the validations by running `pre-commit r
 
 #### Tests
 
-JCCLI's test suite consists of unit tests and integration tests. The integration tests depend on the environment
-variable `JC_API_KEY`, which should be a JumpCloud API key corresponding to a blank JumpCloud instance which can be used
-for testing purposes.
+JCCLI's test suite consists of unit tests and integration tests. The integration tests are designed to run on an actual
+(empty/blank) JumpCloud instance. You can provide a key either by setting the environmental variable `JC_API_KEY`, or by
+setting the `key` field under the section `[jccli-dev-testing]` in your `~/.jccli.ini` configuration file (See
+[Configuration](#Configuration) for details). Note: integration tests should NEVER allow the key in the `[DEFAULT]`
+section of `~/.jccli.ini` to be used.
 
 We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
@@ -103,7 +105,8 @@ wants to fix some typos in the documentation):
 3. Make commits to that branch (in this example, `john-smith:jccli/fix-typo-in-docs`). When pushed to GitHub, they
 should trigger Travis to run unit tests and integration tests. For the integration tests to pass, contributors need to
 make sure that the `JC_API_KEY` environmental variable in their Travis CI environment is set to a
-[Jumpcloud API Key](https://jumpcloud.com/demo) &mdash;specifically, one corresponding to a "blank" Jumpcloud instance.
+[Jumpcloud API Key](https://jumpcloud.com/demo) &mdash;specifically, one corresponding to an "empty" JumpCloud instance
+(i.e. it should have no users, groups, etc.).
 4. Make a pull request from the feature/issue branch on the fork (e.g. `john-smith:jccli/fix-typo-in-docs`) to
 `Sage-Bionetworks:jccli/master`.
 5. Wait for maintainers to review code and approve the pull request.
