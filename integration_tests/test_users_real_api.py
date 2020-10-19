@@ -1,11 +1,8 @@
 import json
-import os
-
-from jcapiv1 import ApiClient, Configuration, Systemuserslist, Systemuserputpost
-
-from integration_tests import TESTING_PROFILE
+from integration_tests import API_KEY
 from jccli import cli
-from click.testing import CliRunner, Result
+from click.testing import CliRunner
+from jcapiv1 import ApiClient, Configuration, Systemuserslist
 from jcapiv1.api.systemusers_api import SystemusersApi
 
 
@@ -13,14 +10,10 @@ class TestUsersRealApi:
     @classmethod
     def setup_class(cls):
         configuration = Configuration()
-        api_key = os.getenv('JC_API_KEY')
-        assert (api_key is not None),\
-            "The environmental variable `JC_API_KEY` must contain a valid Jumpcloud API key"
-        configuration.api_key['x-api-key'] = api_key
-        cls.systemusers_api = SystemusersApi(ApiClient(configuration=configuration))
-        cls.api_key = api_key
+        configuration.api_key['x-api-key'] = API_KEY
+        systemusers_api = SystemusersApi(ApiClient(configuration=configuration))
 
-        current_users: Systemuserslist = cls.systemusers_api.systemusers_list(
+        current_users: Systemuserslist = systemusers_api.systemusers_list(
             content_type='application/json',
             accept='application/json'
         )
@@ -35,10 +28,8 @@ class TestUsersRealApi:
 
         # Create a user
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'create',
             '--username',
@@ -61,10 +52,8 @@ class TestUsersRealApi:
 
         # Set (update) the user
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'set',
             '--username',
@@ -85,10 +74,8 @@ class TestUsersRealApi:
 
         # Get the user
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'get',
             '--username',
@@ -107,10 +94,8 @@ class TestUsersRealApi:
 
         # Delete the user
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'delete',
             '--username',
@@ -144,10 +129,8 @@ class TestUsersRealApi:
 
         # List (zero) users
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'list'
         ])
@@ -164,10 +147,8 @@ class TestUsersRealApi:
         # Create some users
         for user in USERS:
             result = runner.invoke(cli.cli, [
-                '--profile',
-                TESTING_PROFILE,
                 '--key',
-                self.api_key,
+                API_KEY,
                 'user',
                 'create',
                 '--username',
@@ -190,10 +171,8 @@ class TestUsersRealApi:
 
         # Get a list of all users
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'list'
         ])
@@ -213,10 +192,8 @@ class TestUsersRealApi:
 
         # Search for users with a particular last name
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'list',
             '--lastname',
@@ -238,10 +215,8 @@ class TestUsersRealApi:
 
         # Search for users with a particular last & first name
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
             '--key',
-            self.api_key,
+            API_KEY,
             'user',
             'list',
             '--firstname',
@@ -264,10 +239,8 @@ class TestUsersRealApi:
         # Clean up. Delete the users
         for user in USERS:
             result = runner.invoke(cli.cli, [
-                '--profile',
-                TESTING_PROFILE,
                 '--key',
-                self.api_key,
+                API_KEY,
                 'user',
                 'delete',
                 '--username',

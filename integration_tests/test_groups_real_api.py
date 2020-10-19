@@ -1,41 +1,68 @@
 import json
-
 from click.testing import CliRunner
-from integration_tests import TESTING_PROFILE
+from integration_tests import API_KEY
 from jccli import cli
+import jcapiv1
+import jcapiv2
+from jcapiv1.api.systemusers_api import SystemusersApi
+from jcapiv2.api.user_groups_api import UserGroupsApi
+
+
+GROUP_NAME = 'fake-group-123'
+USERS = [
+    {
+        'firstname': 'David',
+        'lastname': 'Smith',
+        'email': 'david.smith@fakesite.org',
+        'username': 'david_smith_123'
+    },
+    {
+        'firstname': 'David',
+        'lastname': 'Weinberg',
+        'email': 'david.weinberg@fakesite.org',
+        'username': 'david_weinberg_456'
+    },
+    {
+        'firstname': 'Ahamed',
+        'lastname': 'Weinberg',
+        'email': 'ahamed.weinberg@fakesite.org',
+        'username': 'ahamed_weinberg_789'
+    }
+]
 
 
 class TestGroupsRealApi:
+    @classmethod
+    def setup_class(cls):
+        apiv1_configuration = jcapiv1.Configuration()
+        apiv1_configuration.api_key['x-api-key'] = API_KEY
+        systemusers_api = SystemusersApi(jcapiv1.ApiClient(configuration=apiv1_configuration))
+
+        current_users = systemusers_api.systemusers_list(
+            content_type='application/json',
+            accept='application/json'
+        )
+        assert current_users.total_count == 0
+
+        apiv2_configuration = jcapiv2.Configuration()
+        apiv2_configuration.api_key['x-api-key'] = API_KEY
+        user_groups_api = UserGroupsApi(jcapiv2.ApiClient(configuration=apiv2_configuration))
+
+        current_groups = user_groups_api.groups_user_list(
+            content_type='application/json',
+            accept='application/json'
+        )
+        assert not any(group.name == GROUP_NAME for group in current_groups)
+
     def test_user_group(self):
-        GROUP_NAME = 'fake-group-123'
-        USERS = [
-            {
-                'firstname': 'David',
-                'lastname': 'Smith',
-                'email': 'david.smith@fakesite.org',
-                'username': 'david_smith_123'
-            },
-            {
-                'firstname': 'David',
-                'lastname': 'Weinberg',
-                'email': 'david.weinberg@fakesite.org',
-                'username': 'david_weinberg_456'
-            },
-            {
-                'firstname': 'Ahamed',
-                'lastname': 'Weinberg',
-                'email': 'ahamed.weinberg@fakesite.org',
-                'username': 'ahamed_weinberg_789'
-            }
-        ]
 
         runner = CliRunner()
 
         # Create some users
         for user in USERS:
             result = runner.invoke(cli.cli, [
-                '--profile',
-                TESTING_PROFILE,
+                '--key',
+                API_KEY,
                 'user',
                 'create',
                 '--username',
@@ -58,8 +85,8 @@ class TestGroupsRealApi:
 
         # Create group
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
+            '--key',
+            API_KEY,
             'group',
             'create',
             '--user',
@@ -74,8 +101,8 @@ class TestGroupsRealApi:
         # Assign two users to group
         for user in USERS[:2]:
             result = runner.invoke(cli.cli, [
-                '--profile',
-                TESTING_PROFILE,
+                '--key',
+                API_KEY,
                 'group',
                 'add-user',
                 '--username',
@@ -90,8 +117,8 @@ class TestGroupsRealApi:
 
         # Check group membership
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
+            '--key',
+            API_KEY,
             'group',
             'list-users',
             '--name',
@@ -110,8 +137,8 @@ class TestGroupsRealApi:
 
         # Unbind a user
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
+            '--key',
+            API_KEY,
             'group',
             'remove-user',
             '--name',
@@ -126,8 +153,8 @@ class TestGroupsRealApi:
 
         # Check user has been removed
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
+            '--key',
+            API_KEY,
             'group',
             'list-users',
             '--name',
@@ -148,8 +175,8 @@ class TestGroupsRealApi:
         # Delete the users
         for user in USERS:
             result = runner.invoke(cli.cli, [
-                '--profile',
-                TESTING_PROFILE,
+                '--key',
+                API_KEY,
                 'user',
                 'delete',
                 '--username',
@@ -162,8 +189,8 @@ class TestGroupsRealApi:
 
         # Delete the group
         result = runner.invoke(cli.cli, [
-            '--profile',
-            TESTING_PROFILE,
+            '--key',
+            API_KEY,
             'group',
             'delete',
             '--user',
