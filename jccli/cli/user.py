@@ -41,7 +41,7 @@ def create_user(ctx, username, email, firstname, lastname, allow_public_key, lda
         'sudo': str(sudo)
     }
     response = json.dumps(api1.create_user(systemuser), indent=2)
-    logger.info(f"{response}")
+    click.echo(f"{response}")
 
 
 @user.command("get")
@@ -55,7 +55,7 @@ def get_user(ctx, username):
     logger = ctx.obj.get('logger')
     response = api1.get_user(username=username)
     serialized_response = json.dumps(response, indent=2)
-    logger.info(f"{serialized_response}")
+    click.echo(f"{serialized_response}")
 
 
 @user.command('list')
@@ -75,7 +75,7 @@ def list_users(ctx, **kwargs):
     logger = ctx.obj.get('logger')
     response = api1.search_users(filter)
     serialized_response = json.dumps(response, indent=2)
-    logger.info(f"{serialized_response}")
+    click.echo(f"{serialized_response}")
 
 
 @user.command('set')
@@ -100,7 +100,7 @@ def set_user(ctx, username, email, firstname, lastname):
 
     response = json.dumps(api1.set_user(username, attributes=attributes), indent=2)
     logger = ctx.obj.get('logger')
-    logger.info(f'{response}')
+    click.echo(f'{response}')
 
 
 @user.command("delete")
