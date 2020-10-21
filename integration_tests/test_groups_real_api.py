@@ -34,6 +34,8 @@ USERS = [
 class TestGroupsRealApi:
     @classmethod
     def setup_class(cls):
+        '''Check that there are no existing users, and no groups named 'fake-group-123' in JC test account
+        '''
         apiv1_configuration = jcapiv1.Configuration()
         apiv1_configuration.api_key['x-api-key'] = API_KEY
         systemusers_api = SystemusersApi(jcapiv1.ApiClient(configuration=apiv1_configuration))

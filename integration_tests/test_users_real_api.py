@@ -9,6 +9,8 @@ from jcapiv1.api.systemusers_api import SystemusersApi
 class TestUsersRealApi:
     @classmethod
     def setup_class(cls):
+        '''Check that there are no existing users in JC test account
+        '''
         configuration = Configuration()
         configuration.api_key['x-api-key'] = API_KEY
         systemusers_api = SystemusersApi(ApiClient(configuration=configuration))
