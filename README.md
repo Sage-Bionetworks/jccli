@@ -52,6 +52,22 @@ configparser](https://docs.python.org/3/library/configparser.html) for formattin
 "value"` pairs go under `[profile]` headers (replacing `profile` with the desired name of the profile), which can be
 switched between using the `--profile` option. Currently, the only field that can be set is the `key` field, which can
 be set to a JCCLI API key. Help text for optional arguments indicates whether they can be set in a user's config file.
+If the user does not specify a `--profile`  it will default to `[DEFAULT]`.
+
+For example:
+
+```ini
+[DEFAULT]
+key = YOUR-KEY-HERE
+
+[side-account]
+key = YOUR-OTHER-KEY-HERE
+```
+
+A user who has the above content in their `~/.jccli.ini` config file can use jccli with the key `YOUR-KEY-HERE` if they
+don't specify a `--profile`; they can use the API key `YOUR-OTHER-KEY-HERE` if they specify `--profile side-account`; or
+they can use neither and pick a third key by using `--key YET-ANOTHER-KEY-HERE` (regardless of whether `--profile` is
+specified).
 
 #### Settings precedence
 
