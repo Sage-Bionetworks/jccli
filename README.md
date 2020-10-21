@@ -45,6 +45,37 @@ Commands:
 }
 ```
 
+#### Configuration
+
+JCCLI will look for an optional configuration file named `.jccli.ini` in the user's home directory. See [Python's
+configparser](https://docs.python.org/3/library/configparser.html) for formatting specification. In short, `field =
+"value"` pairs go under `[profile]` headers (replacing `profile` with the desired name of the profile), which can be
+switched between using the `--profile` option. Currently, the only field that can be set is the `key` field, which can
+be set to a JCCLI API key. Help text for optional arguments indicates whether they can be set in a user's config file.
+If the user does not specify a `--profile`  it will default to `[DEFAULT]`.
+
+For example:
+
+```ini
+[DEFAULT]
+key = YOUR-KEY-HERE
+
+[side-account]
+key = YOUR-OTHER-KEY-HERE
+```
+
+A user who has the above content in their `~/.jccli.ini` config file can use jccli with the key `YOUR-KEY-HERE` if they
+don't specify a `--profile`; they can use the API key `YOUR-OTHER-KEY-HERE` if they specify `--profile side-account`; or
+they can use neither and pick a third key by using `--key YET-ANOTHER-KEY-HERE` (regardless of whether `--profile` is
+specified).
+
+#### Settings precedence
+
+JCCLI will look for settings (including API key, etc.) with the following order of precedence:
+1. Optional arguments
+2. Environmental variables
+3. Selected profile in config file
+4. `DEFAULT` profile in config file
 
 ## Contributions
 
@@ -66,9 +97,11 @@ Alternatively, you can manually execute the validations by running `pre-commit r
 
 #### Tests
 
-JCCLI's test suite consists of unit tests and integration tests. The integration tests depend on the environment
-variable `JC_API_KEY`, which should be a Jumpcloud API key corresponding to a blank Jumpcloud instance which can be used
-for testing purposes.
+JCCLI's test suite consists of unit tests and integration tests. The integration tests are designed to run on an actual
+clean JumpCloud instance (see docstrings under `setup_class()` methods in `integration_tests/test_*.py` for details).
+You can provide a key either by setting the environmental variable `JC_API_KEY`, or by setting the `key` field under the
+section `[jccli-dev-testing]` in your `~/.jccli.ini` configuration file (See [Configuration](#Configuration) for
+details).
 
 We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
@@ -85,7 +118,8 @@ wants to fix some typos in the documentation):
 3. Make commits to that branch (in this example, `john-smith:jccli/fix-typo-in-docs`). When pushed to GitHub, they
 should trigger Travis to run unit tests and integration tests. For the integration tests to pass, contributors need to
 make sure that the `JC_API_KEY` environmental variable in their Travis CI environment is set to a
-[Jumpcloud API Key](https://jumpcloud.com/demo) &mdash;specifically, one corresponding to a "blank" Jumpcloud instance.
+[Jumpcloud API Key](https://jumpcloud.com/demo) &mdash;specifically, one corresponding to a "clean" JumpCloud instance
+(i.e. it should have no users, groups, etc.).
 4. Make a pull request from the feature/issue branch on the fork (e.g. `john-smith:jccli/fix-typo-in-docs`) to
 `Sage-Bionetworks:jccli/master`.
 5. Wait for maintainers to review code and approve the pull request.
