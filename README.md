@@ -19,15 +19,20 @@ Usage: jccli [OPTIONS] COMMAND [ARGS]...
   Run jccli.
 
 Options:
-  -k, --key TEXT       Jumpcloud API key
+  -k, --key TEXT       JumpCloud API key (can also be set in config file or
+                       use environmental variable: JC_API_KEY)
+
+  -p, --profile TEXT   A user profile, as specified in the config file
+                       [default: DEFAULT]
+
   -v, --verbosity LVL  Either CRITICAL, ERROR, WARNING, INFO or DEBUG
   --version            Show the version and exit.
   --help               Show this message and exit.
 
 Commands:
-  group  Group of commands for Jumpcloud groups :param ctx: :param key:...
+  group  Command set for groups
   sync   Sync Jumpcloud with a data file
-  user   User group of functions :param ctx: context object :return:
+  user   Command set for users
 ```
 
 
@@ -45,7 +50,7 @@ Commands:
 }
 ```
 
-#### Configuration
+### Configuration
 
 JCCLI will look for an optional configuration file named `.jccli.ini` in the user's home directory. See [Python's
 configparser](https://docs.python.org/3/library/configparser.html) for formatting specification. In short, `field =
@@ -69,7 +74,7 @@ don't specify a `--profile`; they can use the API key `YOUR-OTHER-KEY-HERE` if t
 they can use neither and pick a third key by using `--key YET-ANOTHER-KEY-HERE` (regardless of whether `--profile` is
 specified).
 
-#### Settings precedence
+### Settings precedence
 
 JCCLI will look for settings (including API key, etc.) with the following order of precedence:
 1. Optional arguments
@@ -162,10 +167,3 @@ Below are some handy resource links.
 * [Sphinx](http://www.sphinx-doc.org/en/master/) is a tool that makes it easy to create intelligent and beautiful documentation, written by Geog Brandl and licnsed under the BSD license.
 * [pytest](https://docs.pytest.org/en/latest/) helps you write better programs.
 * [GNU Make](https://www.gnu.org/software/make/) is a tool which controls the generation of executables and other non-source files of a program from the program's source files.
-
-
-## Authors
-
-* **zaro0508** - *Initial work* - [github](https://github.com/zaro0508)
-
-See also the list of [contributors](https://github.com/zaro0508/jccli/contributors) who participated in this project.
