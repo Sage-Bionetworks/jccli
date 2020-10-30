@@ -16,9 +16,9 @@ from distutils.util import strtobool
 import jcapiv1
 from jcapiv1 import Systemuserput
 from jcapiv1.rest import ApiException
-from jccli.errors import SystemUserNotFoundError
-
+from jccli.errors import SystemUserNotFoundError, SystemNotFoundError
 from jccli.helpers import class_to_dict
+
 
 # pylint: disable=too-many-arguments
 class JumpcloudApiV1:
@@ -29,6 +29,7 @@ class JumpcloudApiV1:
         configuration = jcapiv1.Configuration()
         configuration.api_key['x-api-key'] = api_key
         self.system_users_api = jcapiv1.SystemusersApi(jcapiv1.ApiClient(configuration))
+        self.systems_api = jcapiv1.SystemsApi(jcapiv1.ApiClient(configuration))
         self.search_api = jcapiv1.SearchApi(jcapiv1.ApiClient(configuration))
 
     def retrieve_users(self, user_ids=[]):
@@ -180,3 +181,46 @@ class JumpcloudApiV1:
             body=Systemuserput(**attributes)
         )
         return api_response.to_dict()
+
+    def search_systems(self, filter={}):
+        """
+        Search for users on JumpCloud.
+
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
+        :return:
+        """
+        query_filter = {'and': []}
+        for field, value in filter.items():
+            query_filter['and'].append({field: value})
+        if not filter:
+            query_filter = None
+
+        try:
+            api_response = self.search_api.search_systems_post(
+                content_type='application/json',
+                accept='application/json',
+                body={
+                    'filter': query_filter
+                }
+            )
+            systems = [system.to_dict() for system in api_response.results]
+            return systems
+        except ApiException as error:
+            raise "Exception when calling SystemusersApi->systems_search: %s\n" % error
+
+    def get_system(self, hostname):
+        """
+        Get detail view of a system.
+        :param hostname:
+        :return: system properties dict
+        """
+        systems = self.systems_api.systems_list(
+            accept='application/json',
+            content_type='application/json'
+        ).results
+
+        for system in systems:
+            if system.hostname == hostname:
+                return system.to_dict()
+
+        raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))

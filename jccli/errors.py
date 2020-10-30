@@ -13,6 +13,11 @@ class JcCliError(Exception):
     Base class for all JC CLI errors
     """
 
+class SystemNotFoundError(JcCliError):
+    """
+    JumpCloud system is not found
+    """
+
 class SystemUserNotFoundError(JcCliError):
     """
     Jumpcloud system user is not found

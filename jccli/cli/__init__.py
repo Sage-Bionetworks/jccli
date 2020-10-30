@@ -11,6 +11,7 @@ import click
 import click_log
 from .group import group
 from .sync import sync
+from .system import system
 from .user import user
 from ..__init__ import __version__
 from ..config import load_config
@@ -55,3 +56,4 @@ def cli(ctx, key, profile):
 cli.add_command(user)
 cli.add_command(group)
 cli.add_command(sync)
+cli.add_command(system)
