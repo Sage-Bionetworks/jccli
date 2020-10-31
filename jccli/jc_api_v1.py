@@ -14,7 +14,7 @@ This is a utility library for the jumpcloud version 1 api
 from distutils.util import strtobool
 
 import jcapiv1
-from jcapiv1 import Systemuserput
+from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
 from jccli.errors import SystemUserNotFoundError, SystemNotFoundError
 from jccli.helpers import class_to_dict
@@ -224,3 +224,25 @@ class JumpcloudApiV1:
                 return system.to_dict()
 
         raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))
+
+    def set_system(self, hostname, attributes):
+        system_id = self.get_system(hostname)['id']
+        response = self.systems_api.systems_put(
+            id=system_id,
+            accept='application/json',
+            content_type='application/json',
+            body=Systemput(**attributes)
+        )
+        return response.to_dict()
+
+    def delete_system(self, hostname):
+        system_id = self.get_system(hostname)['id']
+        try:
+            response = self.systems_api.systems_delete(
+                id=system_id,
+                accept='application/json',
+                content_type='application/json'
+            )
+            return response
+        except ApiException as error:
+            raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error
