@@ -1,9 +1,10 @@
 bump2version>=1.0.0,<2
 click>=7.0,<8
 click-log>=0.3.0,<0.4.0
+
+docker>=4.3,<4.4
 jcapiv1@git+https://github.com/TheJumpCloud/jcapi-python.git@v4.0.0#subdirectory=jcapiv1
 jcapiv2@git+https://github.com/TheJumpCloud/jcapi-python.git@v4.0.0#subdirectory=jcapiv2
-
 mock>=2.0.0,<2.1.0
 pip-check-reqs>=2.0.1,<3
 pip-licenses>=1.7.1,<2
