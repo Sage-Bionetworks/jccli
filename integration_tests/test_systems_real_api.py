@@ -86,8 +86,6 @@ class TestSystemsRealApi:
             hostname
         ])
         if result.exit_code:
-            print("Host name was: ")
-            print(hostname)
             raise ValueError(
                 "delete-system exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
             )
@@ -110,6 +108,68 @@ class TestSystemsRealApi:
             raise ValueError(result.output)
 
         assert connected_systems == SYSTEM_COUNT - 1, "System was not successfully deleted"
+
+    def test_update_system(self):
+        DISPLAY_NAME = 'computer-number-one'
+        runner = CliRunner()
+
+        # List systems, pick the first one (it takes a moment for them to load hostnames)
+        while True:
+            result = runner.invoke(cli.cli, [
+                '--key',
+                API_KEY,
+                'system',
+                'list'
+            ])
+            if result.exit_code:
+                raise ValueError(
+                    "list-systems exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+                )
+            try:
+                parsed_output = json.loads(result.output)
+                hostname = parsed_output[0]['hostname']
+                if hostname is not None:  # Systems take a moment to load a hostname
+                    break
+            except json.decoder.JSONDecodeError:
+                raise ValueError(result.output)
+
+        result = runner.invoke(cli.cli, [
+            '--key',
+            API_KEY,
+            'system',
+            'set',
+            '--hostname',
+            hostname,
+            '--display-name',
+            DISPLAY_NAME,
+            '--allow-ssh-password-authentication'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "set-system exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+
+        # Check that the system was changed successfully
+        result = runner.invoke(cli.cli, [
+            '--key',
+            API_KEY,
+            'system',
+            'get',
+            '--hostname',
+            hostname
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-systems exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+            allow_ssh_authentication = parsed_output['allow_ssh_password_authentication']
+            display_name = parsed_output['display_name']
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
+        assert allow_ssh_authentication
+        assert display_name == DISPLAY_NAME
 
     @classmethod
     def teardown_class(cls):

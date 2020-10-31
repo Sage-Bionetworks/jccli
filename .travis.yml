@@ -4,6 +4,9 @@ cache: pip
 addons:
   apt_packages:
     - pandoc
+sudo: required
+services:
+  - docker
 stages:
   - name: validate
   - name: unit_test

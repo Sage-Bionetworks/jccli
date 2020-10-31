@@ -62,7 +62,6 @@ def set_system(ctx, hostname, **kwargs):
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
 
     attributes = {key: value for key, value in kwargs.items() if value is not None and value != (None,)}
-    print('Attributes are: ' + str(attributes))
 
     try:
         response = json.dumps(api1.set_system(hostname=hostname, attributes=attributes), indent=2)
