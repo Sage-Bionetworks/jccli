@@ -50,6 +50,8 @@ class TestSystemsRealApi:
                 content_type='application/json',
                 accept='application/json'
             )
+            print("number of reporting systems:")
+            print(current_systems.total_count)
             if current_systems.total_count == SYSTEM_COUNT:
                 break
 
@@ -71,6 +73,8 @@ class TestSystemsRealApi:
             try:
                 parsed_output = json.loads(result.output)
                 hostname = parsed_output[0]['hostname']
+                print("hostname:")
+                print(hostname)
                 if hostname is not None:  # Systems take a moment to load a hostname
                     break
             except json.decoder.JSONDecodeError:
@@ -128,6 +132,8 @@ class TestSystemsRealApi:
             try:
                 parsed_output = json.loads(result.output)
                 hostname = parsed_output[0]['hostname']
+                print("hostname:")
+                print(hostname)
                 if hostname is not None:  # Systems take a moment to load a hostname
                     break
             except json.decoder.JSONDecodeError:
