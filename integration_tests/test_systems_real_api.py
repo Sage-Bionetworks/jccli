@@ -51,7 +51,7 @@ class TestSystemsRealApi:
                 content_type='application/json',
                 accept='application/json'
             )
-            print("number of reporting systems:")
+            print("number of reporting systems on JumpCloud:")
             print(current_systems.total_count)
             if current_systems.total_count == SYSTEM_COUNT:
                 break
@@ -61,6 +61,7 @@ class TestSystemsRealApi:
 
         # List systems, pick the first one (it takes a moment for them to load hostnames)
         while True:
+            print("checking whether docker containers have phoned home...")
             result = runner.invoke(cli.cli, [
                 '--key',
                 API_KEY,
@@ -120,6 +121,7 @@ class TestSystemsRealApi:
 
         # List systems, pick the first one (it takes a moment for them to load hostnames)
         while True:
+            print("checking whether docker containers have phoned home...")
             result = runner.invoke(cli.cli, [
                 '--key',
                 API_KEY,

@@ -19,7 +19,8 @@ unit_test:
 	py.test --cov-report term --cov=$(PROJ_SLUG) unit_tests/
 
 integration_test:
-	py.test --cov-report term --cov=$(PROJ_SLUG) integration_tests/
+    # Needs -s option to do keep-alive when running on Travis-CI
+	py.test -s --cov-report term --cov=$(PROJ_SLUG) integration_tests/
 
 quicktest:
 	py.test --cov-report term --cov=$(PROJ_SLUG) unit_tests/
