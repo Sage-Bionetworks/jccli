@@ -9,8 +9,9 @@ from jcapiv1 import SystemsApi
 from integration_tests import API_KEY
 from jccli import cli
 
+
 JC_CONNECT_KEY = os.getenv('JC_CONNECT_KEY')
-DOCKER_IMAGE = 'sagejcdevs/jumpcloud-agent:v0.0.1'  # Name of image to spin up
+DOCKER_IMAGE = 'sagejcdevs/jumpcloud-agent:v0.0.2'  # Name of image to spin up
 SYSTEM_COUNT = 5  # The number of docker containers to spin up and connect to the cloud
 
 
