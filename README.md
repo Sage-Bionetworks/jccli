@@ -16,7 +16,7 @@ pip install git+https://github.com/Sage-Bionetworks/jccli
 ```bash
 Usage: jccli [OPTIONS] COMMAND [ARGS]...
 
-  Run jccli.
+  Run jccli
 
 Options:
   -k, --key TEXT       Jumpcloud API key
