@@ -40,6 +40,6 @@ jobs:
         - make install
         - make publish
         - bumpversion patch --config-file setup.cfg
-        - openssl aes-256-cbc -K $encrypted_746a8d15852c_key -iv $encrypted_746a8d15852c_iv -in github-deploy-key-jccli.enc -out ~/.ssh/github-deploy-key-jccli -d
+        - openssl aes-256-cbc -K $encrypted_a793ef71ccb2_key -iv $encrypted_a793ef71ccb2_iv -in github-deploy-key-jccli.key.enc -out github-deploy-key-jccli.key -d
         - chmod 600 ~/.ssh/github-deploy-key-jccli && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/github-deploy-key-jccli
         - git add -u && git commit -m "[ci skip] bump version" && git remote set-url origin git@github.com:Sage-Bionetworks/jccli.git && git push origin HEAD:master
