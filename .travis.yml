@@ -5,11 +5,10 @@ addons:
   apt_packages:
     - pandoc
 stages:
-  - name: validate
-  - name: unit_test
-  - name: integration_test
-  - name: package
-  - name: publish
+  - validate
+  - test
+  - package
+  - publish
 jobs:
   fast_finish: true
   include:
@@ -18,11 +17,11 @@ jobs:
         - make install
         - pre-commit autoupdate
         - pre-commit run --all-files
-    - stage: unit-test
+    - stage: test
       script:
         - make install
         - make unit_test
-    - stage: integration-test
+    - stage: test
       if: type = push
       script:
         - make install
