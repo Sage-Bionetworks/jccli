@@ -1,4 +1,5 @@
 import json
+import time
 
 import docker
 import jcapiv1
@@ -55,6 +56,7 @@ class TestSystemsRealApi:
             print(current_systems.total_count)
             if current_systems.total_count == SYSTEM_COUNT:
                 break
+            time.sleep(1)
 
     def test_delete_system(self):
         runner = CliRunner()
@@ -81,6 +83,7 @@ class TestSystemsRealApi:
                     break
             except json.decoder.JSONDecodeError:
                 raise ValueError(result.output)
+            time.sleep(1)
 
         # Delete first host
         result = runner.invoke(cli.cli, [
@@ -141,6 +144,7 @@ class TestSystemsRealApi:
                     break
             except json.decoder.JSONDecodeError:
                 raise ValueError(result.output)
+            time.sleep(1)
 
         result = runner.invoke(cli.cli, [
             '--key',
