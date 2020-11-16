@@ -65,12 +65,12 @@ For example:
 [DEFAULT]
 key = YOUR-KEY-HERE
 
-[side-account]
+[alt-account]
 key = YOUR-OTHER-KEY-HERE
 ```
 
 A user who has the above content in their `~/.jccli.ini` config file can use jccli with the key `YOUR-KEY-HERE` if they
-don't specify a `--profile`; they can use the API key `YOUR-OTHER-KEY-HERE` if they specify `--profile side-account`; or
+don't specify a `--profile`; they can use the API key `YOUR-OTHER-KEY-HERE` if they specify `--profile alt-account`; or
 they can use neither and pick a third key by using `--key YET-ANOTHER-KEY-HERE` (regardless of whether `--profile` is
 specified).
 
