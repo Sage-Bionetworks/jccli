@@ -54,7 +54,9 @@ class TestGroupsRealApi:
             content_type='application/json',
             accept='application/json'
         )
-        assert not any(group.name == GROUP_NAME for group in current_groups)
+        assert not any(group.name == GROUP_NAME for group in current_groups), "no groups on the JumpCloud instance " \
+                                                                              "can have the same name as the groups " \
+                                                                              "used in this integration test"
 
     def test_user_group(self):
 
