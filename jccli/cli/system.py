@@ -26,6 +26,12 @@ def get_system(ctx, system_id):
 
 
 @system.command('list')
+@click.option('--active/--inactive', type=bool, default=None)
+@click.option('--arch', type=str, default=None, help='architecture')
+@click.option('--display-name', 'displayName', type=str, default=None)
+@click.option('--hostname', type=str, default=None)
+@click.option('--os', type=str, default=None)
+@click.option('--remote-ip', 'remoteIp', default=None)
 @click.pass_context
 def list_systems(ctx, **kwargs):
     """
@@ -33,7 +39,7 @@ def list_systems(ctx, **kwargs):
     """
     filter = {}
     for field_name, value in kwargs.items():
-        if value:
+        if value is not None:
             filter[field_name] = value
 
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
