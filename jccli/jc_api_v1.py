@@ -17,7 +17,7 @@ import jcapiv1
 from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
 from jccli.errors import SystemUserNotFoundError, SystemNotFoundError
-from jccli.helpers import class_to_dict
+from jccli.helpers import class_to_dict, make_query_filter
 
 
 # pylint: disable=too-many-arguments
@@ -47,11 +47,7 @@ class JumpcloudApiV1:
         :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
         :return:
         """
-        query_filter = {'and': []}
-        for field, value in filter.items():
-            query_filter['and'].append({field: value})
-        if not filter:
-            query_filter = None
+        query_filter = make_query_filter(filter)
 
         try:
             api_response = self.search_api.search_systemusers_post(
@@ -189,11 +185,7 @@ class JumpcloudApiV1:
         :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
         :return:
         """
-        query_filter = {'and': []}
-        for field, value in filter.items():
-            query_filter['and'].append({field: value})
-        if not filter:
-            query_filter = None
+        query_filter = make_query_filter(filter)
 
         try:
             api_response = self.search_api.search_systems_post(
