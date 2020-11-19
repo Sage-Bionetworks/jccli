@@ -106,7 +106,10 @@ JCCLI's test suite consists of unit tests and integration tests. The integration
 clean JumpCloud instance (see docstrings under `setup_class()` methods in `integration_tests/test_*.py` for details).
 You can provide a key either by setting the environmental variable `JC_API_KEY`, or by setting the `key` field under the
 section `[jccli-dev-testing]` in your `~/.jccli.ini` configuration file (See [Configuration](#Configuration) for
-details).
+details). You will also need to set the `JC_CONNECT_KEY` environment variable when running the integration test suite.
+This is the key used to allow systems to register with your JumpCloud instance, and can be found by navigating to the
+"devices" tab in the [JumpCloud web console](https://console.jumpcloud.com/login), and clicking the "+" button in the
+top-right corner.
 
 We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
