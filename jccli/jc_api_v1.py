@@ -16,7 +16,7 @@ from distutils.util import strtobool
 import jcapiv1
 from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
-from jccli.errors import SystemUserNotFoundError, SystemNotFoundError
+from jccli.errors import SystemUserNotFoundError
 from jccli.helpers import class_to_dict, make_query_filter
 
 
@@ -200,29 +200,28 @@ class JumpcloudApiV1:
         except ApiException as error:
             raise Exception("Exception when calling SystemusersApi->systems_search: %s\n" % error)
 
-    def get_system(self, hostname):
+    def get_system(self, system_id):
         """
         Get detail view of a system.
-        :param hostname:
+        :param system_id: the id of the system
         :return: system properties dict
         """
-        systems = self.search_systems(
-            filter={'hostname': hostname}
+        system = self.systems_api.systems_get(
+            content_type='application/json',
+            accept='application/json',
+            id=system_id
         )
 
-        if len(systems) == 1:
-            return systems[0]
+        return system.to_dict()
+        # raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))
 
-        raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))
-
-    def set_system(self, hostname, attributes):
+    def set_system(self, system_id, attributes):
         """
         Set attributes of system with the given hostname.
-        :param hostname: the hostname of the system
+        :param system_id: the id of the system
         :param attributes: dictionary of attributes to be updated
         :return: user properties dict
         """
-        system_id = self.get_system(hostname)['id']
         response = self.systems_api.systems_put(
             id=system_id,
             accept='application/json',
@@ -231,13 +230,12 @@ class JumpcloudApiV1:
         )
         return response.to_dict()
 
-    def delete_system(self, hostname):
+    def delete_system(self, system_id):
         """
         Delete a system with the given hostname
-        :param hostname: the hostname of the system
+        :param system_id: the id of the system
         :returns: System object that was deleted
         """
-        system_id = self.get_system(hostname)['id']
         try:
             response = self.systems_api.systems_delete(
                 id=system_id,

@@ -1,6 +1,5 @@
 import json
 import click
-from jccli.errors import SystemNotFoundError
 from jccli.jc_api_v1 import JumpcloudApiV1
 
 
@@ -14,19 +13,16 @@ def system(ctx):
 
 
 @system.command("get")
-@click.option('--hostname', '-h', required=True, type=str)
+@click.option('--id', '-i', 'system_id', required=True, type=str)
 @click.pass_context
-def get_system(ctx, hostname):
+def get_system(ctx, system_id):
     """
     Detail view of system, outputted in JSON.
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
-    try:
-        response = api1.get_system(hostname=hostname)
-        serialized_response = json.dumps(response, indent=2)
-        click.echo(f"{serialized_response}")
-    except SystemNotFoundError:
-        raise click.ClickException(f'no system found with hostname {hostname}', err=True)
+    response = api1.get_system(system_id=system_id)
+    serialized_response = json.dumps(response, indent=2)
+    click.echo(f"{serialized_response}")
 
 
 @system.command('list')
@@ -47,7 +43,7 @@ def list_systems(ctx, **kwargs):
 
 
 @system.command('set')
-@click.option('--hostname', required=True, type=str)
+@click.option('--id', '-i', 'system_id', required=True, type=str)
 @click.option('--allow-multi-factor-authentication/--disallow-multi-factor-authentication', type=bool, default=None)
 @click.option('--allow-public-key-authentication/--disallow-public-key-authentication', type=bool, default=None)
 @click.option('--allow-ssh-password-authentication/--disallow-ssh-password-authentication', type=bool, default=None)
@@ -55,31 +51,25 @@ def list_systems(ctx, **kwargs):
 @click.option('--display-name', type=str, default=None)
 @click.option('--tags', type=str, multiple=True, default=(None,))
 @click.pass_context
-def set_system(ctx, hostname, **kwargs):
+def set_system(ctx, system_id, **kwargs):
     """
-    Set attributes for system `hostname`
+    Set attributes for system with `id`
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
 
     attributes = {key: value for key, value in kwargs.items() if value is not None and value != (None,)}
 
-    try:
-        response = json.dumps(api1.set_system(hostname=hostname, attributes=attributes), indent=2)
-        click.echo(f'{response}')
-    except SystemNotFoundError:
-        raise click.ClickException(f'no system found with hostname {hostname}')
+    response = json.dumps(api1.set_system(system_id=system_id, attributes=attributes), indent=2)
+    click.echo(f'{response}')
 
 
 @system.command("delete")
-@click.option('--hostname', required=True, type=str)
+@click.option('--id', '-i', 'system_id', required=True, type=str)
 @click.pass_context
-def delete_system(ctx, hostname):
+def delete_system(ctx, system_id):
     """
     Delete a system
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
-    try:
-        response = api1.delete_system(hostname=hostname)
-        click.echo(f"successfully deleted system {hostname}")
-    except SystemNotFoundError:
-        raise click.ClickException(f"No system found with hostname {hostname}")
+    response = api1.delete_system(system_id=system_id)
+    click.echo(f"successfully deleted system {system_id}")

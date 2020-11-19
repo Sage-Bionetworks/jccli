@@ -71,7 +71,7 @@ class TestSystemsRealApi:
     def test_delete_system(self):
         runner = CliRunner()
 
-        # Pick a system's hostname from listed systems
+        # Pick a system's id from listed systems
         result = runner.invoke(cli.cli, [
             '--key',
             API_KEY,
@@ -84,7 +84,7 @@ class TestSystemsRealApi:
             )
         try:
             parsed_output = json.loads(result.output)
-            hostname = parsed_output[0]['hostname']
+            system_id = parsed_output[0]['id']
         except json.decoder.JSONDecodeError:
             raise ValueError(result.output)
 
@@ -94,8 +94,8 @@ class TestSystemsRealApi:
             API_KEY,
             'system',
             'delete',
-            '--hostname',
-            hostname
+            '--id',
+            system_id
         ])
         if result.exit_code:
             raise ValueError(
@@ -138,7 +138,7 @@ class TestSystemsRealApi:
             )
         try:
             parsed_output = json.loads(result.output)
-            hostname = parsed_output[0]['hostname']
+            system_id = parsed_output[0]['id']
         except json.decoder.JSONDecodeError:
             raise ValueError(result.output)
 
@@ -147,8 +147,8 @@ class TestSystemsRealApi:
             API_KEY,
             'system',
             'set',
-            '--hostname',
-            hostname,
+            '--id',
+            system_id,
             '--display-name',
             DISPLAY_NAME,
             '--allow-ssh-password-authentication'
@@ -164,8 +164,8 @@ class TestSystemsRealApi:
             API_KEY,
             'system',
             'get',
-            '--hostname',
-            hostname
+            '--id',
+            system_id
         ])
         if result.exit_code:
             raise ValueError(
