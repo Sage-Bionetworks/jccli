@@ -206,7 +206,7 @@ class JumpcloudApiV1:
             systems = [system.to_dict() for system in api_response.results]
             return systems
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systems_search: %s\n" % error
+            raise Exception("Exception when calling SystemusersApi->systems_search: %s\n" % error)
 
     def get_system(self, hostname):
         """
@@ -245,4 +245,4 @@ class JumpcloudApiV1:
             )
             return response
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error
+            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
