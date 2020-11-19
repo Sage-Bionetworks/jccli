@@ -64,7 +64,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in api_response.results]
             return users
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
+            raise Exception("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
 
     def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """
@@ -90,7 +90,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in class_to_dict(api_response.results)]
             return users
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
+            raise Exception("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
 
     def create_user(self, systemuser):
         """
@@ -137,7 +137,7 @@ class JumpcloudApiV1:
                                                                     x_org_id='')
             return api_response
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error
+            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
 
     def get_user_id(self, username):
         """
