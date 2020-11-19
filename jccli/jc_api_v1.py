@@ -245,6 +245,7 @@ class JumpcloudApiV1:
         """
         Delete a system with the given hostname
         :param hostname: the hostname of the system
+        :returns: System object that was deleted
         """
         system_id = self.get_system(hostname)['id']
         try:
