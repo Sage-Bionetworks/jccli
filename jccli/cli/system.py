@@ -1,4 +1,5 @@
 import json
+import sys
 import click
 from jccli.errors import SystemNotFoundError
 from jccli.jc_api_v1 import JumpcloudApiV1
@@ -27,6 +28,7 @@ def get_system(ctx, hostname):
         click.echo(f"{serialized_response}")
     except SystemNotFoundError:
         click.echo(f'no system found with hostname {hostname}', err=True)
+        sys.exit(1)
 
 
 @system.command('list')
@@ -68,6 +70,7 @@ def set_system(ctx, hostname, **kwargs):
         click.echo(f'{response}')
     except SystemNotFoundError:
         click.echo(f'no system found with hostname {hostname}', err=True)
+        sys.exit(1)
 
 
 @system.command("delete")
@@ -83,3 +86,4 @@ def delete_system(ctx, hostname):
         click.echo(f"successfully deleted system {hostname}")
     except SystemNotFoundError:
         click.echo(f'no system found with hostname {hostname}', err=True)
+        sys.exit(1)
