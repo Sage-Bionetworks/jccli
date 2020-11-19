@@ -226,6 +226,12 @@ class JumpcloudApiV1:
         raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))
 
     def set_system(self, hostname, attributes):
+        """
+        Set attributes of system with the given hostname.
+        :param hostname: the hostname of the system
+        :param attributes: dictionary of attributes to be updated
+        :return: user properties dict
+        """
         system_id = self.get_system(hostname)['id']
         response = self.systems_api.systems_put(
             id=system_id,
@@ -236,6 +242,10 @@ class JumpcloudApiV1:
         return response.to_dict()
 
     def delete_system(self, hostname):
+        """
+        Delete a system with the given hostname
+        :param hostname: the hostname of the system
+        """
         system_id = self.get_system(hostname)['id']
         try:
             response = self.systems_api.systems_delete(
