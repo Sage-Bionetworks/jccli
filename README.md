@@ -112,6 +112,12 @@ We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's 
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
 `integration_tests/`) only on a push.
 
+##### Docker
+
+Certain integration tests require the use of [Docker](https://www.docker.com/) to simulate JumpCloud systems. Make sure
+that [Docker is installed](https://docs.docker.com/get-docker/) and that the Docker daemon is running in order to
+execute these tests.
+
 ### GitHub
 
 Contributors are requested to use the following process (in the examples, we'll suppose that a user named `john-smith`
