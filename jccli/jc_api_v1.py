@@ -214,14 +214,12 @@ class JumpcloudApiV1:
         :param hostname:
         :return: system properties dict
         """
-        systems = self.systems_api.systems_list(
-            accept='application/json',
-            content_type='application/json'
-        ).results
+        systems = self.search_systems(
+            filter={'hostname': hostname}
+        )
 
-        for system in systems:
-            if system.hostname == hostname:
-                return system.to_dict()
+        if len(systems) == 1:
+            return systems[0]
 
         raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))
 
