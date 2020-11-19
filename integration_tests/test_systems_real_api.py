@@ -45,7 +45,6 @@ class TestSystemsRealApi:
             )
             cls.containers.append(container)
 
-
         # Wait for containers to boot up and connect to JumpCloud
         while True:
             current_systems = cls.systems_api.systems_list(
@@ -58,32 +57,36 @@ class TestSystemsRealApi:
                 break
             time.sleep(1)
 
+        # Check whether system hostnames have loaded (this takes a while after they phone home)
+        while True:
+            print("checking whether hostnames have loaded for docker containers")
+            current_systems = cls.systems_api.systems_list(
+                content_type='application/json',
+                accept='application/json'
+            )
+            if current_systems.results[0].hostname:
+                break
+            time.sleep(1)
+
     def test_delete_system(self):
         runner = CliRunner()
 
-        # List systems, pick the first one (it takes a moment for them to load hostnames)
-        while True:
-            print("checking whether docker containers have phoned home...")
-            result = runner.invoke(cli.cli, [
-                '--key',
-                API_KEY,
-                'system',
-                'list'
-            ])
-            if result.exit_code:
-                raise ValueError(
-                    "list-systems exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
-                )
-            try:
-                parsed_output = json.loads(result.output)
-                hostname = parsed_output[0]['hostname']
-                print("hostname:")
-                print(hostname)
-                if hostname is not None:  # Systems take a moment to load a hostname
-                    break
-            except json.decoder.JSONDecodeError:
-                raise ValueError(result.output)
-            time.sleep(1)
+        # Pick a system's hostname from listed systems
+        result = runner.invoke(cli.cli, [
+            '--key',
+            API_KEY,
+            'system',
+            'list'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-systems exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+            hostname = parsed_output[0]['hostname']
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
 
         # Delete first host
         result = runner.invoke(cli.cli, [
@@ -122,29 +125,22 @@ class TestSystemsRealApi:
         DISPLAY_NAME = 'computer-number-one'
         runner = CliRunner()
 
-        # List systems, pick the first one (it takes a moment for them to load hostnames)
-        while True:
-            print("checking whether docker containers have phoned home...")
-            result = runner.invoke(cli.cli, [
-                '--key',
-                API_KEY,
-                'system',
-                'list'
-            ])
-            if result.exit_code:
-                raise ValueError(
-                    "list-systems exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
-                )
-            try:
-                parsed_output = json.loads(result.output)
-                hostname = parsed_output[0]['hostname']
-                print("hostname:")
-                print(hostname)
-                if hostname is not None:  # Systems take a moment to load a hostname
-                    break
-            except json.decoder.JSONDecodeError:
-                raise ValueError(result.output)
-            time.sleep(1)
+        # List systems, pick the first one
+        result = runner.invoke(cli.cli, [
+            '--key',
+            API_KEY,
+            'system',
+            'list'
+        ])
+        if result.exit_code:
+            raise ValueError(
+                "list-systems exited with status code: %s;\nmessage was: %s" % (result.exit_code, result.exception)
+            )
+        try:
+            parsed_output = json.loads(result.output)
+            hostname = parsed_output[0]['hostname']
+        except json.decoder.JSONDecodeError:
+            raise ValueError(result.output)
 
         result = runner.invoke(cli.cli, [
             '--key',
