@@ -7,7 +7,7 @@ from jccli.jc_api_v1 import JumpcloudApiV1
 @click.pass_context
 def system(ctx):
     """
-    Command set for systems
+    Command set for systems.
     """
     pass
 
@@ -17,7 +17,7 @@ def system(ctx):
 @click.pass_context
 def get_system(ctx, system_id):
     """
-    Detail view of system, outputted in JSON.
+    Detail view of system.
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.get_system(system_id=system_id)
@@ -35,7 +35,7 @@ def get_system(ctx, system_id):
 @click.pass_context
 def list_systems(ctx, **kwargs):
     """
-    List view of systems, outputted in JSON
+    List view of systems. Show systems which match the selected options. Return all systems if no options are selected.
     """
     filter = {}
     for field_name, value in kwargs.items():
@@ -59,7 +59,7 @@ def list_systems(ctx, **kwargs):
 @click.pass_context
 def set_system(ctx, system_id, **kwargs):
     """
-    Set attributes for system with `id`
+    Set attributes for system with given ID.
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
 
@@ -74,7 +74,7 @@ def set_system(ctx, system_id, **kwargs):
 @click.pass_context
 def delete_system(ctx, system_id):
     """
-    Delete a system
+    Delete a system.
     """
     api1 = JumpcloudApiV1(ctx.obj.get('key'))
     response = api1.delete_system(system_id=system_id)

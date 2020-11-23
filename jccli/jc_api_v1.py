@@ -42,10 +42,12 @@ class JumpcloudApiV1:
 
     def search_users(self, filter={}):
         """
-        Search for users on jumpcloud.
+        Search for users on JumpCloud. `filter` can contain values for multiple fields, which will be combined with an
+        AND operator.
 
-        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
-        :return:
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David",
+                       "lastname": "Smith"}` will search for a user with first name "David" and last name "Smith".
+        :return: List[SystemUser]
         """
         query_filter = make_query_filter(filter)
 
@@ -180,10 +182,10 @@ class JumpcloudApiV1:
 
     def search_systems(self, filter={}):
         """
-        Search for users on JumpCloud.
+        Search for systems on JumpCloud.
 
-        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
-        :return:
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"hostname": "abc123"}`
+        :return: List[System]
         """
         query_filter = make_query_filter(filter)
 
@@ -217,10 +219,10 @@ class JumpcloudApiV1:
 
     def set_system(self, system_id, attributes):
         """
-        Set attributes of system with the given hostname.
+        Set attributes of system with the given system ID.
         :param system_id: the id of the system
         :param attributes: dictionary of attributes to be updated
-        :return: user properties dict
+        :return: system properties dict
         """
         response = self.systems_api.systems_put(
             id=system_id,
@@ -232,7 +234,7 @@ class JumpcloudApiV1:
 
     def delete_system(self, system_id):
         """
-        Delete a system with the given hostname
+        Delete a system with the given ID.
         :param system_id: the id of the system
         :returns: System object that was deleted
         """
