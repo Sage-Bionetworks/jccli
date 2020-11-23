@@ -8,25 +8,36 @@ Exceptions
 
 """
 
+
 class JcCliError(Exception):
     """
     Base class for all JC CLI errors
     """
+
+
+class JcApiException(JcCliError):
+    """
+    The API client has encountered an exception
+    """
+
 
 class SystemUserNotFoundError(JcCliError):
     """
     Jumpcloud system user is not found
     """
 
+
 class GroupNotFoundError(JcCliError):
     """
     Jumpcloud group is not found
     """
 
+
 class NotAMemberError(JcCliError):
     """
     A user or system is not a member of a group
     """
+
 
 class MissingRequiredArgumentError(JcCliError):
     """

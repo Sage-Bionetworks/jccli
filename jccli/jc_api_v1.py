@@ -16,7 +16,7 @@ from distutils.util import strtobool
 import jcapiv1
 from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
-from jccli.errors import SystemUserNotFoundError
+from jccli.errors import SystemUserNotFoundError, JcApiException
 from jccli.helpers import class_to_dict, make_query_filter
 
 
@@ -62,7 +62,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in api_response.results]
             return users
         except ApiException as error:
-            raise Exception("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
 
     def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """
@@ -88,7 +88,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in class_to_dict(api_response.results)]
             return users
         except ApiException as error:
-            raise Exception("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
 
     def create_user(self, systemuser):
         """
@@ -116,7 +116,7 @@ class JumpcloudApiV1:
             return api_response.to_dict()
         except ApiException as error:
             # FIXME: What should this behavior actually be?
-            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
 
     def delete_user(self, username):
         """
@@ -135,7 +135,7 @@ class JumpcloudApiV1:
                                                                     x_org_id='')
             return api_response
         except ApiException as error:
-            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
 
     def get_user_id(self, username):
         """
@@ -200,7 +200,7 @@ class JumpcloudApiV1:
             systems = [system.to_dict() for system in api_response.results]
             return systems
         except ApiException as error:
-            raise Exception("Exception when calling SystemusersApi->systems_search: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systems_search: %s\n" % error)
 
     def get_system(self, system_id):
         """
@@ -215,7 +215,6 @@ class JumpcloudApiV1:
         )
 
         return system.to_dict()
-        # raise SystemNotFoundError('No system found for hostname: %s' % (hostname,))
 
     def set_system(self, system_id, attributes):
         """
@@ -246,4 +245,4 @@ class JumpcloudApiV1:
             )
             return response
         except ApiException as error:
-            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
