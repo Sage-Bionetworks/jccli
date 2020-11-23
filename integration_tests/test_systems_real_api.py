@@ -46,7 +46,9 @@ class TestSystemsRealApi:
             cls.containers.append(container)
 
         # Wait for containers to boot up and connect to JumpCloud
-        while True:
+        # Cycle for a maximum of 10 minutes
+        for i in range(600):
+            time.sleep(1)
             current_systems = cls.systems_api.systems_list(
                 content_type='application/json',
                 accept='application/json'
@@ -55,10 +57,11 @@ class TestSystemsRealApi:
             print(current_systems.total_count)
             if current_systems.total_count == SYSTEM_COUNT:
                 break
-            time.sleep(1)
 
         # Check whether system hostnames have loaded (this takes a while after they phone home)
-        while True:
+        # Cycle for a maximum of 10 minutes
+        for i in range(600):
+            time.sleep(1)
             print("checking whether hostnames have loaded for docker containers")
             current_systems = cls.systems_api.systems_list(
                 content_type='application/json',
@@ -66,7 +69,6 @@ class TestSystemsRealApi:
             )
             if current_systems.results[0].hostname:
                 break
-            time.sleep(1)
 
     def test_delete_system(self):
         runner = CliRunner()
