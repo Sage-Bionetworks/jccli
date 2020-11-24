@@ -182,9 +182,12 @@ class JumpcloudApiV1:
 
     def search_systems(self, filter={}):
         """
-        Search for systems on JumpCloud.
+        Search for systems on JumpCloud. `filter` can contain values for multiple fields, which will be combined with an
+        AND operator.
 
-        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"hostname": "abc123"}`
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"active":
+                       True, "os": "ubuntu-20.04"}` will search for a system that is active and has the operating system
+                       "ubuntu-20.04".
         :return: List[System]
         """
         query_filter = make_query_filter(filter)
@@ -235,7 +238,7 @@ class JumpcloudApiV1:
         """
         Delete a system with the given ID.
         :param system_id: the id of the system
-        :returns: System object that was deleted
+        :return: System object that was deleted
         """
         try:
             response = self.systems_api.systems_delete(
