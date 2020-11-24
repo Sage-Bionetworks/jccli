@@ -62,7 +62,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in api_response.results]
             return users
         except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi:\n") from error
 
     def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """
@@ -88,7 +88,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in class_to_dict(api_response.results)]
             return users
         except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi->systemusers_list: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi:\n") from error
 
     def create_user(self, systemuser):
         """
@@ -135,7 +135,7 @@ class JumpcloudApiV1:
                                                                     x_org_id='')
             return api_response
         except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi\n") from error
 
     def get_user_id(self, username):
         """
@@ -203,7 +203,7 @@ class JumpcloudApiV1:
             systems = [system.to_dict() for system in api_response.results]
             return systems
         except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi->systems_search: %s\n" % error)
+            raise JcApiException("Exception when calling SearchApi:\n") from error
 
     def get_system(self, system_id):
         """
@@ -248,4 +248,4 @@ class JumpcloudApiV1:
             )
             return response
         except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
+            raise JcApiException("Exception when calling SystemApi:\n") from error
