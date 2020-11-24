@@ -18,7 +18,7 @@ from jcapiv2 import Group, GraphConnection
 from jcapiv2.rest import ApiException
 
 from jccli.helpers import class_to_dict
-from jccli.errors import GroupNotFoundError
+from jccli.errors import GroupNotFoundError, JcApiException
 
 
 class JumpcloudApiV2:
@@ -54,7 +54,7 @@ class JumpcloudApiV2:
                                                               x_org_id='')
                 return api_response
             except ApiException as error:
-                raise ApiException("Exception when calling SystemGroupsApi->groups_system_post: %s\n" % error)
+                raise JcApiException("Exception when calling SystemGroupsApi:\n") from error
         elif group_type == jcapiv2.GroupType.USER_GROUP:
             try:
                 body = jcapiv2.UserGroupPost(name=group_name)
@@ -65,7 +65,7 @@ class JumpcloudApiV2:
                                                           x_org_id='')
                 return api_response
             except ApiException as error:
-                raise ApiException("Exception when calling UserGroupsApi->groups_user_post: %s\n" % error)
+                raise JcApiException("Exception when calling UserGroupsApi:\n") from error
         else:
             raise ValueError("group type must be system or user")
 
@@ -84,7 +84,7 @@ class JumpcloudApiV2:
                                                                 x_org_id='')
                 return api_response
             except ApiException as error:
-                raise ApiException("Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error)
+                raise JcApiException("Exception when calling SystemGroupsApi:\n") from error
         elif group_type == 'user_group':
             try:
                 api_response = \
@@ -94,7 +94,7 @@ class JumpcloudApiV2:
                                                             x_org_id='')
                 return api_response
             except ApiException as error:
-                raise ApiException("Exception when calling UserGroupsApi->groups_user_delete: %s\n" % error)
+                raise JcApiException("Exception when calling UserGroupsApi:\n") from error
 
     def bind_user_to_group(self, user_id, group_id):
         """
@@ -115,7 +115,7 @@ class JumpcloudApiV2:
                                                              x_org_id='')
             return api_response
         except ApiException as error:
-            raise ApiException("Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error)
+            raise JcApiException("Exception when calling GraphApi:\n") from error
 
     def unbind_user_from_group(self, user_id, group_id):
         body = jcapiv2.UserGroupMembersReq(id=user_id,
@@ -130,7 +130,7 @@ class JumpcloudApiV2:
                                                              x_org_id='')
             return api_response
         except ApiException as error:
-            raise ApiException("Exception when calling GraphApi->graph_user_group_members_post: %s\n" % error)
+            raise JcApiException("Exception when calling GraphApi:\n") from error
 
     def bind_ldap_to_user(self, ldap_id):
         """
@@ -149,8 +149,7 @@ class JumpcloudApiV2:
                                                                    x_org_id='')
             return api_response
         except ApiException as error:
-            raise "Exception when calling \
-                   GraphApi->graph_ldap_server_associations_post: %s\n" % error
+            raise JcApiException("Exception when calling GraphApi-:\n") from error
 
     def get_group(self, group_name, group_type, limit=100, skip=0, sort='', fields='', filter='') -> dict:
         # pylint: disable-msg=too-many-locals
@@ -193,7 +192,7 @@ class JumpcloudApiV2:
 
             return [group.to_dict() for group in results]
         except ApiException as error:
-            raise "Exception when calling GroupsApi->groups_list: %s\n" % error
+            raise JcApiException("Exception when calling GroupsApi:\n") from error
 
     def list_group_users(self, group_id):
         """Return a list of user IDs associated with the group ID
