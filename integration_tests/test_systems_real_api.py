@@ -46,7 +46,7 @@ class TestSystemsRealApi:
             cls.containers.append(container)
 
         # Wait for containers to boot up and connect to JumpCloud
-        # Cycle for a maximum of 10 minutes
+        # Cycle for a maximum of 5 minutes
         for i in range(300):
             time.sleep(1)
             current_systems = cls.systems_api.systems_list(
@@ -61,7 +61,7 @@ class TestSystemsRealApi:
             raise ConnectionError("Test suite timed out waiting for systems to connect!")
 
         # Check whether system hostnames have loaded (this takes a while after they phone home)
-        # Cycle for a maximum of 10 minutes
+        # Cycle for a maximum of 5 minutes
         for i in range(300):
             time.sleep(1)
             print("checking whether hostnames have loaded for docker containers")
