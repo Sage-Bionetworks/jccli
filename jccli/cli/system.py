@@ -13,7 +13,7 @@ def system(ctx):
 
 
 @system.command("get")
-@click.option('--id', '-i', 'system_id', required=True, type=str)
+@click.option('--id', '-i', 'system_id', required=True, type=str, help="The system ID")
 @click.pass_context
 def get_system(ctx, system_id):
     """
@@ -49,7 +49,7 @@ def list_systems(ctx, **kwargs):
 
 
 @system.command('set')
-@click.option('--id', '-i', 'system_id', required=True, type=str)
+@click.option('--id', '-i', 'system_id', required=True, type=str, help='The system ID')
 @click.option('--allow-multi-factor-authentication/--disallow-multi-factor-authentication', type=bool, default=None)
 @click.option('--allow-public-key-authentication/--disallow-public-key-authentication', type=bool, default=None)
 @click.option('--allow-ssh-password-authentication/--disallow-ssh-password-authentication', type=bool, default=None)
@@ -70,7 +70,7 @@ def set_system(ctx, system_id, **kwargs):
 
 
 @system.command("delete")
-@click.option('--id', '-i', 'system_id', required=True, type=str)
+@click.option('--id', '-i', 'system_id', required=True, type=str, help='The system ID')
 @click.pass_context
 def delete_system(ctx, system_id):
     """
