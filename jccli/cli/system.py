@@ -55,7 +55,6 @@ def list_systems(ctx, **kwargs):
 @click.option('--allow-ssh-password-authentication/--disallow-ssh-password-authentication', type=bool, default=None)
 @click.option('--allow-ssh-root-login/--disallow-ssh-root-login', type=bool, default=None)
 @click.option('--display-name', type=str, default=None)
-@click.option('--tags', type=str, multiple=True, default=(None,))
 @click.pass_context
 def set_system(ctx, system_id, **kwargs):
     """
