@@ -14,11 +14,11 @@ This is a utility library for the jumpcloud version 1 api
 from distutils.util import strtobool
 
 import jcapiv1
-from jcapiv1 import Systemuserput
+from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
-from jccli.errors import SystemUserNotFoundError
+from jccli.errors import SystemUserNotFoundError, JcApiException
+from jccli.helpers import class_to_dict, make_query_filter
 
-from jccli.helpers import class_to_dict
 
 # pylint: disable=too-many-arguments
 class JumpcloudApiV1:
@@ -29,6 +29,7 @@ class JumpcloudApiV1:
         configuration = jcapiv1.Configuration()
         configuration.api_key['x-api-key'] = api_key
         self.system_users_api = jcapiv1.SystemusersApi(jcapiv1.ApiClient(configuration))
+        self.systems_api = jcapiv1.SystemsApi(jcapiv1.ApiClient(configuration))
         self.search_api = jcapiv1.SearchApi(jcapiv1.ApiClient(configuration))
 
     def retrieve_users(self, user_ids=[]):
@@ -41,16 +42,14 @@ class JumpcloudApiV1:
 
     def search_users(self, filter={}):
         """
-        Search for users on jumpcloud.
+        Search for users on JumpCloud. `filter` can contain values for multiple fields, which will be combined with an
+        AND operator.
 
-        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David"}`
-        :return:
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"firstname": "David",
+                       "lastname": "Smith"}` will search for a user with first name "David" and last name "Smith".
+        :return: List[SystemUser]
         """
-        query_filter = {'and': []}
-        for field, value in filter.items():
-            query_filter['and'].append({field: value})
-        if not filter:
-            query_filter = None
+        query_filter = make_query_filter(filter)
 
         try:
             api_response = self.search_api.search_systemusers_post(
@@ -63,7 +62,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in api_response.results]
             return users
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
+            raise JcApiException("Exception when calling SystemusersApi:\n") from error
 
     def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
         """
@@ -89,7 +88,7 @@ class JumpcloudApiV1:
             users = [user.to_dict() for user in class_to_dict(api_response.results)]
             return users
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_list: %s\n" % error
+            raise JcApiException("Exception when calling SystemusersApi:\n") from error
 
     def create_user(self, systemuser):
         """
@@ -117,7 +116,7 @@ class JumpcloudApiV1:
             return api_response.to_dict()
         except ApiException as error:
             # FIXME: What should this behavior actually be?
-            raise Exception("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
+            raise JcApiException("Exception when calling SystemusersApi->systemusers_post: %s\n" % error)
 
     def delete_user(self, username):
         """
@@ -136,7 +135,7 @@ class JumpcloudApiV1:
                                                                     x_org_id='')
             return api_response
         except ApiException as error:
-            raise "Exception when calling SystemusersApi->systemusers_post: %s\n" % error
+            raise JcApiException("Exception when calling SystemusersApi\n") from error
 
     def get_user_id(self, username):
         """
@@ -180,3 +179,73 @@ class JumpcloudApiV1:
             body=Systemuserput(**attributes)
         )
         return api_response.to_dict()
+
+    def search_systems(self, filter={}):
+        """
+        Search for systems on JumpCloud. `filter` can contain values for multiple fields, which will be combined with an
+        AND operator.
+
+        :param filter: (dict) an object used to filter search results for various fields. E.g.: `{"active":
+                       True, "os": "ubuntu-20.04"}` will search for a system that is active and has the operating system
+                       "ubuntu-20.04".
+        :return: List[System]
+        """
+        query_filter = make_query_filter(filter)
+
+        try:
+            api_response = self.search_api.search_systems_post(
+                content_type='application/json',
+                accept='application/json',
+                body={
+                    'filter': query_filter
+                }
+            )
+            systems = [system.to_dict() for system in api_response.results]
+            return systems
+        except ApiException as error:
+            raise JcApiException("Exception when calling SearchApi:\n") from error
+
+    def get_system(self, system_id):
+        """
+        Get detail view of a system.
+        :param system_id: the id of the system
+        :return: system properties dict
+        """
+        system = self.systems_api.systems_get(
+            content_type='application/json',
+            accept='application/json',
+            id=system_id
+        )
+
+        return system.to_dict()
+
+    def set_system(self, system_id, attributes):
+        """
+        Set attributes of system with the given system ID.
+        :param system_id: the id of the system
+        :param attributes: dictionary of attributes to be updated
+        :return: system properties dict
+        """
+        response = self.systems_api.systems_put(
+            id=system_id,
+            accept='application/json',
+            content_type='application/json',
+            body=Systemput(**attributes)
+        )
+        return response.to_dict()
+
+    def delete_system(self, system_id):
+        """
+        Delete a system with the given ID.
+        :param system_id: the id of the system
+        :return: System object that was deleted
+        """
+        try:
+            response = self.systems_api.systems_delete(
+                id=system_id,
+                accept='application/json',
+                content_type='application/json'
+            )
+            return response
+        except ApiException as error:
+            raise JcApiException("Exception when calling SystemApi:\n") from error

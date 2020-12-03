@@ -4,6 +4,9 @@ cache: pip
 addons:
   apt_packages:
     - pandoc
+sudo: required
+services:
+  - docker
 stages:
   - validate
   - test
@@ -17,11 +20,13 @@ jobs:
         - make install
         - pre-commit autoupdate
         - pre-commit run --all-files
-    - stage: test
+    - name: unit-test
+      stage: test
       script:
         - make install
         - make unit_test
-    - stage: test
+    - name: integration-test
+      stage: test
       if: type = push
       script:
         - make install

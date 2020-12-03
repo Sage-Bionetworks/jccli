@@ -61,3 +61,7 @@ class TestHelpers:
         user = jccli_helpers.get_user_from_term("{\"email\": \"jc.tester1@sagebase.org\", \"username\": \"jctester1\"}")
         assert (user['email'] == "jc.tester1@sagebase.org" and
                 user['username'] =="jctester1"), "Failed to get user definition"
+
+    def test_make_query_filter(self):
+        filter = {'field1': 'value1', 'field2': 'value2'}
+        assert jccli_helpers.make_query_filter(filter) == {'and': [{'field1': 'value1'}, {'field2': 'value2'}]}

@@ -16,7 +16,7 @@ pip install git+https://github.com/Sage-Bionetworks/jccli
 ```bash
 Usage: jccli [OPTIONS] COMMAND [ARGS]...
 
-  Run jccli.
+  Run jccli
 
 Options:
   -k, --key TEXT       JumpCloud API key (can also be set in config file or
@@ -106,11 +106,20 @@ JCCLI's test suite consists of unit tests and integration tests. The integration
 clean JumpCloud instance (see docstrings under `setup_class()` methods in `integration_tests/test_*.py` for details).
 You can provide a key either by setting the environmental variable `JC_API_KEY`, or by setting the `key` field under the
 section `[jccli-dev-testing]` in your `~/.jccli.ini` configuration file (See [Configuration](#Configuration) for
-details).
+details). You will also need to set the `JC_CONNECT_KEY` environment variable when running the integration test suite.
+This is the key used to allow systems to register with your JumpCloud instance, and can be found by navigating to the
+"devices" tab in the [JumpCloud web console](https://console.jumpcloud.com/login), and clicking the "+" button in the
+top-right corner.
 
 We use [Travis-CI](https://travis-ci.org/) to automate our testing. This repo's Travis configuration is set up to run
 the unit test suite (in `unit_tests/`) on every pull request and push, and to run the integration test suite (in
 `integration_tests/`) only on a push.
+
+##### Docker
+
+Certain integration tests require the use of [Docker](https://www.docker.com/) to simulate JumpCloud systems. Make sure
+that [Docker is installed](https://docs.docker.com/get-docker/) and that the Docker daemon is running in order to
+execute these tests.
 
 ### GitHub
 

@@ -11,6 +11,7 @@ This is a set of helper methods
 import json
 import yaml
 
+
 def class_to_dict(class_object):
     """
     Convert a list of jumpcloud users to a list of dicts
@@ -20,6 +21,21 @@ def class_to_dict(class_object):
         new_obj.append(item)
 
     return new_obj
+
+
+def make_query_filter(filter):
+    """
+    Turn a filter (dict, e.g. {'field1': 'value1', 'field2': 'value2'}) into an AND-joined filter for search requests in
+    the JumpCloud API (e.g. {'and': [{'field1': 'value1'}, {'field2': 'value2'}]}).
+    """
+    query_filter = None
+    if filter:
+        query_items = []
+        for field, value in filter.items():
+            query_items.append({field: value})
+        query_filter = {'and': query_items}
+    return query_filter
+
 
 def get_users_from_file(data_file):
     """
@@ -40,6 +56,7 @@ def get_users_from_file(data_file):
 
     return users
 
+
 def get_groups_from_file(data_file):
     """
     Get groups from a data file
@@ -59,6 +76,7 @@ def get_groups_from_file(data_file):
 
     return groups
 
+
 def get_user_from_term(input):
     """
     Get user from an input string
@@ -77,6 +95,7 @@ def get_user_from_term(input):
             raise error
 
     return user
+
 
 def get_user_from_file(user_file):
     """
