@@ -17,7 +17,7 @@ import jcapiv1
 from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
 from jccli.errors import SystemUserNotFoundError, JcApiException
-from jccli.helpers import class_to_dict, make_query_filter, PAGINATION_LIMIT
+from jccli.helpers import class_to_dict, make_query_filter, PAGE_LIMIT
 
 
 # pylint: disable=too-many-arguments
@@ -60,7 +60,7 @@ class JumpcloudApiV1:
                     accept='application/json',
                     body={
                         'filter': query_filter,
-                        'limit': PAGINATION_LIMIT,
+                        'limit': PAGE_LIMIT,
                         'skip': len(users)
                     }
                 )
@@ -173,15 +173,20 @@ class JumpcloudApiV1:
         query_filter = make_query_filter(filter)
 
         try:
-            api_response = self.search_api.search_systems_post(
-                content_type='application/json',
-                accept='application/json',
-                body={
-                    'filter': query_filter
-                }
-            )
-            systems = [system.to_dict() for system in api_response.results]
-            return systems
+            systems = []
+            while True:
+                api_response = self.search_api.search_systems_post(
+                    content_type='application/json',
+                    accept='application/json',
+                    body={
+                        'filter': query_filter,
+                        'limit': PAGE_LIMIT,
+                        'skip': len(systems)
+                    }
+                )
+                systems.extend([system.to_dict() for system in api_response.results])
+                if len(systems) == api_response.total_count:
+                    return systems
         except ApiException as error:
             raise JcApiException("Exception when calling SearchApi:\n") from error
 
