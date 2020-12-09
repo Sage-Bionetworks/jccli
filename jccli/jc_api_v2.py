@@ -17,8 +17,8 @@ import jcapiv2
 from jcapiv2 import Group, GraphConnection
 from jcapiv2.rest import ApiException
 
-from jccli.helpers import class_to_dict
 from jccli.errors import GroupNotFoundError, JcApiException
+from jccli.helpers import PAGE_LIMIT
 
 
 class JumpcloudApiV2:
@@ -180,17 +180,19 @@ class JumpcloudApiV2:
         else:
             filter = ''
         try:
-            # response does not provide a total so set limit to max value
-            results: List[Group] = self.groups_api.groups_list(content_type='application/json',
-                                                  accept='application/json',
-                                                  fields=fields,
-                                                  filter=filter,
-                                                  limit=limit,
-                                                  skip=skip,
-                                                  sort=sort,
-                                                  x_org_id='')
-
-            return [group.to_dict() for group in results]
+            # Iteratively make API calls until the API response is empty
+            groups = []
+            while True:
+                results: List[Group] = self.groups_api.groups_list(
+                    content_type='application/json',
+                    accept='application/json',
+                    filter=filter,
+                    limit=PAGE_LIMIT,
+                    skip=len(groups)
+                )
+                if len(results) == 0:
+                    return groups
+                groups.extend([group.to_dict() for group in results])
         except ApiException as error:
             raise JcApiException("Exception when calling GroupsApi:\n") from error
 
