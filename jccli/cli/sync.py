@@ -130,7 +130,7 @@ def sync_users(ctx, users):
     jc_usernames = []
     jc_emails = []
     jc_users = []
-    jc_users_request = api1.get_users()
+    jc_users_request = api1.search_users()
     if jc_users_request:
         for jc_user in jc_users_request:
             jc_usernames.append(jc_user['username'])

@@ -12,6 +12,10 @@ import json
 import yaml
 
 
+# Total number of results to allow in one API request
+PAGE_LIMIT = 100
+
+
 def class_to_dict(class_object):
     """
     Convert a list of jumpcloud users to a list of dicts
