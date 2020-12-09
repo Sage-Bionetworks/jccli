@@ -40,12 +40,8 @@ def cli(ctx, key, profile):
         sys.exit("no profile found named: %s" % (profile,))
 
     # Try to get key from CLI, then from config
-    if key:
-        key = key
-    elif 'key' in config:
+    if not key and 'key' in config:
         key = config['key']
-    else:
-        sys.exit("please provide API key in config file, as optional argument, or as environmental variable")
 
     ctx.obj = {
         'key': key,
