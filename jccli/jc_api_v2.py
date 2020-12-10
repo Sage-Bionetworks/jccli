@@ -159,12 +159,12 @@ class JumpcloudApiV2:
         :param group_name: name of the JC group
         :return:  The jumpcloud group id and type, NONE group is not found
         """
-        groups = self.get_groups(limit=limit, skip=skip, sort=sort, fields=fields)
+        groups = self.get_groups()
         for group in groups:
             if group['name'] == group_name and group['type'] == group_type:
                 return group
 
-    def get_groups(self, type=None, limit=100, skip=0, sort='', fields='') -> List[Group]:
+    def get_groups(self, type=None) -> List[Group]:
         # pylint: disable-msg=too-many-locals
         # pylint: disable-msg=too-many-arguments
         """
