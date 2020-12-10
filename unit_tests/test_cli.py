@@ -11,6 +11,7 @@ module.
 # fmt: off
 import json
 import pytest
+from jcapiv1 import Systemuserslist, Systemuser
 from jcapiv2 import Group
 import jccli.cli as cli
 
@@ -24,6 +25,15 @@ from jccli.jc_api_v2 import JumpcloudApiV2
 
 
 MOCK_USER_GROUPS = [Group(id=str(i), name='group-%d' % (i,), type='user_group') for i in range(2*PAGE_LIMIT+2)]
+MOCK_USERS_LIST = [Systemuser(username='user-%d' % (i,), email='fakeemail%d@fakesite.org' % (i,)) for i in range(1, 2 * PAGE_LIMIT + 2)]
+
+
+def mock_get_users(self, content_type, accept, body, **kwargs):
+    """Mock of jcapiv1.api.search_api.SearchApi.search_systemusers_post()
+    """
+    limit = body['limit']
+    skip = body['skip']
+    return Systemuserslist(results=MOCK_USERS_LIST[skip:skip+limit], total_count=len(MOCK_USERS_LIST))
 
 
 def mock_groups_list(self, content_type, accept, limit, skip, filter, **kwargs):
@@ -230,3 +240,20 @@ class TestCli:
 
         observed_response = json.loads(result.output)
         assert observed_response == [group.to_dict() for group in MOCK_USER_GROUPS]
+
+    @unittest_patch('jcapiv1.api.search_api.SearchApi.search_systemusers_post', new=mock_get_users)
+    def test_user_pagination(self):
+        """Test that list-users can handle pagination
+        """
+        runner: CliRunner = CliRunner()
+        result: Result = runner.invoke(
+            cli.cli,
+            [
+                '--key',
+                '1234-abcd',
+                'user',
+                'list'
+            ]
+        )
+        observed_response = json.loads(result.output)
+        assert observed_response == [user.to_dict() for user in MOCK_USERS_LIST]
