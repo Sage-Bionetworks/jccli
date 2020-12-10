@@ -11,13 +11,25 @@ module.
 # fmt: off
 import json
 import pytest
+from jcapiv2 import Group
 import jccli.cli as cli
 
 # fmt: on
 from click.testing import CliRunner, Result
 from mock import patch
+from unittest.mock import patch as unittest_patch
+from jccli.helpers import PAGE_LIMIT
 from jccli.jc_api_v1 import JumpcloudApiV1
 from jccli.jc_api_v2 import JumpcloudApiV2
+
+
+MOCK_USER_GROUPS = [Group(id=str(i), name='group-%d' % (i,), type='user_group') for i in range(2*PAGE_LIMIT+2)]
+
+
+def mock_groups_list(self, content_type, accept, limit, skip, filter, **kwargs):
+    """Mock of groups_api.groups_list(), used for testing pagination
+    """
+    return MOCK_USER_GROUPS[skip:skip+limit]
 
 
 class TestCli:
@@ -199,3 +211,22 @@ class TestCli:
         )
         observed_response = json.loads(result.output)
         assert observed_response == response, "Failed to update user"
+
+    @unittest_patch('jcapiv2.api.groups_api.GroupsApi.groups_list', new=mock_groups_list)
+    def test_group_pagination(self):
+        """Test that list-groups can handle pagination
+        """
+        runner: CliRunner = CliRunner()
+        result: Result = runner.invoke(
+            cli.cli,
+            [
+                '--key',
+                '1234-abcd',
+                'group',
+                'list',
+                '--user'
+            ]
+        )
+
+        observed_response = json.loads(result.output)
+        assert observed_response == [group.to_dict() for group in MOCK_USER_GROUPS]
