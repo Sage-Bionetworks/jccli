@@ -11,7 +11,7 @@ module.
 # fmt: off
 import json
 import pytest
-from jcapiv1 import Systemuserslist, Systemuser
+from jcapiv1 import Systemuserslist, Systemuser, System, Systemslist
 from jcapiv2 import Group
 import jccli.cli as cli
 
@@ -26,14 +26,23 @@ from jccli.jc_api_v2 import JumpcloudApiV2
 
 MOCK_USER_GROUPS = [Group(id=str(i), name='group-%d' % (i,), type='user_group') for i in range(2*PAGE_LIMIT+2)]
 MOCK_USERS_LIST = [Systemuser(username='user-%d' % (i,), email='fakeemail%d@fakesite.org' % (i,)) for i in range(1, 2 * PAGE_LIMIT + 2)]
+MOCK_SYSTEMS_LIST = [System(id=str(i)) for i in range(2 * PAGE_LIMIT + 1)]
 
 
-def mock_get_users(self, content_type, accept, body, **kwargs):
+def mock_search_users(self, content_type, accept, body, **kwargs):
     """Mock of jcapiv1.api.search_api.SearchApi.search_systemusers_post()
     """
     limit = body['limit']
     skip = body['skip']
     return Systemuserslist(results=MOCK_USERS_LIST[skip:skip+limit], total_count=len(MOCK_USERS_LIST))
+
+
+def mock_search_systems(self, content_type, accept, body, **kwargs):
+    """Mock of SearchApi.search_systems_post()
+    """
+    limit = body['limit']
+    skip = body['skip']
+    return Systemslist(results=MOCK_SYSTEMS_LIST[skip:skip+limit], total_count=len(MOCK_SYSTEMS_LIST))
 
 
 def mock_groups_list(self, content_type, accept, limit, skip, filter, **kwargs):
@@ -238,10 +247,12 @@ class TestCli:
             ]
         )
 
+        if result.exit_code:
+            raise result.exception
         observed_response = json.loads(result.output)
         assert observed_response == [group.to_dict() for group in MOCK_USER_GROUPS]
 
-    @unittest_patch('jcapiv1.api.search_api.SearchApi.search_systemusers_post', new=mock_get_users)
+    @unittest_patch('jcapiv1.api.search_api.SearchApi.search_systemusers_post', new=mock_search_users)
     def test_user_pagination(self):
         """Test that list-users can handle pagination
         """
@@ -255,5 +266,28 @@ class TestCli:
                 'list'
             ]
         )
+
+        if result.exit_code:
+            raise result.exception
         observed_response = json.loads(result.output)
         assert observed_response == [user.to_dict() for user in MOCK_USERS_LIST]
+
+    @unittest_patch('jcapiv1.api.search_api.SearchApi.search_systems_post', new=mock_search_systems)
+    def test_system_pagination(self):
+        """Test that list-systems can handle pagination
+        """
+        runner: CliRunner = CliRunner()
+        result: Result = runner.invoke(
+            cli.cli,
+            [
+                '--key',
+                '1234-abcd',
+                'system',
+                'list'
+            ]
+        )
+
+        if result.exit_code:
+            raise result.exception
+        observed_response = json.loads(result.output)
+        assert observed_response == [system.to_dict() for system in MOCK_SYSTEMS_LIST]
