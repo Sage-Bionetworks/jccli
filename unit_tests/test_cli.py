@@ -12,7 +12,7 @@ module.
 import json
 import pytest
 from jcapiv1 import Systemuserslist, Systemuser, System, Systemslist
-from jcapiv2 import Group
+from jcapiv2 import Group, GraphConnection, GraphObject
 import jccli.cli as cli
 
 # fmt: on
@@ -25,8 +25,10 @@ from jccli.jc_api_v2 import JumpcloudApiV2
 
 
 MOCK_USER_GROUPS = [Group(id=str(i), name='group-%d' % (i,), type='user_group') for i in range(2*PAGE_LIMIT+2)]
-MOCK_USERS_LIST = [Systemuser(username='user-%d' % (i,), email='fakeemail%d@fakesite.org' % (i,)) for i in range(1, 2 * PAGE_LIMIT + 2)]
+MOCK_USERS_LIST = [Systemuser(id='%d' % (i,), username='user-%d' % (i,), email='fakeemail%d@fakesite.org' % (i,)) for i in range(1, 2 * PAGE_LIMIT + 2)]
 MOCK_SYSTEMS_LIST = [System(id=str(i)) for i in range(2 * PAGE_LIMIT + 1)]
+MOCK_GROUP_ID = '6789defg'
+MOCK_GROUP_MEMBER_USER_IDS = [user.id for user in MOCK_USERS_LIST]
 
 
 def mock_search_users(self, content_type, accept, body, **kwargs):
@@ -49,6 +51,14 @@ def mock_groups_list(self, content_type, accept, limit, skip, filter, **kwargs):
     """Mock of groups_api.groups_list(), used for testing pagination
     """
     return MOCK_USER_GROUPS[skip:skip+limit]
+
+
+def mock_list_user_group_members(self, content_type, accept, group_id, limit, skip, **kwargs):
+    """Mock of user_groups_api.graph_user_group_members_list(), used for testing pagination.
+    (Pretends that all users are members of this group)
+    """
+    assert group_id == MOCK_GROUP_ID
+    return [GraphConnection(to=GraphObject(id=user.id, type='user')) for user in MOCK_USERS_LIST[skip:skip+limit]]
 
 
 class TestCli:
@@ -291,3 +301,28 @@ class TestCli:
             raise result.exception
         observed_response = json.loads(result.output)
         assert observed_response == [system.to_dict() for system in MOCK_SYSTEMS_LIST]
+
+    @unittest_patch('jcapiv1.api.search_api.SearchApi.search_systemusers_post', new=mock_search_users)
+    @unittest_patch('jcapiv2.api.user_groups_api.UserGroupsApi.graph_user_group_members_list', new=mock_list_user_group_members)
+    @patch('jccli.jc_api_v2.JumpcloudApiV2.get_group')
+    def test_group_users_pagination(self, mock_get_group):
+        """Test that list-systems can handle pagination
+        """
+        mock_get_group.return_value = {'id': MOCK_GROUP_ID}
+        runner: CliRunner = CliRunner()
+        result: Result = runner.invoke(
+            cli.cli,
+            [
+                '--key',
+                '1234-abcd',
+                'group',
+                'list-users',
+                '--name',
+                'fake-group'
+            ]
+        )
+
+        if result.exit_code:
+            raise result.exception
+        observed_response = json.loads(result.output)
+        assert observed_response == [user.to_dict() for user in MOCK_USERS_LIST]
