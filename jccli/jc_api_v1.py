@@ -17,7 +17,7 @@ import jcapiv1
 from jcapiv1 import Systemuserput, Systemput
 from jcapiv1.rest import ApiException
 from jccli.errors import SystemUserNotFoundError, JcApiException
-from jccli.helpers import class_to_dict, make_query_filter
+from jccli.helpers import class_to_dict, make_query_filter, PAGE_LIMIT
 
 
 # pylint: disable=too-many-arguments
@@ -37,7 +37,7 @@ class JumpcloudApiV1:
         Retrieve a list of users corresponding to ids
         """
         # FIXME: This is not an ideal way to do this, but search_systemusers_post doesn't seem to allow filtering on ID
-        all_users = self.get_users()
+        all_users = self.search_users()
         return [user for user in all_users if user['id'] in user_ids]
 
     def search_users(self, filter={}):
@@ -52,43 +52,23 @@ class JumpcloudApiV1:
         query_filter = make_query_filter(filter)
 
         try:
-            api_response = self.search_api.search_systemusers_post(
-                content_type='application/json',
-                accept='application/json',
-                body={
-                    'filter': query_filter
-                }
-            )
-            users = [user.to_dict() for user in api_response.results]
-            return users
+            # Cycle through "limited" (paginated) API responses
+            users = []
+            while True:
+                api_response = self.search_api.search_systemusers_post(
+                    content_type='application/json',
+                    accept='application/json',
+                    body={
+                        'filter': query_filter,
+                        'limit': PAGE_LIMIT,
+                        'skip': len(users)
+                    }
+                )
+                users.extend([user.to_dict() for user in api_response.results])
+                if len(users) == api_response.total_count:
+                    return users
         except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi:\n") from error
-
-    def get_users(self, limit='100', skip=0, search='', filter='', sort='', fields=''):
-        """
-        Get users from jumpcloud
-        :param limit:
-        :param skip:
-        :param search:
-        :param filter:
-        :param sort:
-        :param fields:
-        :return: a list of users with dict of settings
-        """
-        try:
-            api_response = self.system_users_api.systemusers_list(content_type='application/json',
-                                                                  accept='application/json',
-                                                                  limit=limit,
-                                                                  skip=skip,
-                                                                  sort=sort,
-                                                                  fields=fields,
-                                                                  x_org_id='',
-                                                                  search=search,
-                                                                  filter=filter)
-            users = [user.to_dict() for user in class_to_dict(api_response.results)]
-            return users
-        except ApiException as error:
-            raise JcApiException("Exception when calling SystemusersApi:\n") from error
+            raise JcApiException("Exception when calling SearchApi:\n") from error
 
     def create_user(self, systemuser):
         """
@@ -143,7 +123,7 @@ class JumpcloudApiV1:
         :param username
         :return:  the user id
         """
-        users = self.get_users(limit='', fields="username")
+        users = self.search_users()
 
         for user in users:
             if user['username'] == username:
@@ -193,15 +173,20 @@ class JumpcloudApiV1:
         query_filter = make_query_filter(filter)
 
         try:
-            api_response = self.search_api.search_systems_post(
-                content_type='application/json',
-                accept='application/json',
-                body={
-                    'filter': query_filter
-                }
-            )
-            systems = [system.to_dict() for system in api_response.results]
-            return systems
+            systems = []
+            while True:
+                api_response = self.search_api.search_systems_post(
+                    content_type='application/json',
+                    accept='application/json',
+                    body={
+                        'filter': query_filter,
+                        'limit': PAGE_LIMIT,
+                        'skip': len(systems)
+                    }
+                )
+                systems.extend([system.to_dict() for system in api_response.results])
+                if len(systems) == api_response.total_count:
+                    return systems
         except ApiException as error:
             raise JcApiException("Exception when calling SearchApi:\n") from error
 

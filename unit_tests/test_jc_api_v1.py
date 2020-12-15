@@ -26,9 +26,9 @@ class TestJcApiV1:
     def teardown_method(self, test_method):
         pass
 
-    @patch.object(JumpcloudApiV1, 'get_users')
-    def test_get_user_id(self, mock_get_users):
-        mock_get_users.return_value = [
+    @patch.object(JumpcloudApiV1, 'search_users')
+    def test_get_user_id(self, mock_search_users):
+        mock_search_users.return_value = [
             {
                 'account_locked': False,
                 'activated': False,
@@ -82,8 +82,8 @@ class TestJcApiV1:
              user_id == "5dc0d38c1e2e5f51f2312948"
         ), "Failed to get the user ID"
 
-    @patch.object(JumpcloudApiV1,'get_users')
-    def test_get_user_id_not_found(self, mock_get_users):
+    @patch.object(JumpcloudApiV1, 'search_users')
+    def test_get_user_id_not_found(self, mock_search_users):
         response = [
             {
                 'email': 'jc.tester1@sagebase.org',
@@ -93,7 +93,7 @@ class TestJcApiV1:
             }
         ]
         api1 = JumpcloudApiV1("1234")
-        mock_get_users.return_value = response
+        mock_search_users.return_value = response
         with pytest.raises(SystemUserNotFoundError):
             api1.get_user_id("foo")
 
@@ -148,7 +148,7 @@ class TestJcApiV1:
         assert (user_search == [])
 
         call_args, call_kwargs = mock_search_systemusers_post.call_args
-        assert (call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}})
+        assert (call_kwargs['body']['filter'] == {'and': [{'firstname': 'David'}]})
 
     @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
     def test_search_users_no_field(self, mock_search_systemusers_post):
@@ -169,7 +169,7 @@ class TestJcApiV1:
 
         call_args, call_kwargs = mock_search_systemusers_post.call_args
         assert (
-                call_kwargs['body'] == {'filter': None}
+                call_kwargs['body']['filter'] == None
         )
 
     @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
@@ -191,7 +191,7 @@ class TestJcApiV1:
 
         call_args, call_kwargs = mock_search_systemusers_post.call_args
         assert (
-            call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}]}}
+            call_kwargs['body']['filter'] == {'and': [{'firstname': 'David'}]}
         )
 
     @patch.object(jcapiv1.SearchApi, 'search_systemusers_post')
@@ -214,7 +214,7 @@ class TestJcApiV1:
 
         call_args, call_kwargs = mock_search_systemusers_post.call_args
         assert (
-                call_kwargs['body'] == {'filter': {'and': [{'firstname': 'David'}, {'lastname': 'Smith'}]}}
+                call_kwargs['body']['filter'] == {'and': [{'firstname': 'David'}, {'lastname': 'Smith'}]}
         )
 
     @patch.object(jcapiv1.SystemusersApi, 'systemusers_put')
@@ -235,13 +235,13 @@ class TestJcApiV1:
             api_response == user.to_dict()
         ), "set_user did not correctly call the systemusers_put API method"
 
-    @patch.object(JumpcloudApiV1, 'get_users')
-    def test_set_user_no_id(self, mock_systemusers_list):
-        mock_systemusers_list.return_value = [
+    @patch.object(JumpcloudApiV1, 'search_users')
+    def test_set_user_no_id(self, mock_systemusers_search):
+        mock_systemusers_search.return_value = [
             {
-                'firstname':'Mary',
-                'username':'mary',
-                'email':'mary@google.microsoft'
+                'firstname': 'Mary',
+                'username': 'mary',
+                'email': 'mary@google.microsoft'
             }
         ]
         api1 = JumpcloudApiV1("1234")

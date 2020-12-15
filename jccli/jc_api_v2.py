@@ -17,8 +17,8 @@ import jcapiv2
 from jcapiv2 import Group, GraphConnection
 from jcapiv2.rest import ApiException
 
-from jccli.helpers import class_to_dict
 from jccli.errors import GroupNotFoundError, JcApiException
+from jccli.helpers import PAGE_LIMIT
 
 
 class JumpcloudApiV2:
@@ -159,12 +159,12 @@ class JumpcloudApiV2:
         :param group_name: name of the JC group
         :return:  The jumpcloud group id and type, NONE group is not found
         """
-        groups = self.get_groups(limit=limit, skip=skip, sort=sort, fields=fields)
+        groups = self.get_groups()
         for group in groups:
             if group['name'] == group_name and group['type'] == group_type:
                 return group
 
-    def get_groups(self, type=None, limit=100, skip=0, sort='', fields='') -> List[Group]:
+    def get_groups(self, type=None) -> List[Group]:
         # pylint: disable-msg=too-many-locals
         # pylint: disable-msg=too-many-arguments
         """
@@ -180,31 +180,36 @@ class JumpcloudApiV2:
         else:
             filter = ''
         try:
-            # response does not provide a total so set limit to max value
-            results: List[Group] = self.groups_api.groups_list(content_type='application/json',
-                                                  accept='application/json',
-                                                  fields=fields,
-                                                  filter=filter,
-                                                  limit=limit,
-                                                  skip=skip,
-                                                  sort=sort,
-                                                  x_org_id='')
-
-            return [group.to_dict() for group in results]
+            # Iteratively make API calls until the API response is empty
+            groups = []
+            while True:
+                results: List[Group] = self.groups_api.groups_list(
+                    content_type='application/json',
+                    accept='application/json',
+                    filter=filter,
+                    limit=PAGE_LIMIT,
+                    skip=len(groups)
+                )
+                if len(results) == 0:
+                    return groups
+                groups.extend([group.to_dict() for group in results])
         except ApiException as error:
             raise JcApiException("Exception when calling GroupsApi:\n") from error
 
     def list_group_users(self, group_id):
         """Return a list of user IDs associated with the group ID
         """
-        results: List[GraphConnection] = self.user_groups_api.graph_user_group_members_list(
-            group_id=group_id,
-            content_type='application/json',
-            accept='application/json'
-        )
         user_ids = []
-        for result in results:
-            user = result.to_dict()['to']
-            user_ids.append(user['id'])
+        while True:
+            results: List[GraphConnection] = self.user_groups_api.graph_user_group_members_list(
+                group_id=group_id,
+                content_type='application/json',
+                accept='application/json',
+                limit=PAGE_LIMIT,
+                skip=len(user_ids)
+            )
+            if len(results) == 0:
+                break
+            user_ids.extend([result.to_dict()['to']['id'] for result in results])
 
         return user_ids
